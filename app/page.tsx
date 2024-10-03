@@ -1,95 +1,137 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import {
+  ThemeProvider,
+  BaseStyles,
+  Button,
+  Box,
+  NavList,
+  Text,
+  Heading,
+  Label,
+  Avatar,
+  CounterLabel,
+  Header,
+} from "@primer/react";
+import { useState, useEffect } from "react";
+
+const getRandomComponents = () => {
+  const components = [
+    <Text key="text">This is a random text component.</Text>,
+    <Button key="button" variant="primary">
+      Random Button
+    </Button>,
+    <Heading key="heading">Random Heading</Heading>,
+    <Label key="label" variant="success">
+      Random Label
+    </Label>,
+    <Avatar key="avatar" src="https://github.com/github.png" size={40} />,
+    <CounterLabel key="counter" scheme="primary">
+      42
+    </CounterLabel>,
+  ];
+
+  return components.sort(() => 0.5 - Math.random()).slice(0, 3);
+};
+
+const NavItemContent = ({ index }: { index: number }) => {
+  const [randomComponents, setRandomComponents] = useState<JSX.Element[]>([]);
+
+  useEffect(() => {
+    setRandomComponents(getRandomComponents());
+  }, [index]);
+
+  return (
+    <Box>
+      <Text as="h2">Content for Nav Item {index + 1}</Text>
+      {randomComponents}
+    </Box>
+  );
+};
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [currentItem, setCurrentItem] = useState(0);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const navItems = Array.from({ length: 50 }, (_, index) => (
+    <NavList.Item
+      key={index}
+      aria-current={index === currentItem ? "page" : undefined}
+      onClick={() => setCurrentItem(index)}
+    >
+      Nav Item {index + 1}
+    </NavList.Item>
+  ));
+
+  const headerLinkStyles = {
+    color: "fg.default",
+    "&:hover, &:active, &:visited": {
+      color: "fg.default",
+      textDecoration: "underline",
+    },
+  };
+
+  return (
+    <ThemeProvider colorMode="night">
+      <BaseStyles>
+        <Header
+          sx={{
+            backgroundColor: "transparent",
+            borderBottom: "1px solid",
+            borderColor: "border.default",
+          }}
+        >
+          <Header.Item full>
+            <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
+              Header
+            </Header.Link>
+          </Header.Item>
+          <Header.Item sx={{ marginLeft: 3 }}>
+            <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
+              Link 1
+            </Header.Link>
+          </Header.Item>
+          <Header.Item sx={{ marginLeft: 3 }}>
+            <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
+              Link 2
+            </Header.Link>
+          </Header.Item>
+        </Header>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            maxWidth: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              maxWidth: "300px",
+              flexGrow: 0,
+              flexShrink: 0,
+              flexBasis: "300px",
+              borderRight: "1px solid",
+              borderColor: "border.default",
+              paddingX: 2,
+              overflowY: "auto",
+              height: "100vh",
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
+            <NavList>{navItems}</NavList>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100vh",
+              flexGrow: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <NavItemContent index={currentItem} />
+          </Box>
+        </Box>
+      </BaseStyles>
+    </ThemeProvider>
   );
 }
