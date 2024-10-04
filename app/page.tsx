@@ -3,101 +3,33 @@
 import {
   ThemeProvider,
   BaseStyles,
-  Button,
   Box,
   NavList,
   Text,
-  Heading,
-  Label,
   Avatar,
-  CounterLabel,
-  Header,
-  Octicon,
 } from "@primer/react";
-import { MarkGithubIcon } from "@primer/octicons-react";
 import { useState, useEffect } from "react";
+import { fetchIssues, fetchRepoDetails, getUserAvatarUrl } from "./api";
+import { AppHeader } from "./header";
+import ReactMarkdown from "react-markdown";
 
-const getRandomComponents = () => {
-  const components = [
-    <Text key="text">This is a random text component.</Text>,
-    <Button key="button" variant="primary">
-      Random Button
-    </Button>,
-    <Heading key="heading">Random Heading</Heading>,
-    <Label key="label" variant="success">
-      Random Label
-    </Label>,
-    <Avatar key="avatar" src="https://github.com/github.png" size={40} />,
-    <CounterLabel key="counter" scheme="primary">
-      42
-    </CounterLabel>,
-  ];
+interface Issue {
+  id: number;
+  title: string;
+  body?: string | null | undefined;
+  user: {
+    login: string;
+  } | null;
+}
 
-  return components.sort(() => 0.5 - Math.random()).slice(0, 3);
-};
-
-const NavItemContent = ({ index }: { index: number }) => {
-  const [randomComponents, setRandomComponents] = useState<JSX.Element[]>([]);
-
-  useEffect(() => {
-    setRandomComponents(getRandomComponents());
-  }, [index]);
-
-  return (
-    <Box>
-      <Text as="h2">Content for Nav Item {index + 1}</Text>
-      {randomComponents}
-    </Box>
-  );
-};
-
-const HeaderComponent = () => {
-  const headerLinkStyles = {
-    color: "fg.default",
-    "&:hover, &:active, &:visited": {
-      color: "fg.default",
-      textDecoration: "underline",
-    },
-  };
-
-  return (
-    <Header
-      sx={{
-        backgroundColor: "transparent",
-        borderBottom: "1px solid",
-        borderColor: "border.default",
-      }}
-    >
-      <Header.Item full>
-        <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
-          <Octicon
-            icon={MarkGithubIcon}
-            size={32}
-            sx={{
-              mr: 2,
-            }}
-          />
-          Header
-        </Header.Link>
-      </Header.Item>
-      <Header.Item sx={{ marginLeft: 3 }}>
-        <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
-          Link 1
-        </Header.Link>
-      </Header.Item>
-      <Header.Item sx={{ marginLeft: 3 }}>
-        <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
-          Link 2
-        </Header.Link>
-      </Header.Item>
-    </Header>
-  );
-};
-
-const NavigationComponent = ({
+const Navigation = ({
   setCurrentItem,
+  issues,
+  repoTitle,
 }: {
   setCurrentItem: (index: number) => void;
+  issues: Issue[];
+  repoTitle: string | undefined;
 }) => {
   const [currentItem, setCurrentItemState] = useState(0);
 
@@ -106,32 +38,23 @@ const NavigationComponent = ({
     setCurrentItem(index);
   };
 
-  const navItems = Array.from({ length: 50 }, (_, index) => (
+  const navItems = issues.map((issue, index) => (
     <NavList.Item
-      key={index}
+      key={issue.id}
       aria-current={index === currentItem ? "page" : undefined}
       onClick={() => handleItemClick(index)}
     >
-      Nav Item {index + 1}
+      {issue.title}
     </NavList.Item>
   ));
-
-  const groupedNavItems = [];
-  for (let i = 0; i < navItems.length; i += 10) {
-    groupedNavItems.push(
-      <NavList.Group title="Section" key={i}>
-        {navItems.slice(i, i + 10)}
-      </NavList.Group>
-    );
-  }
 
   return (
     <Box
       sx={{
-        maxWidth: "300px",
+        maxWidth: "320px",
         flexGrow: 0,
         flexShrink: 0,
-        flexBasis: "300px",
+        flexBasis: "320px",
         borderRight: "1px solid",
         borderColor: "border.default",
         paddingX: 2,
@@ -139,12 +62,72 @@ const NavigationComponent = ({
         height: "100%",
       }}
     >
-      <NavList>{groupedNavItems}</NavList>
+      <NavList.Group title={repoTitle}>
+        <NavList>{navItems}</NavList>
+      </NavList.Group>
     </Box>
   );
 };
 
-const ContentComponent = ({ currentItem }: { currentItem: number }) => {
+const Content = ({ issue }: { issue: Issue | undefined }) => {
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (issue && issue.user) {
+        const url = await getUserAvatarUrl(issue.user.login);
+        setAvatarUrl(url);
+      }
+    };
+
+    fetchAvatar();
+  }, [issue]);
+
+  if (!issue) return null;
+
+  return (
+    <Box>
+      <Box
+        sx={{
+          p: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          borderBottom: "1px solid",
+          borderColor: "border.default",
+        }}
+      >
+        <Text as="h2" sx={{ fontWeight: "normal", fontSize: "32px" }}>
+          {issue.title}
+        </Text>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <Avatar src={avatarUrl} />
+          <Text as="p" sx={{ fontWeight: "bold", fontSize: 1 }}>
+            {issue.user ? issue.user.login : "Unknown"}
+          </Text>
+        </Box>
+      </Box>
+      <ReactMarkdown>{issue.body ? issue.body : ""}</ReactMarkdown>
+    </Box>
+  );
+};
+
+const ContentArea = ({
+  currentItem,
+  issues,
+}: {
+  currentItem: number;
+  issues: Issue[];
+}) => {
+  const selectedIssue = issues[currentItem];
+
   return (
     <Box
       sx={{
@@ -152,18 +135,33 @@ const ContentComponent = ({ currentItem }: { currentItem: number }) => {
         flexDirection: "column",
         height: "100%",
         flexGrow: 1,
-        justifyContent: "center",
-        alignItems: "center",
         overflowY: "auto",
       }}
     >
-      <NavItemContent index={currentItem} />
+      <Content issue={selectedIssue} />
     </Box>
   );
 };
 
 export default function Home() {
   const [currentItem, setCurrentItem] = useState(0);
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [repoTitle, setRepoTitle] = useState<string>();
+
+  useEffect(() => {
+    const getIssues = async () => {
+      const data: Issue[] = await fetchIssues();
+      setIssues(data);
+    };
+
+    const getRepoDetails = async () => {
+      const data = await fetchRepoDetails();
+      setRepoTitle(data.name);
+    };
+
+    getIssues();
+    getRepoDetails();
+  }, []);
 
   return (
     <ThemeProvider colorMode="night">
@@ -177,7 +175,7 @@ export default function Home() {
             overflow: "hidden",
           }}
         >
-          <HeaderComponent />
+          <AppHeader />
           <Box
             sx={{
               display: "flex",
@@ -187,8 +185,12 @@ export default function Home() {
               overflow: "hidden",
             }}
           >
-            <NavigationComponent setCurrentItem={setCurrentItem} />
-            <ContentComponent currentItem={currentItem} />
+            <Navigation
+              setCurrentItem={setCurrentItem}
+              issues={issues}
+              repoTitle={repoTitle}
+            />
+            <ContentArea currentItem={currentItem} issues={issues} />
           </Box>
         </Box>
       </BaseStyles>
