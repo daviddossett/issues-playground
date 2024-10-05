@@ -38,7 +38,7 @@ const Content = ({ issue }: { issue: Issue | undefined }) => {
           width: "100%",
         }}
       >
-        <Text as="h2" sx={{ fontWeight: "normal", fontSize: "32px" }}>
+        <Text as="h2" sx={{ fontWeight: "normal", fontSize: "32px", mb: "0" }}>
           {issue.title}
         </Text>
         <Box
@@ -55,7 +55,7 @@ const Content = ({ issue }: { issue: Issue | undefined }) => {
           ) : (
             <Avatar src={avatarUrl} />
           )}
-          <Text as="p" sx={{ fontWeight: "bold", fontSize: 1 }}>
+          <Text as="p" sx={{ fontWeight: "bold", fontSize: 1, m: "0" }}>
             {issue.user ? issue.user.login : "Unknown"}
           </Text>
         </Box>

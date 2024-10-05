@@ -1,8 +1,11 @@
-import { Header, Octicon } from "@primer/react";
+import { Button, Header, Octicon } from "@primer/react";
 import { MarkGithubIcon } from "@primer/octicons-react";
 
-export const AppHeader = () => {
-  const title = "Issues";
+interface AppHeaderProps {
+  repoTitle: string;
+}
+
+export const AppHeader = ({ repoTitle }: AppHeaderProps) => {
   const headerLinkStyles = {
     color: "fg.default",
     "&:hover, &:active, &:visited": {
@@ -25,10 +28,10 @@ export const AppHeader = () => {
             icon={MarkGithubIcon}
             size={32}
             sx={{
-              mr: 2,
+              mr: "12px",
             }}
           />
-          {title}
+          {repoTitle}
         </Header.Link>
       </Header.Item>
       <Header.Item sx={{ marginLeft: 3 }}>
@@ -40,6 +43,9 @@ export const AppHeader = () => {
         <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
           Link 2
         </Header.Link>
+      </Header.Item>
+      <Header.Item>
+        <Button variant="primary">New Issue</Button>
       </Header.Item>
     </Header>
   );

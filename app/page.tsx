@@ -44,7 +44,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <ThemeProvider colorMode="night">
+      <ThemeProvider colorMode="day">
         <BaseStyles>
           <Box
             sx={{
@@ -64,7 +64,7 @@ export default function Home() {
   }
 
   return (
-    <ThemeProvider colorMode="night">
+    <ThemeProvider colorMode="day">
       <BaseStyles>
         <Box
           sx={{
@@ -75,7 +75,7 @@ export default function Home() {
             overflow: "hidden",
           }}
         >
-          <AppHeader />
+          <AppHeader repoTitle={repoTitle ? repoTitle : ""} />
           <Box
             sx={{
               display: "flex",
@@ -85,11 +85,7 @@ export default function Home() {
               overflow: "hidden",
             }}
           >
-            <Navigation
-              setCurrentItem={setCurrentItem}
-              issues={issues}
-              repoTitle={repoTitle}
-            />
+            <Navigation setCurrentItem={setCurrentItem} issues={issues} />
             <ContentArea currentItem={currentItem} issues={issues} />
           </Box>
         </Box>

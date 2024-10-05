@@ -6,11 +6,9 @@ import { Issue } from "../page";
 export const Navigation = ({
   setCurrentItem,
   issues,
-  repoTitle,
 }: {
   setCurrentItem: (index: number) => void;
   issues: Issue[];
-  repoTitle: string | undefined;
 }) => {
   const [currentItem, setCurrentItemState] = useState(0);
   const [summaries, setSummaries] = useState<string[]>([]);
@@ -58,7 +56,7 @@ export const Navigation = ({
         height: "100%",
       }}
     >
-      <NavList.Group title={repoTitle}>
+      <NavList.Group title={"Issues"}>
         <NavList>{navItems}</NavList>
       </NavList.Group>
     </Box>
