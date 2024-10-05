@@ -7,9 +7,16 @@ import {
   NavList,
   Text,
   Avatar,
+  Spinner,
 } from "@primer/react";
+import { SkeletonAvatar } from "@primer/react/drafts"; // Ensure SkeletonAvatar is imported
 import { useState, useEffect } from "react";
-import { fetchIssues, fetchRepoDetails, getUserAvatarUrl } from "./api";
+import {
+  fetchIssues,
+  fetchRepoDetails,
+  getIssueSummary,
+  getUserAvatarUrl,
+} from "./api";
 import { AppHeader } from "./header";
 import ReactMarkdown from "react-markdown";
 
@@ -32,6 +39,21 @@ const Navigation = ({
   repoTitle: string | undefined;
 }) => {
   const [currentItem, setCurrentItemState] = useState(0);
+  const [summaries, setSummaries] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchSummaries = async () => {
+      const summaries = await Promise.all(
+        issues.map(async (issue) => {
+          const summary = await getIssueSummary(issue.body ?? "");
+          return summary;
+        })
+      );
+      setSummaries(summaries);
+    };
+
+    fetchSummaries();
+  }, [issues]);
 
   const handleItemClick = (index: number) => {
     setCurrentItemState(index);
@@ -44,7 +66,7 @@ const Navigation = ({
       aria-current={index === currentItem ? "page" : undefined}
       onClick={() => handleItemClick(index)}
     >
-      {issue.title}
+      {summaries[index] || "Loading..."}
     </NavList.Item>
   ));
 
@@ -71,22 +93,26 @@ const Navigation = ({
 
 const Content = ({ issue }: { issue: Issue | undefined }) => {
   const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [avatarLoading, setAvatarLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchAvatar = async () => {
-      if (issue && issue.user) {
+    const fetchAvatarUrl = async () => {
+      if (issue?.user) {
+        setAvatarLoading(true); // Reset loading state
         const url = await getUserAvatarUrl(issue.user.login);
         setAvatarUrl(url);
+        setAvatarLoading(false);
       }
     };
 
-    fetchAvatar();
+    fetchAvatarUrl();
   }, [issue]);
 
   if (!issue) return null;
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: "800px", width: "100%" }}>
+      {/* Header */}
       <Box
         sx={{
           p: "16px",
@@ -95,6 +121,7 @@ const Content = ({ issue }: { issue: Issue | undefined }) => {
           gap: "8px",
           borderBottom: "1px solid",
           borderColor: "border.default",
+          width: "100%",
         }}
       >
         <Text as="h2" sx={{ fontWeight: "normal", fontSize: "32px" }}>
@@ -106,15 +133,24 @@ const Content = ({ issue }: { issue: Issue | undefined }) => {
             flexDirection: "row",
             alignItems: "center",
             gap: "8px",
+            width: "100%",
           }}
         >
-          <Avatar src={avatarUrl} />
+          {avatarLoading ? (
+            <SkeletonAvatar size={20} square={false} />
+          ) : (
+            <Avatar src={avatarUrl} />
+          )}
           <Text as="p" sx={{ fontWeight: "bold", fontSize: 1 }}>
             {issue.user ? issue.user.login : "Unknown"}
           </Text>
         </Box>
       </Box>
-      <ReactMarkdown>{issue.body ? issue.body : ""}</ReactMarkdown>
+
+      {/* Main content */}
+      <Box sx={{ p: "16px" }}>
+        <ReactMarkdown>{issue.body ? issue.body : ""}</ReactMarkdown>
+      </Box>
     </Box>
   );
 };
@@ -134,8 +170,9 @@ const ContentArea = ({
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        flexGrow: 1,
+        width: "100%",
         overflowY: "auto",
+        alignItems: "center",
       }}
     >
       <Content issue={selectedIssue} />
@@ -147,6 +184,7 @@ export default function Home() {
   const [currentItem, setCurrentItem] = useState(0);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [repoTitle, setRepoTitle] = useState<string>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getIssues = async () => {
@@ -159,9 +197,35 @@ export default function Home() {
       setRepoTitle(data.name);
     };
 
-    getIssues();
-    getRepoDetails();
+    const fetchData = async () => {
+      await getIssues();
+      await getRepoDetails();
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
+
+  if (loading) {
+    return (
+      <ThemeProvider colorMode="night">
+        <BaseStyles>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100vh",
+              width: "100vw",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Spinner size="medium" />
+          </Box>
+        </BaseStyles>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider colorMode="night">
