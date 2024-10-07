@@ -12,36 +12,57 @@ export const Content = ({
   issue: Issue;
   loading: boolean;
 }) => {
-  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [avatarUrls, setAvatarUrls] = useState<{ [key: string]: string }>({});
   const [avatarLoading, setAvatarLoading] = useState<boolean>(true);
-  const [issueSummary, setIssueSummary] = useState<string>("");
+  const [issueSummaries, setIssueSummaries] = useState<{
+    [key: string]: string;
+  }>({});
   const [summaryLoading, setSummaryLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAvatar = async () => {
-      if (issue?.user) {
+      if (issue?.user && !avatarUrls[issue.user.login]) {
         setAvatarLoading(true);
-        const url = await fetchAvatarUrl(issue.user.login);
-        setAvatarUrl(url);
+        try {
+          const url = await fetchAvatarUrl(issue.user.login);
+          if (issue?.user) {
+            setAvatarUrls((prev) => ({
+              ...prev,
+              [issue?.user?.login ?? ""]: url,
+            }));
+          }
+        } catch (error) {
+          console.error("Failed to fetch avatar URL:", error);
+        } finally {
+          setAvatarLoading(false);
+        }
+      } else {
         setAvatarLoading(false);
       }
     };
 
     fetchAvatar();
-  }, [issue]);
+  }, [issue, avatarUrls]);
 
   useEffect(() => {
     const fetchSummary = async () => {
-      if (issue?.body) {
+      if (issue?.body && !issueSummaries[issue.id]) {
         setSummaryLoading(true);
-        const summary = await fetchIssueSummary(issue.body);
-        setIssueSummary(summary);
+        try {
+          const summary = await fetchIssueSummary(issue.body);
+          setIssueSummaries((prev) => ({ ...prev, [issue.id]: summary }));
+        } catch (error) {
+          console.error("Failed to fetch issue summary:", error);
+        } finally {
+          setSummaryLoading(false);
+        }
+      } else {
         setSummaryLoading(false);
       }
     };
 
     fetchSummary();
-  }, [issue]);
+  }, [issue, issueSummaries]);
 
   if (!issue) return null;
 
@@ -91,10 +112,10 @@ export const Content = ({
             {avatarLoading ? (
               <SkeletonAvatar size={20} square={false} />
             ) : (
-              <Avatar src={avatarUrl} />
+              <Avatar src={avatarUrls[issue?.user?.login ?? ""]} />
             )}
             <Text as="p" sx={{ fontWeight: "bold", fontSize: 1, m: "0" }}>
-              {issue.user ? issue.user.login : "Unknown"}
+              {issue?.user?.login ?? "Unknown"}
             </Text>
           </Box>
         </Box>
@@ -104,7 +125,7 @@ export const Content = ({
           {loading || summaryLoading ? (
             <SkeletonText lines={6} />
           ) : (
-            <ReactMarkdown>{issueSummary}</ReactMarkdown>
+            <ReactMarkdown>{issueSummaries[issue.id]}</ReactMarkdown>
           )}
         </Box>
       </Box>
