@@ -9,8 +9,8 @@ const octokit = new Octokit({
 });
 
 const repo = {
-    owner: "daviddossett",
-    repo: "grid-playground",
+    owner: "microsoft",
+    repo: "vscode",
 };
 
 type IssuesResponse = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"];
