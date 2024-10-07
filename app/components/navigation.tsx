@@ -1,6 +1,6 @@
 import { NavList, Box } from "@primer/react";
+import { SkeletonText } from "@primer/react/drafts";
 import { useState, useEffect } from "react";
-import { getIssueSummary } from "../api/openai";
 import { Issue } from "../page";
 
 export const Navigation = ({
@@ -15,12 +15,7 @@ export const Navigation = ({
 
   useEffect(() => {
     const fetchSummaries = async () => {
-      const summaries = await Promise.all(
-        issues.map(async (issue) => {
-          const summary = await getIssueSummary(issue.body ?? "");
-          return summary;
-        })
-      );
+      const summaries = issues.map((issue) => issue.title);
       setSummaries(summaries);
     };
 
@@ -38,7 +33,7 @@ export const Navigation = ({
       aria-current={index === currentItem ? "page" : undefined}
       onClick={() => handleItemClick(index)}
     >
-      {summaries[index] || "Loading..."}
+      {summaries[index] || <SkeletonText />}
     </NavList.Item>
   ));
 

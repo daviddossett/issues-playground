@@ -2,24 +2,34 @@ import { useState, useEffect } from "react";
 import { Box, Avatar, Text } from "@primer/react";
 import { SkeletonAvatar } from "@primer/react/drafts";
 import ReactMarkdown from "react-markdown";
-import { getUserAvatarUrl } from "../api/github";
 import { Issue } from "../page";
+import { fetchIssueSummary, fetchAvatarUrl } from "../client";
 
-const Content = ({ issue }: { issue: Issue | undefined }) => {
+const Content = ({ issue }: { issue: Issue }) => {
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [avatarLoading, setAvatarLoading] = useState<boolean>(true);
+  const [issueSummary, setIssueSummary] = useState<string>("");
 
   useEffect(() => {
-    const fetchAvatarUrl = async () => {
+    const fetchAvatar = async () => {
       if (issue?.user) {
-        setAvatarLoading(true); // Reset loading state
-        const url = await getUserAvatarUrl(issue.user.login);
+        setAvatarLoading(true);
+        const url = await fetchAvatarUrl(issue.user.login);
         setAvatarUrl(url);
         setAvatarLoading(false);
       }
     };
 
-    fetchAvatarUrl();
+    fetchAvatar();
+  }, [issue]);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      const summary = await fetchIssueSummary(issue.body || "");
+      setIssueSummary(summary);
+    };
+
+    fetchSummary();
   }, [issue]);
 
   if (!issue) return null;
@@ -63,7 +73,7 @@ const Content = ({ issue }: { issue: Issue | undefined }) => {
 
       {/* Main content */}
       <Box sx={{ p: "16px" }}>
-        <ReactMarkdown>{issue.body ? issue.body : ""}</ReactMarkdown>
+        <ReactMarkdown>{issueSummary}</ReactMarkdown>
       </Box>
     </Box>
   );
