@@ -1,10 +1,10 @@
 "use client";
 
-import { ThemeProvider, BaseStyles, Box, Spinner } from "@primer/react";
+import { ThemeProvider, BaseStyles, Box } from "@primer/react";
 import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header";
 import { Navigation } from "./components/navigation";
-import { ContentArea } from "./components/content";
+import { Content } from "./components/content";
 import { fetchRepoDetails, fetchIssues } from "./client";
 
 export interface Issue {
@@ -15,8 +15,6 @@ export interface Issue {
     login: string;
   } | null;
 }
-
-// Removed fetchRepoDetails and fetchIssues functions
 
 export default function Home() {
   const [repoTitle, setRepoTitle] = useState<string>();
@@ -46,47 +44,35 @@ export default function Home() {
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
       <BaseStyles>
-        {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            width: "100vw",
+            overflow: "hidden",
+            backgroundColor: "canvas.default",
+            color: "fg.default",
+          }}
+        >
+          <AppHeader repoTitle={repoTitle ? repoTitle : ""} />
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
-              height: "100vh",
-              width: "100vw",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "canvas.default",
-            }}
-          >
-            <Spinner size="medium" />
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100vh",
-              width: "100vw",
+              flexDirection: "row",
+              maxWidth: "100%",
+              flexGrow: 1,
               overflow: "hidden",
-              backgroundColor: "canvas.default",
-              color: "fg.default",
             }}
           >
-            <AppHeader repoTitle={repoTitle ? repoTitle : ""} />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                maxWidth: "100%",
-                flexGrow: 1,
-                overflow: "hidden",
-              }}
-            >
-              <Navigation setCurrentItem={setCurrentItem} issues={issues} />
-              <ContentArea currentItem={currentItem} issues={issues} />
-            </Box>
+            <Navigation
+              setCurrentItem={setCurrentItem}
+              issues={issues}
+              loading={loading}
+            />
+            <Content issue={issues[currentItem]} loading={loading} />
           </Box>
-        )}
+        </Box>
       </BaseStyles>
     </ThemeProvider>
   );

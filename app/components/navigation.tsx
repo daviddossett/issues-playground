@@ -1,26 +1,20 @@
 import { NavList, Box } from "@primer/react";
 import { SkeletonText } from "@primer/react/drafts";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Issue } from "../page";
+
+interface NavigationProps {
+  setCurrentItem: (index: number) => void;
+  issues: Issue[];
+  loading: boolean;
+}
 
 export const Navigation = ({
   setCurrentItem,
   issues,
-}: {
-  setCurrentItem: (index: number) => void;
-  issues: Issue[];
-}) => {
+  loading,
+}: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
-  const [summaries, setSummaries] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchSummaries = async () => {
-      const summaries = issues.map((issue) => issue.title);
-      setSummaries(summaries);
-    };
-
-    fetchSummaries();
-  }, [issues]);
 
   const handleItemClick = (index: number) => {
     setCurrentItemState(index);
@@ -33,7 +27,7 @@ export const Navigation = ({
       aria-current={index === currentItem ? "page" : undefined}
       onClick={() => handleItemClick(index)}
     >
-      {summaries[index] || <SkeletonText />}
+      {loading ? <SkeletonText /> : issue.title}
     </NavList.Item>
   ));
 
