@@ -81,7 +81,7 @@ export const Content = ({
         {/* Header */}
         <Box
           sx={{
-            p: "16px",
+            p: "16px 0",
             display: "flex",
             flexDirection: "column",
             gap: "8px",

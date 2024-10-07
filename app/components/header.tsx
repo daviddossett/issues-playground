@@ -34,16 +34,6 @@ export const AppHeader = ({ repoTitle }: AppHeaderProps) => {
           {repoTitle}
         </Header.Link>
       </Header.Item>
-      <Header.Item sx={{ marginLeft: 3 }}>
-        <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
-          Link 1
-        </Header.Link>
-      </Header.Item>
-      <Header.Item sx={{ marginLeft: 3 }}>
-        <Header.Link href="#" fontSize={2} sx={headerLinkStyles}>
-          Link 2
-        </Header.Link>
-      </Header.Item>
       <Header.Item>
         <Button variant="primary">New Issue</Button>
       </Header.Item>
