@@ -36,8 +36,9 @@ const reducer = (state: State, action: Action): State => {
         case "LOAD_MORE_ISSUES":
             return {
                 ...state,
-                issues: [...state.issues, ...action.payload],
+                issues: [...state.issues, ...action.payload], // Append new issues
                 page: state.page + 1,
+                loading: false,
             };
         case "SET_LOADING":
             return { ...state, loading: action.payload };
@@ -66,7 +67,7 @@ export const useIssues = () => {
     }, []);
 
     const loadMoreIssues = async () => {
-        dispatch({ type: "SET_LOADING", payload: true });
+        dispatch({ type: "SET_LOADING", payload: false });
         try {
             const moreIssues = await fetchIssues(state.page + 1);
             dispatch({ type: "LOAD_MORE_ISSUES", payload: moreIssues });
