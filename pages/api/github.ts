@@ -46,7 +46,7 @@ const fetchIssues = async (page: number): Promise<IssuesResponse["data"]> => {
             'X-GitHub-Api-Version': '2022-11-28'
         },
         state: "open",
-        per_page: 50, // this includes PRs so fetch the max possible per page
+        per_page: 100, // this includes PRs so fetch the max possible per page
         page: page
     });
 
