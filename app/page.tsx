@@ -5,8 +5,7 @@ import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header";
 import { Navigation } from "./components/navigation";
 import { Content } from "./components/content";
-import { useFetchData } from "./hooks/useFetchData";
-import { useLoadMoreIssues } from "./hooks/useLoadMoreIssues";
+import { useIssues } from "./hooks/useIssues";
 
 export interface Issue {
   id: number;
@@ -18,15 +17,14 @@ export interface Issue {
 }
 
 export default function Home() {
-  const { repoTitle, initialIssues, loading } = useFetchData();
-  const { issues, loadMoreIssues } = useLoadMoreIssues(initialIssues);
+  const { repoTitle, issues, loading, loadMoreIssues } = useIssues();
   const [currentItem, setCurrentItem] = useState(0);
 
   useEffect(() => {
-    if (initialIssues.length > 0) {
+    if (issues.length > 0) {
       setCurrentItem(0);
     }
-  }, [initialIssues]);
+  }, [issues]);
 
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
