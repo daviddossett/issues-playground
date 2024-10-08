@@ -2,15 +2,15 @@ import { Octokit } from "octokit";
 import { Endpoints } from "@octokit/types";
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const GITHUB_PAT = process.env.NEXT_PUBLIC_GITHUB_PAT;
+const GITHUB_PAT = process.env.GITHUB_PAT;
 
 const octokit = new Octokit({
     auth: GITHUB_PAT,
 });
 
 const repo = {
-    owner: "microsoft",
-    repo: "vscode",
+    owner: "primer",
+    repo: "react",
 };
 
 type IssuesResponse = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"];
@@ -45,8 +45,12 @@ const fetchIssues = async (): Promise<IssuesResponse["data"]> => {
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         },
+        per_page: 100,
+        state: "open",
     });
-    return response.data;
+    // Filter out pull requests
+    const filteredIssues = response.data.filter(issue => !issue.pull_request);
+    return filteredIssues;
 };
 
 const fetchRepoDetails = async (): Promise<RepoDetailsResponse["data"]> => {
