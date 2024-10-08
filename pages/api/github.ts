@@ -18,11 +18,11 @@ type RepoDetailsResponse = Endpoints["GET /repos/{owner}/{repo}"]["response"];
 type UserResponse = Endpoints["GET /users/{username}"]["response"];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { endpoint, username } = req.query;
+    const { endpoint, username, page } = req.query;
 
     try {
         if (endpoint === "issues") {
-            const issues = await fetchIssues();
+            const issues = await fetchIssues(Number(page) || 1);
             res.status(200).json(issues);
         } else if (endpoint === "repo") {
             const repoDetails = await fetchRepoDetails();
@@ -39,16 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
-const fetchIssues = async (): Promise<IssuesResponse["data"]> => {
+const fetchIssues = async (page: number): Promise<IssuesResponse["data"]> => {
     const response: IssuesResponse = await octokit.request("GET /repos/{owner}/{repo}/issues", {
         ...repo,
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         },
-        per_page: 100,
         state: "open",
+        per_page: 50, // this includes PRs so fetch the max possible per page
+        page: page
     });
-    // Filter out pull requests
+
     const filteredIssues = response.data.filter(issue => !issue.pull_request);
     return filteredIssues;
 };

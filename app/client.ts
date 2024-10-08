@@ -7,8 +7,8 @@ export async function fetchRepoDetails() {
     return data.name;
 }
 
-export async function fetchIssues() {
-    const response = await fetch("/api/github?endpoint=issues");
+export async function fetchIssues(page: number = 1) {
+    const response = await fetch(`/api/github?endpoint=issues&page=${page}`);
     if (!response.ok) {
         throw new Error("Failed to fetch issues");
     }

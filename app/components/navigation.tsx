@@ -1,4 +1,4 @@
-import { NavList, Box } from "@primer/react";
+import { NavList, Box, Button } from "@primer/react";
 import { SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../page";
@@ -7,12 +7,14 @@ interface NavigationProps {
   setCurrentItem: (index: number) => void;
   issues: Issue[];
   loading: boolean;
+  loadMoreIssues: () => void;
 }
 
 export const Navigation = ({
   setCurrentItem,
   issues,
   loading,
+  loadMoreIssues,
 }: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
 
@@ -48,6 +50,11 @@ export const Navigation = ({
       <NavList.Group title={"Issues"}>
         <NavList>{navItems}</NavList>
       </NavList.Group>
+      {!loading && (
+        <Box sx={{ paddingY: 2 }}>
+          <Button onClick={loadMoreIssues}>Load More</Button>
+        </Box>
+      )}
     </Box>
   );
 };
