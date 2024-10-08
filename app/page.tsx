@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header";
 import { Navigation } from "./components/navigation";
 import { Content } from "./components/content";
-import { fetchRepoDetails, fetchIssues } from "./client";
+import { useFetchData } from "./hooks/useFetchData";
+import { useLoadMoreIssues } from "./hooks/useLoadMoreIssues";
 
 export interface Issue {
   id: number;
@@ -17,51 +18,15 @@ export interface Issue {
 }
 
 export default function Home() {
-  const [repoTitle, setRepoTitle] = useState<string>();
-  const [issues, setIssues] = useState<Issue[]>([]);
+  const { repoTitle, initialIssues, loading } = useFetchData();
+  const { issues, loadMoreIssues } = useLoadMoreIssues(initialIssues);
   const [currentItem, setCurrentItem] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [repoName, issuesData] = await Promise.all([
-          fetchRepoDetails(),
-          fetchIssues(1),
-        ]);
-        setRepoTitle(repoName);
-        setIssues(issuesData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const loadMoreIssues = async () => {
-    try {
-      const nextPage = page + 1;
-      console.log("Fetching issues for page:", nextPage);
-
-      const moreIssues = await fetchIssues(nextPage);
-      console.log("Fetched issues:", moreIssues);
-
-      // Filter out any issues that are already in the state
-      const newIssues = moreIssues.filter(
-        (newIssue: { id: number }) =>
-          !issues.some((issue) => issue.id === newIssue.id)
-      );
-
-      setIssues((prevIssues) => [...prevIssues, ...newIssues]);
-      setPage(nextPage);
-    } catch (error) {
-      console.error("Error fetching more issues:", error);
+    if (initialIssues.length > 0) {
+      setCurrentItem(0);
     }
-  };
+  }, [initialIssues]);
 
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
