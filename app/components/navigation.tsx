@@ -51,7 +51,7 @@ export const Navigation = ({
         <NavList>{navItems}</NavList>
       </NavList.Group>
       {!loading && (
-        <Box sx={{ paddingY: 2 }}>
+        <Box sx={{ py: 2, pl: 3, pb: 6 }}>
           <Button onClick={loadMoreIssues}>Load More</Button>
         </Box>
       )}
