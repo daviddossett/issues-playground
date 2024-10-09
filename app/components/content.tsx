@@ -27,7 +27,7 @@ export const Content = ({
       }}
     >
       <Box sx={{ maxWidth: "800px", width: "100%" }}>
-        {/* Header */}
+        {/* Issue title & avatar */}
         <Box
           sx={{
             p: "16px 0",
@@ -58,10 +58,10 @@ export const Content = ({
               width: "100%",
             }}
           >
-            {avatarLoading ? (
+            {loading || avatarLoading || !issue?.user?.login ? (
               <SkeletonAvatar size={20} square={false} />
             ) : (
-              <Avatar src={avatarUrls[issue?.user?.login ?? ""]} />
+              <Avatar src={avatarUrls[issue.user.login]} />
             )}
             {loading ? (
               <SkeletonText size={"bodySmall"} maxWidth={150} />
