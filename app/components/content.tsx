@@ -3,7 +3,6 @@ import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../page";
 import { useFetchAvatarUrl } from "../hooks/useFetchAvatarUrl";
-import { useFetchIssueSummary } from "../hooks/useFetchIssueSummary";
 
 export const Content = ({
   issue,
@@ -13,7 +12,6 @@ export const Content = ({
   loading: boolean;
 }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
-  const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
 
   return (
     <Box
@@ -75,10 +73,10 @@ export const Content = ({
 
         {/* Main content */}
         <Box sx={{ py: "16px" }}>
-          {loading || summaryLoading ? (
+          {loading ? (
             <SkeletonText lines={4} />
           ) : (
-            <ReactMarkdown>{issueSummaries[issue.id]}</ReactMarkdown>
+            <ReactMarkdown>{issue.body}</ReactMarkdown>
           )}
         </Box>
       </Box>
