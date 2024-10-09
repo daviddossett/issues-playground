@@ -4,7 +4,7 @@ export async function fetchRepoDetails() {
         throw new Error("Failed to fetch repository details");
     }
     const data = await response.json();
-    return data.name;
+    return data.full_name;
 }
 
 export async function fetchIssues(page: number = 1) {
