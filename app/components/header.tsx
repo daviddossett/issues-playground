@@ -1,13 +1,16 @@
 import { Button, Header, Octicon } from "@primer/react";
 import { MarkGithubIcon } from "@primer/octicons-react";
+import { SkeletonText } from "@primer/react/drafts";
 
 interface AppHeaderProps {
   repoTitle: string;
+  loading: boolean;
 }
 
-export const AppHeader = ({ repoTitle }: AppHeaderProps) => {
+export const AppHeader = ({ repoTitle, loading }: AppHeaderProps) => {
   const headerLinkStyles = {
     color: "fg.default",
+    minWidth: "100px",
     "&:hover, &:active, &:visited": {
       color: "fg.default",
       textDecoration: "underline",
@@ -31,7 +34,7 @@ export const AppHeader = ({ repoTitle }: AppHeaderProps) => {
               mr: "12px",
             }}
           />
-          {repoTitle}
+          {loading ? <SkeletonText size={"titleMedium"} /> : repoTitle}
         </Header.Link>
       </Header.Item>
       <Header.Item>

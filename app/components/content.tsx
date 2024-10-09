@@ -64,7 +64,7 @@ export const Content = ({
               <Avatar src={avatarUrls[issue?.user?.login ?? ""]} />
             )}
             {loading ? (
-              <SkeletonText size={"bodySmall"} />
+              <SkeletonText size={"bodySmall"} maxWidth={150} />
             ) : (
               <Text as="p" sx={{ fontWeight: "bold", fontSize: 1, m: "0" }}>
                 {issue?.user?.login ?? "Unknown"}
@@ -74,9 +74,9 @@ export const Content = ({
         </Box>
 
         {/* Main content */}
-        <Box sx={{ p: "16px" }}>
+        <Box sx={{ py: "16px" }}>
           {loading || summaryLoading ? (
-            <SkeletonText lines={6} />
+            <SkeletonText lines={4} />
           ) : (
             <ReactMarkdown>{issueSummaries[issue.id]}</ReactMarkdown>
           )}

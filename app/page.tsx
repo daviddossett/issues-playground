@@ -40,7 +40,7 @@ export default function Home() {
             color: "fg.default",
           }}
         >
-          <AppHeader repoTitle={repoTitle ? repoTitle : ""} />
+          <AppHeader repoTitle={repoTitle} loading={loading} />
           <Box
             sx={{
               display: "flex",
