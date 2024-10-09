@@ -23,15 +23,21 @@ export const Navigation = ({
     setCurrentItem(index);
   };
 
-  const navItems = issues.map((issue, index) => (
-    <NavList.Item
-      key={issue.id}
-      aria-current={index === currentItem ? "page" : undefined}
-      onClick={() => handleItemClick(index)}
-    >
-      {loading ? <SkeletonText /> : issue.title}
-    </NavList.Item>
-  ));
+  const navItems = loading
+    ? Array.from({ length: 10 }).map((_, index) => (
+        <NavList.Item key={index}>
+          <SkeletonText />
+        </NavList.Item>
+      ))
+    : issues.map((issue, index) => (
+        <NavList.Item
+          key={issue.id}
+          aria-current={index === currentItem ? "page" : undefined}
+          onClick={() => handleItemClick(index)}
+        >
+          {issue.title}
+        </NavList.Item>
+      ));
 
   return (
     <Box
