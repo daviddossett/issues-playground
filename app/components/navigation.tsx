@@ -53,7 +53,7 @@ export const Navigation = ({
         height: "100%",
       }}
     >
-      <NavList.Group title={"Issues"}>
+      <NavList.Group title={"Open Issues"}>
         <NavList>{navItems}</NavList>
       </NavList.Group>
       {!loading && (
