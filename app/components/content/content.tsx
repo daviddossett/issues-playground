@@ -2,9 +2,9 @@ import { Box, Avatar, Text, Details, useDetails, Button } from "@primer/react";
 import { CopilotIcon } from "@primer/octicons-react";
 import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
 import ReactMarkdown from "react-markdown";
-import { Issue } from "../page";
-import { useFetchAvatarUrl } from "../hooks/useFetchAvatarUrl";
-import { useFetchIssueSummary } from "../hooks/useFetchIssueSummary";
+import { Issue } from "../../page";
+import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
+import { useFetchIssueSummary } from "../../hooks/useFetchIssueSummary";
 import styles from "./content.module.css";
 
 export const Content = ({

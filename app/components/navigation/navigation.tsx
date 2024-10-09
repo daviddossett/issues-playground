@@ -1,7 +1,7 @@
 import { NavList, Box, Button } from "@primer/react";
 import { SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
-import { Issue } from "../page";
+import { Issue } from "../../page";
 import styles from "./navigation.module.css";
 
 interface NavigationProps {
