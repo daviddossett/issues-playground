@@ -9,8 +9,8 @@ const octokit = new Octokit({
 });
 
 const repo = {
-    owner: "primer",
-    repo: "react",
+    owner: "vercel",
+    repo: "swr",
 };
 
 type IssuesResponse = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"];

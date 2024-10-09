@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { Issue } from "../page";
 import { useFetchAvatarUrl } from "../hooks/useFetchAvatarUrl";
 import { useFetchIssueSummary } from "../hooks/useFetchIssueSummary";
+import styles from "./content.module.css";
 
 export const Content = ({
   issue,
@@ -87,16 +88,7 @@ export const Content = ({
             <Button leadingVisual={CopilotIcon} as="summary">
               Summarize with Copilot
             </Button>
-            <Box
-              sx={{
-                mt: "16px",
-                p: "16px",
-                border: "1px solid",
-                borderColor: "border.default",
-                borderRadius: "8px",
-                backgroundColor: "canvas.subtle",
-              }}
-            >
+            <Box className={styles.issueSummary}>
               {summaryLoading ? (
                 <SkeletonText lines={3} />
               ) : (
