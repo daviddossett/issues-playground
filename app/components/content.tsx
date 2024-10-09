@@ -1,8 +1,10 @@
-import { Box, Avatar, Text } from "@primer/react";
+import { Box, Avatar, Text, Details, useDetails, Button } from "@primer/react";
+import { CopilotIcon } from "@primer/octicons-react";
 import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../page";
 import { useFetchAvatarUrl } from "../hooks/useFetchAvatarUrl";
+import { useFetchIssueSummary } from "../hooks/useFetchIssueSummary";
 
 export const Content = ({
   issue,
@@ -12,6 +14,11 @@ export const Content = ({
   loading: boolean;
 }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
+  const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
+
+  const { getDetailsProps } = useDetails({
+    closeOnOutsideClick: true,
+  });
 
   return (
     <Box
@@ -35,6 +42,7 @@ export const Content = ({
             borderBottom: "1px solid",
             borderColor: "border.default",
             width: "100%",
+            mb: "24px",
           }}
         >
           {loading ? (
@@ -72,6 +80,32 @@ export const Content = ({
         </Box>
 
         {/* Main content */}
+        {summaryLoading || loading ? (
+          <SkeletonText lines={1} />
+        ) : (
+          <Details {...getDetailsProps()}>
+            <Button leadingVisual={CopilotIcon} as="summary">
+              Summarize with Copilot
+            </Button>
+            <Box
+              sx={{
+                mt: "16px",
+                p: "16px",
+                border: "1px solid",
+                borderColor: "border.default",
+                borderRadius: "8px",
+                backgroundColor: "canvas.subtle",
+              }}
+            >
+              {summaryLoading ? (
+                <SkeletonText lines={3} />
+              ) : (
+                <Text>{issueSummaries[issue.id]}</Text>
+              )}
+            </Box>
+          </Details>
+        )}
+
         <Box sx={{ py: "16px" }}>
           {loading ? (
             <SkeletonText lines={4} />
