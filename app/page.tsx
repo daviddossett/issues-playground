@@ -6,6 +6,7 @@ import { AppHeader } from "./components/header";
 import { Navigation } from "./components/navigation";
 import { Content } from "./components/content";
 import { useIssues } from "./hooks/useIssues";
+import styles from "./components/page.module.css";
 
 export interface Issue {
   id: number;
@@ -29,27 +30,9 @@ export default function Home() {
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
       <BaseStyles>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100vh",
-            width: "100vw",
-            overflow: "hidden",
-            backgroundColor: "canvas.default",
-            color: "fg.default",
-          }}
-        >
+        <Box className={styles.container}>
           <AppHeader repoTitle={repoTitle} loading={loading} />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              maxWidth: "100%",
-              flexGrow: 1,
-              overflow: "hidden",
-            }}
-          >
+          <Box className={styles.innerContainer}>
             <Navigation
               setCurrentItem={setCurrentItem}
               issues={issues}

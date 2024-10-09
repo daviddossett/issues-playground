@@ -1,0 +1,17 @@
+.container {
+  max-width: 320px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 320px;
+  border-right: 1px solid var(--borderColor-default);
+  padding-left: 8px;
+  padding-right: 8px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.loadMoreButton {
+  padding-top: 8px;
+  padding-left: 12px;
+  padding-bottom: 24px;
+}

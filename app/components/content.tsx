@@ -22,49 +22,18 @@ export const Content = ({
   });
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        width: "100%",
-        overflowY: "auto",
-        alignItems: "center",
-      }}
-    >
-      <Box sx={{ maxWidth: "800px", width: "100%" }}>
+    <Box className={styles.container}>
+      <Box className={styles.innerContainer}>
         {/* Issue title & avatar */}
-        <Box
-          sx={{
-            p: "16px 0",
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-            borderBottom: "1px solid",
-            borderColor: "border.default",
-            width: "100%",
-            mb: "24px",
-          }}
-        >
+        <Box className={styles.issueHeader}>
           {loading ? (
             <SkeletonText size={"titleMedium"} />
           ) : (
-            <Text
-              as="h2"
-              sx={{ fontWeight: "normal", fontSize: "32px", mb: "0" }}
-            >
+            <Text as="h2" className={styles.issueTitle}>
               {issue.title}
             </Text>
           )}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: "8px",
-              width: "100%",
-            }}
-          >
+          <Box className={styles.issueMeta}>
             {loading || avatarLoading || !issue?.user?.login ? (
               <SkeletonAvatar size={20} square={false} />
             ) : (
@@ -73,7 +42,7 @@ export const Content = ({
             {loading ? (
               <SkeletonText size={"bodySmall"} maxWidth={150} />
             ) : (
-              <Text as="p" sx={{ fontWeight: "bold", fontSize: 1, m: "0" }}>
+              <Text as="p" className={styles.issueUser}>
                 {issue?.user?.login ?? "Unknown"}
               </Text>
             )}
@@ -98,7 +67,7 @@ export const Content = ({
           </Details>
         )}
 
-        <Box sx={{ py: "16px" }}>
+        <Box className={styles.mainContent}>
           {loading ? (
             <SkeletonText lines={4} />
           ) : (

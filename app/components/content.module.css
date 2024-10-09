@@ -6,3 +6,51 @@
   border-radius: 8px;
   background-color: var(--bgColor-muted);
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  align-items: center;
+}
+
+.innerContainer {
+  max-width: 800px;
+  width: 100%;
+}
+
+.issueHeader {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--borderColor-default);
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.issueTitle {
+  font-weight: normal;
+  font-size: 32px;
+  margin-bottom: 0;
+}
+
+.issueMeta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.issueUser {
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.mainContent {
+  padding: 16px 0;
+}

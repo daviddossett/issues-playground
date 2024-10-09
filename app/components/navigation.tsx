@@ -2,6 +2,7 @@ import { NavList, Box, Button } from "@primer/react";
 import { SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../page";
+import styles from "./navigation.module.css";
 
 interface NavigationProps {
   setCurrentItem: (index: number) => void;
@@ -40,24 +41,12 @@ export const Navigation = ({
       ));
 
   return (
-    <Box
-      sx={{
-        maxWidth: "320px",
-        flexGrow: 0,
-        flexShrink: 0,
-        flexBasis: "320px",
-        borderRight: "1px solid",
-        borderColor: "border.default",
-        paddingX: 2,
-        overflowY: "auto",
-        height: "100%",
-      }}
-    >
+    <Box className={styles.container}>
       <NavList.Group title={"Open Issues"}>
         <NavList>{navItems}</NavList>
       </NavList.Group>
       {!loading && (
-        <Box sx={{ py: 2, pl: 3, pb: 6 }}>
+        <Box className={styles.loadMoreButton}>
           <Button onClick={loadMoreIssues}>Load More</Button>
         </Box>
       )}
