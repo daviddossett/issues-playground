@@ -15,6 +15,7 @@ export interface Issue {
   user: {
     login: string;
   } | null;
+  created_at: string;
 }
 
 export default function Home() {

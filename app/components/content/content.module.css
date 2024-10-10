@@ -1,6 +1,6 @@
 .issueSummary {
-  margin-top: 16px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 12px 16px;
   border: var(--borderWidth-thin) solid;
   border-color: var(--borderColor-default);
   border-radius: 8px;
@@ -32,8 +32,9 @@
 }
 
 .issueTitle {
-  font-weight: normal;
   font-size: 32px;
+  line-height: 40px;
+  font-weight: normal;
   margin-bottom: 0;
 }
 
@@ -47,8 +48,12 @@
 
 .issueUser {
   font-weight: bold;
-  font-size: 1rem;
+  font-size: var(--text-body-size-medium);
   margin: 0;
+}
+
+.issueCreatedAt {
+  color: var(--fgColor-muted);
 }
 
 .mainContent {
