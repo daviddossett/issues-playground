@@ -2,7 +2,7 @@
 
 import { ThemeProvider, BaseStyles, Box } from "@primer/react";
 import { useState, useEffect } from "react";
-import { AppHeader } from "./components/header";
+import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { Content } from "./components/content/content";
 import { useIssues } from "./hooks/useIssues";
