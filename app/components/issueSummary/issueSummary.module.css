@@ -1,0 +1,8 @@
+.issueSummary {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: var(--borderWidth-thin) solid;
+  border-color: var(--borderColor-default);
+  border-radius: 8px;
+  background-color: var(--bgColor-muted);
+}
