@@ -5,14 +5,14 @@
 }
 
 .headerLink {
-  color: var(--fg-default);
+  color: var(--fgColor-default) !important;
   min-width: 100px;
 }
 
 .headerLink:hover,
 .headerLink:active,
 .headerLink:visited {
-  color: var(--fg-default);
+  color: var(--fgColor-default) !important;
   text-decoration: underline;
 }
 
