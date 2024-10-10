@@ -1,0 +1,21 @@
+.header {
+  background-color: var(--bgColor-default) !important;
+  border-bottom: 1px solid;
+  border-color: var(--borderColor-default);
+}
+
+.headerLink {
+  color: var(--fg-default);
+  min-width: 100px;
+}
+
+.headerLink:hover,
+.headerLink:active,
+.headerLink:visited {
+  color: var(--fg-default);
+  text-decoration: underline;
+}
+
+.octicon {
+  margin-right: 12px;
+}
