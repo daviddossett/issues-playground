@@ -11,12 +11,7 @@ interface NavigationProps {
   loadMoreIssues: () => void;
 }
 
-export const Navigation = ({
-  setCurrentItem,
-  issues,
-  loading,
-  loadMoreIssues,
-}: NavigationProps) => {
+export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
 
   const handleItemClick = (index: number) => {
@@ -25,9 +20,9 @@ export const Navigation = ({
   };
 
   const navItems = loading
-    ? Array.from({ length: 10 }).map((_, index) => (
+    ? Array.from({ length: 6 }).map((_, index) => (
         <NavList.Item key={index}>
-          <SkeletonText />
+          <SkeletonText maxWidth={`${Math.random() * (80 - 50) + 50}%`} />
         </NavList.Item>
       ))
     : issues.map((issue, index) => (

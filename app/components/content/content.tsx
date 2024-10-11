@@ -1,6 +1,5 @@
-import { Box, Avatar, Text, ActionBar } from "@primer/react";
+import { Box, Avatar, Text } from "@primer/react";
 import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
-import { CopilotIcon, KebabHorizontalIcon, PencilIcon } from "@primer/octicons-react";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
@@ -56,17 +55,9 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
     </Text>
   );
 
-  const IssueHeaderToolbar = () => (
-    <ActionBar aria-label="Toolbar">
-      <ActionBar.IconButton icon={CopilotIcon} aria-label="Summarize with Copilot" />
-      <ActionBar.IconButton icon={PencilIcon} aria-label="Edit" />
-      <ActionBar.IconButton icon={KebabHorizontalIcon} aria-label="More" />
-    </ActionBar>
-  );
-
   const IssueBody = () => (
     <Box className={styles.issueBody}>
-      {loading ? <SkeletonText lines={4} /> : <ReactMarkdown>{issue.body}</ReactMarkdown>}
+      {loading ? <SkeletonText lines={3} /> : <ReactMarkdown>{issue.body}</ReactMarkdown>}
     </Box>
   );
 
@@ -77,7 +68,6 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
           <IssueTitle />
           <Box className={styles.issueHeaderToolbar}>
             <IssueAuthor />
-            <IssueHeaderToolbar />
           </Box>
         </Box>
         <Box className={styles.mainContent}>
