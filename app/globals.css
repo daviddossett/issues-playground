@@ -24,7 +24,8 @@ h2 {
 }
 
 p,
-span {
+span,
+li {
   font-size: var(--text-body-size-medium);
   line-height: var(--text-body-lineHeight-medium);
 }
