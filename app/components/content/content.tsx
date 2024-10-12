@@ -1,5 +1,6 @@
-import { Box, Avatar, Text } from "@primer/react";
+import { Box, Avatar, Text, SegmentedControl, IconButton } from "@primer/react";
 import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
+import { CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
@@ -63,12 +64,17 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
 
   return (
     <Box className={styles.container}>
+      <Box className={styles.issueToolbar}>
+        <SegmentedControl aria-label="View">
+          <SegmentedControl.Button defaultSelected>Original</SegmentedControl.Button>
+          <SegmentedControl.Button leadingIcon={CopilotIcon}>Summary</SegmentedControl.Button>
+        </SegmentedControl>
+        <IconButton icon={KebabHorizontalIcon} aria-label="More" />
+      </Box>
       <Box className={styles.innerContainer}>
         <Box className={styles.issueHeader}>
           <IssueTitle />
-          <Box className={styles.issueHeaderToolbar}>
-            <IssueAuthor />
-          </Box>
+          <IssueAuthor />
         </Box>
         <Box className={styles.mainContent}>
           <IssueBody />

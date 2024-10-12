@@ -1,4 +1,5 @@
-import { NavList, Box, Button } from "@primer/react";
+import { NavList, Box, Button, IconButton } from "@primer/react";
+import { SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
 import { SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../../page";
@@ -38,9 +39,11 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
 
   return (
     <Box className={styles.container}>
-      <NavList.Group title={"Open issues"}>
-        <NavList>{navItems}</NavList>
-      </NavList.Group>
+      <Box className={styles.actionBar}>
+        <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" />
+        <IconButton icon={SyncIcon} aria-label="Refresh" />
+      </Box>
+      <NavList className={styles.list}>{navItems}</NavList>
       {!loading && (
         <Box className={styles.loadMoreButton}>
           <Button onClick={loadMoreIssues}>Load More</Button>

@@ -1,5 +1,5 @@
 import { MarkGithubIcon } from "@primer/octicons-react";
-import { Header, Button, Octicon } from "@primer/react";
+import { Header, Octicon } from "@primer/react";
 
 import styles from "./header.module.css";
 
@@ -11,9 +11,6 @@ export const AppHeader = () => {
           <Octicon icon={MarkGithubIcon} size={32} className={styles.octicon} />
           Issues
         </Header.Link>
-      </Header.Item>
-      <Header.Item>
-        <Button variant="primary">New issue</Button>
       </Header.Item>
     </Header>
   );

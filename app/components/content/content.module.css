@@ -3,13 +3,32 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  overflow-y: auto;
   align-items: center;
+  overflow-y: auto;
 }
 
 .innerContainer {
   max-width: 800px;
   width: 100%;
+  padding-bottom: 96px;
+}
+
+.mainContent {
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.issueToolbar {
+  display: flex;
+  width: 100%;
+  padding: 8px;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bgColor-muted);
+  border-bottom: 1px solid var(--borderColor-default);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .issueHeader {
@@ -28,13 +47,6 @@
   margin-bottom: 0;
 }
 
-.issueHeaderToolbar {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-}
-
 .issueMeta {
   display: flex;
   flex-direction: row;
@@ -51,8 +63,4 @@
 
 .issueCreatedAt {
   color: var(--fgColor-muted);
-}
-
-.mainContent {
-  padding: 16px 0;
 }

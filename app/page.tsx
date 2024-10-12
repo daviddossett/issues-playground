@@ -7,6 +7,7 @@ import { Navigation } from "./components/navigation/navigation";
 import { Content } from "./components/content/content";
 import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
+import { RepoHeader } from "./components/repoHeader/repoHeader";
 
 export interface Issue {
   id: number;
@@ -29,18 +30,21 @@ export default function Home() {
   }, [issues]);
 
   return (
-    <ThemeProvider colorMode="auto" dayScheme="light" nightScheme="dark_dimmed" preventSSRMismatch>
+    <ThemeProvider colorMode="auto" preventSSRMismatch>
       <BaseStyles>
         <Box className={styles.container}>
           <AppHeader />
+          <RepoHeader />
           <Box className={styles.innerContainer}>
-            <Navigation
-              setCurrentItem={setCurrentItem}
-              issues={issues}
-              loading={loading}
-              loadMoreIssues={loadMoreIssues}
-            />
-            <Content issue={issues[currentItem]} loading={loading} />
+            <Box className={styles.mainContent}>
+              <Navigation
+                setCurrentItem={setCurrentItem}
+                issues={issues}
+                loading={loading}
+                loadMoreIssues={loadMoreIssues}
+              />
+              <Content issue={issues[currentItem]} loading={loading} />
+            </Box>
           </Box>
         </Box>
       </BaseStyles>
