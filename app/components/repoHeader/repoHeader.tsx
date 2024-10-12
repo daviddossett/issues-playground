@@ -1,37 +1,49 @@
-import React from "react";
+import { useState } from "react";
 import { Box, Button, SelectPanel } from "@primer/react";
 import { TriangleDownIcon } from "@primer/octicons-react";
 import style from "./repoHeader.module.css";
 import { ItemInput } from "@primer/react/lib-esm/deprecated/ActionList/List";
 
 const items: ItemInput[] = [
-  { text: "boop", id: "1" },
-  { text: "bop", id: "2" },
-  { text: "beep", id: "3" },
+  { text: "github/github", id: "1" },
+  { text: "primer/react", id: "2" },
+  { text: "microsoft/vscode", id: "3" },
 ];
 
 const RepoSelector = () => {
-  const [selected, setSelected] = React.useState<ItemInput[]>([]);
+  const [selected, setSelected] = useState<ItemInput | undefined>(items[0]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [filter, setFilter] = useState("");
+  const filteredItems = items.filter((item) => item?.text?.toLowerCase().includes(filter.toLowerCase()));
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
 
   return (
     <SelectPanel
       renderAnchor={({ children, "aria-labelledby": ariaLabelledBy, ...anchorProps }) => (
-        <Button trailingAction={TriangleDownIcon} aria-labelledby={` ${ariaLabelledBy}`} {...anchorProps}>
-          {children ?? "Select a repo"}
+        <Button
+          trailingAction={TriangleDownIcon}
+          aria-labelledby={` ${ariaLabelledBy}`}
+          {...anchorProps}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {children ?? "primer/react"}
         </Button>
       )}
-      placeholderText="Filter Labels"
-      open={false}
-      onOpenChange={() => {}}
-      items={items}
-      showItemDividers={true}
+      placeholderText="Pick a repo"
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      items={filteredItems}
       overlayProps={{
-        width: "small",
+        width: "medium",
         height: "xsmall",
       }}
-      onFilterChange={() => {}}
+      onFilterChange={setFilter}
       selected={selected}
-      onSelectedChange={setSelected}
+      onSelectedChange={(selected: ItemInput | undefined) => setSelected(selected)}
     />
   );
 };
