@@ -10,6 +10,7 @@
 
 @import "@primer/primitives/dist/css/functional/themes/light.css";
 @import "@primer/primitives/dist/css/functional/themes/dark.css";
+@import "@primer/primitives/dist/css/functional/themes/dark-dimmed.css";
 
 h1 {
   font-size: var(--text-title-size-large);

@@ -19,7 +19,7 @@ export interface Issue {
 }
 
 export default function Home() {
-  const { repoTitle, issues, loading, loadMoreIssues } = useIssues();
+  const { issues, loading, loadMoreIssues } = useIssues();
   const [currentItem, setCurrentItem] = useState(0);
 
   useEffect(() => {
@@ -29,10 +29,10 @@ export default function Home() {
   }, [issues]);
 
   return (
-    <ThemeProvider colorMode="auto" preventSSRMismatch>
+    <ThemeProvider colorMode="auto" dayScheme="light" nightScheme="dark_dimmed" preventSSRMismatch>
       <BaseStyles>
         <Box className={styles.container}>
-          <AppHeader repoTitle={repoTitle} loading={loading} />
+          <AppHeader />
           <Box className={styles.innerContainer}>
             <Navigation
               setCurrentItem={setCurrentItem}
