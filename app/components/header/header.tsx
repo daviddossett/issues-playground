@@ -18,7 +18,7 @@ export const AppHeader = ({ repoTitle, loading }: AppHeaderProps) => {
         </Header.Link>
       </Header.Item>
       <Header.Item>
-        <Button variant="primary">New Issue</Button>
+        <Button variant="primary">New issue</Button>
       </Header.Item>
     </Header>
   );
