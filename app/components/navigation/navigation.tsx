@@ -30,6 +30,7 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
           key={issue.id}
           aria-current={index === currentItem ? "page" : undefined}
           onClick={() => handleItemClick(index)}
+          className={styles.navItem}
         >
           {issue.title}
         </NavList.Item>
@@ -37,7 +38,7 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
 
   return (
     <Box className={styles.container}>
-      <NavList.Group title={"Open Issues"}>
+      <NavList.Group title={"Open issues"}>
         <NavList>{navItems}</NavList>
       </NavList.Group>
       {!loading && (
