@@ -1,6 +1,6 @@
 import { NavList, Box, Button, IconButton } from "@primer/react";
-import { SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
-import { SkeletonText } from "@primer/react/drafts";
+import { BookIcon, SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
+import { Blankslate, SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../../page";
 import styles from "./navigation.module.css";
@@ -18,6 +18,18 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
   const handleItemClick = (index: number) => {
     setCurrentItemState(index);
     setCurrentItem(index);
+  };
+
+  const EmptyState = () => {
+    return (
+      <Blankslate narrow>
+        <Blankslate.Visual>
+          <BookIcon size="medium" />
+        </Blankslate.Visual>
+        <Blankslate.Heading>Blankslate heading</Blankslate.Heading>
+        <Blankslate.Description>Use it to provide information when no dynamic content exists.</Blankslate.Description>
+      </Blankslate>
+    );
   };
 
   const navItems = loading
@@ -43,11 +55,17 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
         <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" />
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
-      <NavList className={styles.list}>{navItems}</NavList>
-      {!loading && (
-        <Box className={styles.loadMoreButton}>
-          <Button onClick={loadMoreIssues}>Load More</Button>
-        </Box>
+      {issues.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <>
+          <NavList className={styles.list}>{navItems}</NavList>
+          {!loading && (
+            <Box className={styles.loadMoreButton}>
+              <Button onClick={loadMoreIssues}>Load More</Button>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );

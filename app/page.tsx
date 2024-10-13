@@ -27,7 +27,7 @@ export interface Issue {
 const repos: Repo[] = [
   { name: "react", owner: "primer" },
   { name: "octicons", owner: "primer" },
-  { name: "primtives", owner: "primer" },
+  { name: "primitives", owner: "primer" },
   { name: "vscode", owner: "microsoft" },
 ];
 

@@ -1,6 +1,6 @@
 import { Box, Avatar, Text, SegmentedControl, IconButton } from "@primer/react";
-import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
-import { CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
+import { Blankslate, SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
+import { BookIcon, CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
@@ -62,24 +62,40 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
     </Box>
   );
 
-  return (
-    <Box className={styles.container}>
-      <Box className={styles.issueToolbar}>
-        <SegmentedControl aria-label="View">
-          <SegmentedControl.Button defaultSelected>Original</SegmentedControl.Button>
-          <SegmentedControl.Button leadingIcon={CopilotIcon}>Summary</SegmentedControl.Button>
-        </SegmentedControl>
-        <IconButton icon={KebabHorizontalIcon} aria-label="More" />
-      </Box>
-      <Box className={styles.innerContainer}>
-        <Box className={styles.issueHeader}>
-          <IssueTitle />
-          <IssueAuthor />
+  const EmptyState = () => {
+    return (
+      <Blankslate spacious>
+        <Blankslate.Visual>
+          <BookIcon size="medium" />
+        </Blankslate.Visual>
+        <Blankslate.Heading>Blankslate heading</Blankslate.Heading>
+        <Blankslate.Description>Use it to provide information when no dynamic content exists.</Blankslate.Description>
+      </Blankslate>
+    );
+  };
+
+  const IssueContent = () => {
+    return (
+      <>
+        <Box className={styles.issueToolbar}>
+          <SegmentedControl aria-label="View">
+            <SegmentedControl.Button defaultSelected>Original</SegmentedControl.Button>
+            <SegmentedControl.Button leadingIcon={CopilotIcon}>Summary</SegmentedControl.Button>
+          </SegmentedControl>
+          <IconButton icon={KebabHorizontalIcon} aria-label="More" />
         </Box>
-        <Box className={styles.mainContent}>
-          <IssueBody />
+        <Box className={styles.innerContainer}>
+          <Box className={styles.issueHeader}>
+            <IssueTitle />
+            <IssueAuthor />
+          </Box>
+          <Box className={styles.mainContent}>
+            <IssueBody />
+          </Box>
         </Box>
-      </Box>
-    </Box>
-  );
+      </>
+    );
+  };
+
+  return <Box className={styles.container}>{!issue ? <EmptyState /> : <IssueContent />}</Box>;
 };
