@@ -3,22 +3,33 @@ import { Box, Button, SelectPanel } from "@primer/react";
 import { TriangleDownIcon } from "@primer/octicons-react";
 import style from "./repoHeader.module.css";
 import { ItemInput } from "@primer/react/lib-esm/deprecated/ActionList/List";
+import { Repo } from "@/app/page";
 
-const items: ItemInput[] = [
-  { text: "github/github", id: "1" },
-  { text: "primer/react", id: "2" },
-  { text: "microsoft/vscode", id: "3" },
-];
+interface RepoHeaderProps {
+  repos: Repo[];
+  selectedRepo: Repo;
+  onRepoSelected: (repo: Repo) => void;
+}
 
-const RepoSelector = () => {
-  const [selected, setSelected] = useState<ItemInput | undefined>(items[0]);
+const RepoSelector = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [filter, setFilter] = useState("");
-  const filteredItems = items.filter((item) => item?.text?.toLowerCase().includes(filter.toLowerCase()));
+  const items: ItemInput[] = repos.map((repo) => ({
+    text: `${repo.owner}/${repo.name}`,
+    id: repo.name,
+  }));
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
+  };
+
+  const handleSelectedChange = (selected: ItemInput | undefined) => {
+    if (selected) {
+      const selectedRepo = repos.find((repo) => repo.name === selected.id);
+      if (selectedRepo) {
+        onRepoSelected(selectedRepo);
+      }
+    }
   };
 
   return (
@@ -30,28 +41,28 @@ const RepoSelector = () => {
           {...anchorProps}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {children ?? "primer/react"}
+          {children ?? selectedRepo.name}
         </Button>
       )}
       placeholderText="Pick a repo"
       open={isOpen}
       onOpenChange={handleOpenChange}
-      items={filteredItems}
+      items={items}
       overlayProps={{
         width: "medium",
         height: "xsmall",
       }}
-      onFilterChange={setFilter}
-      selected={selected}
-      onSelectedChange={(selected: ItemInput | undefined) => setSelected(selected)}
+      onFilterChange={() => {}}
+      selected={items.find((item) => item.id === selectedRepo.name)}
+      onSelectedChange={handleSelectedChange}
     />
   );
 };
 
-export const RepoHeader = () => {
+export const RepoHeader = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) => {
   return (
     <Box className={style.container}>
-      <RepoSelector />
+      <RepoSelector repos={repos} selectedRepo={selectedRepo} onRepoSelected={onRepoSelected} />
       <Button variant="primary">New issue</Button>
     </Box>
   );

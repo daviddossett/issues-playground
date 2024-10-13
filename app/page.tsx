@@ -1,13 +1,18 @@
 "use client";
 
 import { ThemeProvider, BaseStyles, Box } from "@primer/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { Content } from "./components/content/content";
 import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
+
+export interface Repo {
+  name: string;
+  owner: string;
+}
 
 export interface Issue {
   id: number;
@@ -19,22 +24,29 @@ export interface Issue {
   created_at: string;
 }
 
+const repos: Repo[] = [
+  { name: "react", owner: "primer" },
+  { name: "octicons", owner: "primer" },
+  { name: "primtives", owner: "primer" },
+];
+
 export default function Home() {
+  const [selectedRepo, setSelectedRepo] = useState(repos[0]);
   const { issues, loading, loadMoreIssues } = useIssues();
   const [currentItem, setCurrentItem] = useState(0);
 
-  useEffect(() => {
-    if (issues.length > 0) {
-      setCurrentItem(0);
-    }
-  }, [issues]);
+  console.log(selectedRepo);
+
+  const handleRepoSelection = (repo: Repo) => {
+    setSelectedRepo(repo);
+  };
 
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
       <BaseStyles>
         <Box className={styles.container}>
           <AppHeader />
-          <RepoHeader />
+          <RepoHeader repos={repos} selectedRepo={selectedRepo} onRepoSelected={handleRepoSelection} />
           <Box className={styles.innerContainer}>
             <Box className={styles.mainContent}>
               <Navigation
