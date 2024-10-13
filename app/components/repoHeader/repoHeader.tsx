@@ -49,7 +49,7 @@ const RepoSelector = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) 
       onOpenChange={handleOpenChange}
       items={items}
       overlayProps={{
-        width: "medium",
+        width: "small",
         height: "medium",
       }}
       onFilterChange={() => {}}
