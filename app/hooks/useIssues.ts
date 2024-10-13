@@ -1,9 +1,9 @@
 import { useReducer, useEffect } from "react";
-import { fetchRepoDetails, fetchIssues } from "../client";
+import { fetchIssues } from "../client";
 import { Issue, Repo } from "../page";
 
 interface State {
-    repoTitle: string;
+    repo: Repo;
     issues: Issue[];
     loading: boolean;
     page: number;
@@ -11,13 +11,13 @@ interface State {
 }
 
 type Action =
-    | { type: "SET_INITIAL_DATA"; payload: { repoTitle: string; issues: Issue[] } }
+    | { type: "SET_INITIAL_DATA"; payload: { repo: Repo; issues: Issue[] } }
     | { type: "LOAD_MORE_ISSUES"; payload: Issue[] }
     | { type: "SET_LOADING"; payload: boolean }
     | { type: "SET_ERROR"; payload: string };
 
 const initialState: State = {
-    repoTitle: "",
+    repo: { name: "", owner: "" },
     issues: [],
     loading: true,
     page: 1,
@@ -29,7 +29,7 @@ const reducer = (state: State, action: Action): State => {
         case "SET_INITIAL_DATA":
             return {
                 ...state,
-                repoTitle: action.payload.repoTitle,
+                repo: action.payload.repo,
                 issues: action.payload.issues,
                 loading: false,
             };
@@ -54,10 +54,10 @@ export const useIssues = (repo: Repo) => {
 
     useEffect(() => {
         const fetchData = async (repo: Repo) => {
+            dispatch({ type: "SET_LOADING", payload: true }); // Set loading to true
             try {
-                const repoTitle = await fetchRepoDetails(repo);
                 const issues = await fetchIssues(repo, 1);
-                dispatch({ type: "SET_INITIAL_DATA", payload: { repoTitle, issues } });
+                dispatch({ type: "SET_INITIAL_DATA", payload: { repo, issues } });
             } catch {
                 dispatch({ type: "SET_ERROR", payload: "Error fetching data" });
             }
@@ -69,7 +69,7 @@ export const useIssues = (repo: Repo) => {
     const loadMoreIssues = async () => {
         dispatch({ type: "SET_LOADING", payload: true });
         try {
-            const moreIssues = await fetchIssues(repo, state.page + 1);
+            const moreIssues = await fetchIssues(state.repo, state.page + 1);
             dispatch({ type: "LOAD_MORE_ISSUES", payload: moreIssues });
         } catch {
             dispatch({ type: "SET_ERROR", payload: "Error fetching more issues" });

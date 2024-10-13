@@ -1,19 +1,5 @@
 import { Repo } from "./page";
 
-export async function fetchRepoDetails(repo: Repo) {
-    const response = await fetch(`/api/github?endpoint=repo&owner=${repo.owner}&repo=${repo.name}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    if (!response.ok) {
-        throw new Error("Failed to fetch repository details");
-    }
-    const data = await response.json();
-    return data.full_name;
-}
-
 export async function fetchIssues(repo: Repo, page: number = 1) {
     const response = await fetch(`/api/github?endpoint=issues&owner=${repo.owner}&repo=${repo.name}&page=${page}`, {
         method: 'GET',

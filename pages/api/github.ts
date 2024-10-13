@@ -41,7 +41,7 @@ const fetchIssues = async (repo: { owner: string, repo: string }, page: number):
             'X-GitHub-Api-Version': '2022-11-28'
         },
         state: "open",
-        per_page: 100, // this includes PRs so fetch the max possible per page
+        per_page: 75, // the gh endpoint includes PRs *and* issues in one list so fetch the max possible per page
         page: page
     });
 
