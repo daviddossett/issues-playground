@@ -1,5 +1,5 @@
 import { NavList, Box, Button, IconButton } from "@primer/react";
-import { BookIcon, SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
+import { SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
 import { Blankslate, SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../../page";
@@ -22,12 +22,11 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
 
   const EmptyState = () => {
     return (
-      <Blankslate narrow>
-        <Blankslate.Visual>
-          <BookIcon size="medium" />
-        </Blankslate.Visual>
-        <Blankslate.Heading>Blankslate heading</Blankslate.Heading>
-        <Blankslate.Description>Use it to provide information when no dynamic content exists.</Blankslate.Description>
+      <Blankslate>
+        <Blankslate.Heading>No issues</Blankslate.Heading>
+        <Blankslate.Description>
+          There aren&apos;t any open issues in this repo. Go take a break!
+        </Blankslate.Description>
       </Blankslate>
     );
   };

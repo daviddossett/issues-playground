@@ -1,6 +1,6 @@
 import { Box, Avatar, Text, SegmentedControl, IconButton } from "@primer/react";
 import { Blankslate, SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
-import { BookIcon, CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
+import { CopilotIcon, IssueOpenedIcon, KebabHorizontalIcon } from "@primer/octicons-react";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
@@ -66,10 +66,10 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
     return (
       <Blankslate spacious>
         <Blankslate.Visual>
-          <BookIcon size="medium" />
+          <IssueOpenedIcon size="medium" />
         </Blankslate.Visual>
-        <Blankslate.Heading>Blankslate heading</Blankslate.Heading>
-        <Blankslate.Description>Use it to provide information when no dynamic content exists.</Blankslate.Description>
+        <Blankslate.Heading>Select an issue</Blankslate.Heading>
+        <Blankslate.Description>Select an issue in the sidebar to get started.</Blankslate.Description>
       </Blankslate>
     );
   };
