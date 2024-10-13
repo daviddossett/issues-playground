@@ -50,7 +50,7 @@ const RepoSelector = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) 
       items={items}
       overlayProps={{
         width: "medium",
-        height: "xsmall",
+        height: "medium",
       }}
       onFilterChange={() => {}}
       selected={items.find((item) => item.id === selectedRepo.name)}

@@ -1,6 +1,6 @@
 import { useReducer, useEffect } from "react";
 import { fetchRepoDetails, fetchIssues } from "../client";
-import { Issue } from "../page";
+import { Issue, Repo } from "../page";
 
 interface State {
     repoTitle: string;
@@ -49,27 +49,27 @@ const reducer = (state: State, action: Action): State => {
     }
 };
 
-export const useIssues = () => {
+export const useIssues = (repo: Repo) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async (repo: Repo) => {
             try {
-                const repoTitle = await fetchRepoDetails();
-                const issues = await fetchIssues(1);
+                const repoTitle = await fetchRepoDetails(repo);
+                const issues = await fetchIssues(repo, 1);
                 dispatch({ type: "SET_INITIAL_DATA", payload: { repoTitle, issues } });
             } catch {
                 dispatch({ type: "SET_ERROR", payload: "Error fetching data" });
             }
         };
 
-        fetchData();
-    }, []);
+        fetchData(repo);
+    }, [repo]);
 
     const loadMoreIssues = async () => {
-        dispatch({ type: "SET_LOADING", payload: false });
+        dispatch({ type: "SET_LOADING", payload: true });
         try {
-            const moreIssues = await fetchIssues(state.page + 1);
+            const moreIssues = await fetchIssues(repo, state.page + 1);
             dispatch({ type: "LOAD_MORE_ISSUES", payload: moreIssues });
         } catch {
             dispatch({ type: "SET_ERROR", payload: "Error fetching more issues" });

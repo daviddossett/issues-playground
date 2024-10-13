@@ -8,24 +8,19 @@ const octokit = new Octokit({
     auth: GITHUB_PAT,
 });
 
-const repo = {
-    owner: "primer",
-    repo: "react",
-};
-
 type IssuesResponse = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"];
 type RepoDetailsResponse = Endpoints["GET /repos/{owner}/{repo}"]["response"];
 type UserResponse = Endpoints["GET /users/{username}"]["response"];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { endpoint, username, page } = req.query;
+    const { endpoint, username, page, owner, repo } = req.query;
 
     try {
         if (endpoint === "issues") {
-            const issues = await fetchIssues(Number(page) || 1);
+            const issues = await fetchIssues({ owner: owner as string, repo: repo as string }, Number(page) || 1);
             res.status(200).json(issues);
         } else if (endpoint === "repo") {
-            const repoDetails = await fetchRepoDetails();
+            const repoDetails = await fetchRepoDetails({ owner: owner as string, repo: repo as string });
             res.status(200).json(repoDetails);
         } else if (endpoint === "avatar" && typeof username === "string") {
             const avatarUrl = await fetchUserAvatarUrl(username);
@@ -39,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
-const fetchIssues = async (page: number): Promise<IssuesResponse["data"]> => {
+const fetchIssues = async (repo: { owner: string, repo: string }, page: number): Promise<IssuesResponse["data"]> => {
     const response: IssuesResponse = await octokit.request("GET /repos/{owner}/{repo}/issues", {
         ...repo,
         headers: {
@@ -54,7 +49,7 @@ const fetchIssues = async (page: number): Promise<IssuesResponse["data"]> => {
     return filteredIssues;
 };
 
-const fetchRepoDetails = async (): Promise<RepoDetailsResponse["data"]> => {
+const fetchRepoDetails = async (repo: { owner: string, repo: string }): Promise<RepoDetailsResponse["data"]> => {
     const response: RepoDetailsResponse = await octokit.request("GET /repos/{owner}/{repo}", {
         ...repo,
         headers: {

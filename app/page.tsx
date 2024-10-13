@@ -28,14 +28,15 @@ const repos: Repo[] = [
   { name: "react", owner: "primer" },
   { name: "octicons", owner: "primer" },
   { name: "primtives", owner: "primer" },
+  { name: "vscode", owner: "microsoft" },
 ];
 
 export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
-  const { issues, loading, loadMoreIssues } = useIssues();
+  const { issues, loading, loadMoreIssues } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
 
-  console.log(selectedRepo);
+  console.log();
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
