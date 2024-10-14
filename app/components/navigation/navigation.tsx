@@ -12,6 +12,15 @@ interface NavigationProps {
   loadMoreIssues: () => void;
 }
 
+const EmptyState = () => {
+  return (
+    <Blankslate>
+      <Blankslate.Heading>No issues</Blankslate.Heading>
+      <Blankslate.Description>There aren&apos;t any open issues in this repo. Go take a break!</Blankslate.Description>
+    </Blankslate>
+  );
+};
+
 export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
 
@@ -20,33 +29,35 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
     setCurrentItem(index);
   };
 
-  const EmptyState = () => {
-    return (
-      <Blankslate>
-        <Blankslate.Heading>No issues</Blankslate.Heading>
-        <Blankslate.Description>
-          There aren&apos;t any open issues in this repo. Go take a break!
-        </Blankslate.Description>
-      </Blankslate>
-    );
-  };
-
-  const navItems = loading
-    ? Array.from({ length: 6 }).map((_, index) => (
+  const LoadingNavItems = () => (
+    <>
+      {Array.from({ length: 6 }).map((_, index) => (
         <NavList.Item key={index}>
           <SkeletonText maxWidth={`${Math.random() * (80 - 50) + 50}%`} />
         </NavList.Item>
-      ))
-    : issues.map((issue, index) => (
-        <NavList.Item
-          key={issue.id}
-          aria-current={index === currentItem ? "page" : undefined}
-          onClick={() => handleItemClick(index)}
-          className={styles.navItem}
-        >
-          {issue.title}
-        </NavList.Item>
-      ));
+      ))}
+    </>
+  );
+
+  const LoadedNavItems = () => (
+    <>
+      {issues.map((issue, index) => {
+        const isSelected = index === currentItem;
+        return (
+          <NavList.Item
+            key={issue.id}
+            aria-current={isSelected ? "page" : undefined}
+            onClick={() => handleItemClick(index)}
+            className={styles.navItem}
+          >
+            {issue.title}
+          </NavList.Item>
+        );
+      })}
+    </>
+  );
+
+  const navItems = loading ? <LoadingNavItems /> : <LoadedNavItems />;
 
   return (
     <Box className={styles.container}>
