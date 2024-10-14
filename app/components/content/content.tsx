@@ -11,6 +11,20 @@ interface ContentProps {
   loading: boolean;
 }
 
+const EmptyState = () => {
+  return (
+    <Box className={styles.emptyState}>
+      <Blankslate spacious>
+        <Blankslate.Visual>
+          <IssueOpenedIcon size="medium" />
+        </Blankslate.Visual>
+        <Blankslate.Heading>Select an issue</Blankslate.Heading>
+        <Blankslate.Description>Select an issue in the sidebar to get started.</Blankslate.Description>
+      </Blankslate>
+    </Box>
+  );
+};
+
 export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
   // const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
@@ -61,20 +75,6 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
       {loading ? <SkeletonText lines={3} /> : <ReactMarkdown>{issue.body}</ReactMarkdown>}
     </Box>
   );
-
-  const EmptyState = () => {
-    return (
-      <Box className={styles.emptyState}>
-        <Blankslate spacious>
-          <Blankslate.Visual>
-            <IssueOpenedIcon size="medium" />
-          </Blankslate.Visual>
-          <Blankslate.Heading>Select an issue</Blankslate.Heading>
-          <Blankslate.Description>Select an issue in the sidebar to get started.</Blankslate.Description>
-        </Blankslate>
-      </Box>
-    );
-  };
 
   const IssueContent = () => {
     return (
