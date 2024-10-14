@@ -35,18 +35,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 const fetchIssues = async (repo: { owner: string, repo: string }, page: number): Promise<IssuesResponse["data"]> => {
-    const response: IssuesResponse = await octokit.request("GET /repos/{owner}/{repo}/issues", {
-        ...repo,
-        headers: {
-            'X-GitHub-Api-Version': '2022-11-28'
-        },
-        state: "open",
-        per_page: 75, // the gh endpoint includes PRs *and* issues in one list so fetch the max possible per page
-        page: page
-    });
+    let issues: IssuesResponse["data"] = [];
+    let currentPage = page;
 
-    const filteredIssues = response.data.filter(issue => !issue.pull_request);
-    return filteredIssues;
+    while (issues.length < 30) {
+        const response: IssuesResponse = await octokit.request("GET /repos/{owner}/{repo}/issues", {
+            ...repo,
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+            },
+            state: "open",
+            per_page: 30, // the gh endpoint includes PRs *and* issues in one list so fetch the max possible per page
+            page: currentPage
+        });
+
+        const filteredIssues = response.data.filter(issue => !issue.pull_request);
+        issues = issues.concat(filteredIssues);
+
+        if (response.data.length < 30) {
+            // If we fetched less than 75 items, it means there are no more issues to fetch
+            break;
+        }
+
+        currentPage++;
+    }
+
+    return issues.slice(0, 30); // Return only the first 30 issues
 };
 
 const fetchRepoDetails = async (repo: { owner: string, repo: string }): Promise<RepoDetailsResponse["data"]> => {
