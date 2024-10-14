@@ -67,7 +67,6 @@ export const useIssues = (repo: Repo) => {
     }, [repo]);
 
     const loadMoreIssues = async () => {
-        dispatch({ type: "SET_LOADING", payload: true });
         try {
             const moreIssues = await fetchIssues(state.repo, state.page + 1);
             dispatch({ type: "LOAD_MORE_ISSUES", payload: moreIssues });

@@ -29,6 +29,7 @@ const repos: Repo[] = [
   { name: "octicons", owner: "primer" },
   { name: "primitives", owner: "primer" },
   { name: "vscode", owner: "microsoft" },
+  { name: "grid-playground", owner: "daviddossett" },
 ];
 
 export default function Home() {
