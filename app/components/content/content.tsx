@@ -64,13 +64,15 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
 
   const EmptyState = () => {
     return (
-      <Blankslate spacious>
-        <Blankslate.Visual>
-          <IssueOpenedIcon size="medium" />
-        </Blankslate.Visual>
-        <Blankslate.Heading>Select an issue</Blankslate.Heading>
-        <Blankslate.Description>Select an issue in the sidebar to get started.</Blankslate.Description>
-      </Blankslate>
+      <Box className={styles.emptyState}>
+        <Blankslate spacious>
+          <Blankslate.Visual>
+            <IssueOpenedIcon size="medium" />
+          </Blankslate.Visual>
+          <Blankslate.Heading>Select an issue</Blankslate.Heading>
+          <Blankslate.Description>Select an issue in the sidebar to get started.</Blankslate.Description>
+        </Blankslate>
+      </Box>
     );
   };
 
