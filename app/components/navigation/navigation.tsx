@@ -54,7 +54,7 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
         <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" />
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
-      {issues.length === 0 ? (
+      {!loading && issues.length === 0 ? (
         <EmptyState />
       ) : (
         <>

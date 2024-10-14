@@ -97,5 +97,5 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
     );
   };
 
-  return <Box className={styles.container}>{!issue ? <EmptyState /> : <IssueContent />}</Box>;
+  return <Box className={styles.container}>{!loading && !issue ? <EmptyState /> : <IssueContent />}</Box>;
 };
