@@ -45,15 +45,16 @@ const fetchIssues = async (repo: { owner: string, repo: string }, page: number):
                 'X-GitHub-Api-Version': '2022-11-28'
             },
             state: "open",
-            per_page: 30, // the gh endpoint includes PRs *and* issues in one list so fetch the max possible per page
+            per_page: 30,
             page: currentPage
         });
 
-        const filteredIssues = response.data.filter(issue => !issue.pull_request);
-        issues = issues.concat(filteredIssues);
+        const filteredIssues = response.data.filter(issue => !issue.pull_request && issue.state === "open");
+        issues = [...issues, ...filteredIssues];
+
 
         if (response.data.length < 30) {
-            // If we fetched less than 75 items, it means there are no more issues to fetch
+            // If we fetched less than 30 items, it means there are no more issues to fetch
             break;
         }
 
