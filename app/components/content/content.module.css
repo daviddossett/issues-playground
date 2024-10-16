@@ -69,3 +69,26 @@
 .issueCreatedAt {
   color: var(--fgColor-muted);
 }
+
+.issueSummary {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: var(--bgColor-muted);
+  border-radius: 8px;
+  border: 1px solid var(--borderColor-default);
+  gap: 8px;
+}
+
+.issueSummaryHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.issueSummaryTitle {
+  font-size: 14px;
+  font-weight: 500;
+  margin: unset;
+}

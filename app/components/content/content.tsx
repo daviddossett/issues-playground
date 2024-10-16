@@ -1,4 +1,4 @@
-import { Box, Avatar, Text, SegmentedControl, IconButton } from "@primer/react";
+import { Box, Avatar, Text, SegmentedControl, IconButton, Octicon, Label, Spinner } from "@primer/react";
 import { Blankslate, SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
 import { CopilotIcon, IssueOpenedIcon, KebabHorizontalIcon } from "@primer/octicons-react";
 import ReactMarkdown from "react-markdown";
@@ -31,8 +31,15 @@ const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
   const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
 
   return (
-    <Box className={styles.mainContent}>
-      {summaryLoading ? <SkeletonText lines={3} /> : <Text>{issueSummaries[issue.id]}</Text>}
+    <Box className={styles.issueSummary}>
+      <Box className={styles.issueSummaryHeader}>
+        <Octicon icon={CopilotIcon} size={16} />
+        <Text as="h3" className={styles.issueSummaryTitle}>
+          Summarized by Copilot
+        </Text>
+        <Label>Preview</Label>
+      </Box>
+      {summaryLoading ? <Spinner size="small" /> : <Text>{issueSummaries[issue.id]}</Text>}
     </Box>
   );
 };
@@ -88,22 +95,26 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
     </Box>
   );
 
+  const ViewControl = () => (
+    <SegmentedControl aria-label="View">
+      <SegmentedControl.Button selected={viewState === "original"} onClick={() => setViewState("original")}>
+        Original
+      </SegmentedControl.Button>
+      <SegmentedControl.Button
+        leadingIcon={CopilotIcon}
+        selected={viewState === "summary"}
+        onClick={() => setViewState("summary")}
+      >
+        Summary
+      </SegmentedControl.Button>
+    </SegmentedControl>
+  );
+
   const IssueContent = () => {
     return (
       <>
         <Box className={styles.issueToolbar}>
-          <SegmentedControl aria-label="View">
-            <SegmentedControl.Button selected={viewState === "original"} onClick={() => setViewState("original")}>
-              Original
-            </SegmentedControl.Button>
-            <SegmentedControl.Button
-              leadingIcon={CopilotIcon}
-              selected={viewState === "summary"}
-              onClick={() => setViewState("summary")}
-            >
-              Summary
-            </SegmentedControl.Button>
-          </SegmentedControl>
+          <ViewControl />
           <IconButton icon={KebabHorizontalIcon} aria-label="More" />
         </Box>
         <Box className={styles.innerContainer}>
