@@ -1,31 +1,16 @@
-import { Box, Details, useDetails, Button, Text } from "@primer/react";
+import { Box, Text } from "@primer/react";
 import { SkeletonText } from "@primer/react/drafts";
-import { CopilotIcon } from "@primer/octicons-react";
 import { Issue } from "../../page";
 import styles from "./issueSummary.module.css";
+import { useFetchIssueSummary } from "@/app/hooks/useFetchIssueSummary";
 
-const IssueSummary = ({
-  issue,
-  summaryLoading,
-  issueSummaries,
-}: {
-  issue: Issue;
-  summaryLoading: boolean;
-  issueSummaries: Record<number, string>;
-}) => {
-  const { getDetailsProps } = useDetails({
-    closeOnOutsideClick: true,
-  });
+const IssueSummary = ({ issue }: { issue: Issue; summaryLoading: boolean; issueSummaries: Record<number, string> }) => {
+  const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
 
   return (
-    <Details {...getDetailsProps()}>
-      <Button leadingVisual={CopilotIcon} as="summary">
-        Summarize with Copilot
-      </Button>
-      <Box className={styles.issueSummary}>
-        {summaryLoading ? <SkeletonText lines={3} /> : <Text>{issueSummaries[issue.id]}</Text>}
-      </Box>
-    </Details>
+    <Box className={styles.issueSummary}>
+      {summaryLoading ? <SkeletonText lines={3} /> : <Text>{issueSummaries[issue.id]}</Text>}
+    </Box>
   );
 };
 

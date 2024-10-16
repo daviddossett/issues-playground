@@ -27,7 +27,6 @@ const EmptyState = () => {
 
 export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
-  // const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
 
   const formattedDate = issue?.created_at
     ? new Date(issue.created_at).toLocaleDateString("en-US", {
