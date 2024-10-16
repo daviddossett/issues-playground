@@ -11,7 +11,8 @@ export async function fetchIssues(repo: Repo, page: number = 1) {
         throw new Error("Failed to fetch issues");
     }
     const data = await response.json();
-    return data;
+    const hasMore = data.length === 30; // Assuming 30 is the per_page limit
+    return { issues: data, hasMore };
 }
 
 export async function fetchIssueSummary(issueBody: string) {

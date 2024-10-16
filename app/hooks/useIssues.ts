@@ -8,11 +8,12 @@ interface State {
     loading: boolean;
     page: number;
     error: string | null;
+    hasMore: boolean; // Add this line
 }
 
 type Action =
-    | { type: "SET_INITIAL_DATA"; payload: { repo: Repo; issues: Issue[] } }
-    | { type: "LOAD_MORE_ISSUES"; payload: Issue[] }
+    | { type: "SET_INITIAL_DATA"; payload: { repo: Repo; issues: Issue[], hasMore: boolean } }
+    | { type: "LOAD_MORE_ISSUES"; payload: { issues: Issue[], hasMore: boolean } }
     | { type: "SET_LOADING"; payload: boolean }
     | { type: "SET_ERROR"; payload: string };
 
@@ -22,6 +23,7 @@ const initialState: State = {
     loading: true,
     page: 1,
     error: null,
+    hasMore: true, // Add this line
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -32,13 +34,15 @@ const reducer = (state: State, action: Action): State => {
                 repo: action.payload.repo,
                 issues: action.payload.issues,
                 loading: false,
+                hasMore: action.payload.hasMore, // Update this line
             };
         case "LOAD_MORE_ISSUES":
             return {
                 ...state,
-                issues: [...state.issues, ...action.payload], // Append new issues
+                issues: [...state.issues, ...action.payload.issues], // Append new issues
                 page: state.page + 1,
                 loading: false,
+                hasMore: action.payload.hasMore, // Update this line
             };
         case "SET_LOADING":
             return { ...state, loading: action.payload };
@@ -56,8 +60,8 @@ export const useIssues = (repo: Repo) => {
         const fetchData = async (repo: Repo) => {
             dispatch({ type: "SET_LOADING", payload: true }); // Set loading to true
             try {
-                const issues = await fetchIssues(repo, 1);
-                dispatch({ type: "SET_INITIAL_DATA", payload: { repo, issues } });
+                const { issues, hasMore } = await fetchIssues(repo, 1);
+                dispatch({ type: "SET_INITIAL_DATA", payload: { repo, issues, hasMore } });
             } catch {
                 dispatch({ type: "SET_ERROR", payload: "Error fetching data" });
             }
@@ -68,8 +72,8 @@ export const useIssues = (repo: Repo) => {
 
     const loadMoreIssues = async () => {
         try {
-            const moreIssues = await fetchIssues(state.repo, state.page + 1);
-            dispatch({ type: "LOAD_MORE_ISSUES", payload: moreIssues });
+            const { issues, hasMore } = await fetchIssues(state.repo, state.page + 1);
+            dispatch({ type: "LOAD_MORE_ISSUES", payload: { issues, hasMore } });
         } catch {
             dispatch({ type: "SET_ERROR", payload: "Error fetching more issues" });
         } finally {

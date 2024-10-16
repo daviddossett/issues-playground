@@ -10,6 +10,7 @@ interface NavigationProps {
   issues: Issue[];
   loading: boolean;
   loadMoreIssues: () => void;
+  hasMore: boolean; // Add this line
 }
 
 const EmptyState = () => {
@@ -21,7 +22,7 @@ const EmptyState = () => {
   );
 };
 
-export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: NavigationProps) => {
+export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, hasMore }: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
 
   const handleItemClick = (index: number) => {
@@ -70,11 +71,12 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues }: 
       ) : (
         <>
           <NavList className={styles.list}>{navItems}</NavList>
-          {!loading && (
-            <Box className={styles.loadMoreButton}>
-              <Button onClick={loadMoreIssues}>Load More</Button>
-            </Box>
-          )}
+          {!loading &&
+            hasMore && ( // Conditionally render the button
+              <Box className={styles.loadMoreButton}>
+                <Button onClick={loadMoreIssues}>Load More</Button>
+              </Box>
+            )}
         </>
       )}
     </Box>

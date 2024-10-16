@@ -34,10 +34,8 @@ const repos: Repo[] = [
 
 export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
-  const { issues, loading, loadMoreIssues } = useIssues(selectedRepo);
+  const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo); // Add hasMore
   const [currentItem, setCurrentItem] = useState(0);
-
-  console.log();
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
@@ -56,6 +54,7 @@ export default function Home() {
                 issues={issues}
                 loading={loading}
                 loadMoreIssues={loadMoreIssues}
+                hasMore={hasMore} // Pass hasMore
               />
               <Content issue={issues[currentItem]} loading={loading} />
             </Box>
