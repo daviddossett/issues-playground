@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
 import styles from "./content.module.css";
+import { useState } from "react";
+import { useFetchIssueSummary } from "@/app/hooks/useFetchIssueSummary";
 
 interface ContentProps {
   issue: Issue;
@@ -25,8 +27,19 @@ const EmptyState = () => {
   );
 };
 
+const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
+  const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
+
+  return (
+    <Box className={styles.mainContent}>
+      {summaryLoading ? <SkeletonText lines={3} /> : <Text>{issueSummaries[issue.id]}</Text>}
+    </Box>
+  );
+};
+
 export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
+  const [viewState, setViewState] = useState("original");
 
   const formattedDate = issue?.created_at
     ? new Date(issue.created_at).toLocaleDateString("en-US", {
@@ -80,8 +93,16 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
       <>
         <Box className={styles.issueToolbar}>
           <SegmentedControl aria-label="View">
-            <SegmentedControl.Button defaultSelected>Original</SegmentedControl.Button>
-            <SegmentedControl.Button leadingIcon={CopilotIcon}>Summary</SegmentedControl.Button>
+            <SegmentedControl.Button selected={viewState === "original"} onClick={() => setViewState("original")}>
+              Original
+            </SegmentedControl.Button>
+            <SegmentedControl.Button
+              leadingIcon={CopilotIcon}
+              selected={viewState === "summary"}
+              onClick={() => setViewState("summary")}
+            >
+              Summary
+            </SegmentedControl.Button>
           </SegmentedControl>
           <IconButton icon={KebabHorizontalIcon} aria-label="More" />
         </Box>
@@ -91,7 +112,7 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
             <IssueAuthor />
           </Box>
           <Box className={styles.mainContent}>
-            <IssueBody />
+            {viewState === "original" ? <IssueBody /> : <IssueSummary issue={issue} />}
           </Box>
         </Box>
       </>
