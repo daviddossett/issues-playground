@@ -35,7 +35,7 @@ const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
       <Box className={styles.issueSummaryHeader}>
         <Octicon icon={CopilotIcon} size={16} />
         <Text as="h3" className={styles.issueSummaryTitle}>
-          Summarized by Copilot
+          Copilot
         </Text>
         <Label>Preview</Label>
       </Box>

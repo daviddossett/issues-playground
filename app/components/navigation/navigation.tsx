@@ -15,10 +15,13 @@ interface NavigationProps {
 
 const EmptyState = () => {
   return (
-    <Blankslate>
-      <Blankslate.Heading>No issues</Blankslate.Heading>
-      <Blankslate.Description>There aren&apos;t any open issues in this repo. Go take a break!</Blankslate.Description>
-    </Blankslate>
+    <Box>
+      <Blankslate>
+        <Blankslate.Description>
+          There aren&apos;t any open issues in this repo. Go take a break!
+        </Blankslate.Description>
+      </Blankslate>
+    </Box>
   );
 };
 

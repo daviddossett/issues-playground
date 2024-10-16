@@ -25,6 +25,7 @@ export interface Issue {
 }
 
 const repos: Repo[] = [
+  { name: "monaco-editor", owner: "microsoft" },
   { name: "react", owner: "primer" },
   { name: "octicons", owner: "primer" },
   { name: "primitives", owner: "primer" },
