@@ -1,38 +1,59 @@
-import { Box, Avatar, Text, SegmentedControl, IconButton, Octicon, Label, Spinner } from "@primer/react";
+import { Box, Avatar, Text, IconButton, Octicon, Label, Spinner, Button } from "@primer/react";
 import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
 import { CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
-import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
 import styles from "./content.module.css";
 import { useState } from "react";
 import { useFetchIssueSummary } from "@/app/hooks/useFetchIssueSummary";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import "github-markdown-css";
 
 interface ContentProps {
   issue: Issue;
   loading: boolean;
 }
 
+const IssueSummaryContent: React.FC<{ issue: Issue }> = ({ issue }) => {
+  const { issueSummary, summaryLoading } = useFetchIssueSummary(issue);
+
+  if (summaryLoading) {
+    return <Spinner size={"small"} />;
+  }
+
+  return <Markdown className={"markdown-body"}>{issueSummary}</Markdown>;
+};
+
 const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
-  const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
+  const [showSummary, setShowSummary] = useState(false);
+
+  const handleSummarizeClick = () => {
+    setShowSummary(true);
+  };
 
   return (
     <Box className={styles.issueSummary}>
       <Box className={styles.issueSummaryHeader}>
-        <Octicon icon={CopilotIcon} size={16} />
-        <Text as="h3" className={styles.issueSummaryTitle}>
-          Copilot
-        </Text>
-        <Label>Preview</Label>
+        <Box className={styles.issueSummaryHeaderLeft}>
+          <Octicon icon={CopilotIcon} size={16} />
+          <Text as="h3" className={styles.issueSummaryTitle}>
+            Summarize with Copilot
+          </Text>
+          <Label>Preview</Label>
+        </Box>
+        <Button variant={"default"} onClick={handleSummarizeClick}>
+          Summarize
+        </Button>
       </Box>
-      {summaryLoading ? <Spinner size="small" /> : <Text>{issueSummaries[issue.id]}</Text>}
+      {showSummary && <IssueSummaryContent issue={issue} />}
     </Box>
   );
 };
 
 export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
-  const [viewState, setViewState] = useState("original");
 
   if (!loading && !issue) {
     return null;
@@ -81,30 +102,20 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
 
   const IssueBody = () => (
     <Box className={styles.issueBody}>
-      {loading ? <SkeletonText lines={3} /> : <ReactMarkdown>{issue.body}</ReactMarkdown>}
+      {loading ? (
+        <SkeletonText lines={3} />
+      ) : (
+        <Markdown className={"markdown-body"} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+          {issue.body}
+        </Markdown>
+      )}
     </Box>
-  );
-
-  const ViewControl = () => (
-    <SegmentedControl aria-label="View">
-      <SegmentedControl.Button selected={viewState === "original"} onClick={() => setViewState("original")}>
-        Original
-      </SegmentedControl.Button>
-      <SegmentedControl.Button
-        leadingIcon={CopilotIcon}
-        selected={viewState === "summary"}
-        onClick={() => setViewState("summary")}
-      >
-        Summary
-      </SegmentedControl.Button>
-    </SegmentedControl>
   );
 
   const IssueContent = () => {
     return (
       <>
         <Box className={styles.issueToolbar}>
-          <ViewControl />
           <IconButton icon={KebabHorizontalIcon} aria-label="More" />
         </Box>
         <Box className={styles.innerContainer}>
@@ -113,7 +124,8 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
             <IssueAuthor />
           </Box>
           <Box className={styles.mainContent}>
-            {viewState === "original" ? <IssueBody /> : <IssueSummary issue={issue} />}
+            <IssueSummary issue={issue} />
+            <IssueBody />
           </Box>
         </Box>
       </>

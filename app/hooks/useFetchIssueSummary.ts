@@ -3,16 +3,16 @@ import { fetchIssueSummary } from "../client";
 import { Issue } from "../page";
 
 export const useFetchIssueSummary = (issue: Issue) => {
-  const [issueSummaries, setIssueSummaries] = useState<{ [key: string]: string }>({});
+  const [issueSummary, setIssueSummary] = useState<string>("");
   const [summaryLoading, setSummaryLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchSummary = async () => {
-      if (issue?.body && !issueSummaries[issue.id]) {
+      if (issue?.body) {
         setSummaryLoading(true);
         try {
           const summary = await fetchIssueSummary(issue.body);
-          setIssueSummaries((prev) => ({ ...prev, [issue.id]: summary }));
+          setIssueSummary(summary);
         } catch (error) {
           console.error("Failed to fetch issue summary:", error);
         } finally {
@@ -24,7 +24,7 @@ export const useFetchIssueSummary = (issue: Issue) => {
     };
 
     fetchSummary();
-  }, [issue, issueSummaries]);
+  }, [issue]);
 
-  return { issueSummaries, summaryLoading };
+  return { issueSummary, summaryLoading };
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { ThemeProvider, BaseStyles, Box } from "@primer/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { Content } from "./components/content/content";
@@ -25,14 +25,21 @@ export interface Issue {
 }
 
 const repos: Repo[] = [
-  { name: "grid-playground", owner: "daviddossett" },
+  { name: "vscode-codicons", owner: "microsoft" },
   { name: "react", owner: "primer" },
+  { name: "grid-playground", owner: "daviddossett" },
 ];
 
 export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
+
+  useEffect(() => {
+    if (issues.length > 0 && currentItem >= issues.length) {
+      setCurrentItem(0);
+    }
+  }, [currentItem, issues]);
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
