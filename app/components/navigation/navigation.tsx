@@ -1,6 +1,6 @@
 import { NavList, Box, Button, IconButton } from "@primer/react";
 import { SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
-import { SkeletonText } from "@primer/react/drafts";
+import { Blankslate, SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../../page";
 import styles from "./navigation.module.css";
@@ -10,8 +10,19 @@ interface NavigationProps {
   issues: Issue[];
   loading: boolean;
   loadMoreIssues: () => void;
-  hasMore: boolean; // Add this line
+  hasMore: boolean;
 }
+
+const EmptyState = () => {
+  return (
+    <Box className={styles.emptyState}>
+      <Blankslate narrow>
+        <Blankslate.Heading>No issues</Blankslate.Heading>
+        <Blankslate.Description>Create an issue to report a problem or share an idea</Blankslate.Description>
+      </Blankslate>
+    </Box>
+  );
+};
 
 export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, hasMore }: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
@@ -49,7 +60,7 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
     </>
   );
 
-  const navItems = loading ? <LoadingNavItems /> : <LoadedNavItems />;
+  const navItems = loading ? <LoadingNavItems /> : issues.length > 0 ? <LoadedNavItems /> : <EmptyState />;
 
   return (
     <Box className={styles.container}>
@@ -58,12 +69,11 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
       <NavList className={styles.list}>{navItems}</NavList>
-      {!loading &&
-        hasMore && ( // Conditionally render the button
-          <Box className={styles.loadMoreButton}>
-            <Button onClick={loadMoreIssues}>Load More</Button>
-          </Box>
-        )}
+      {!loading && hasMore && (
+        <Box className={styles.loadMoreButton}>
+          <Button onClick={loadMoreIssues}>Load More</Button>
+        </Box>
+      )}
     </Box>
   );
 };

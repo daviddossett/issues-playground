@@ -34,6 +34,10 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
   const [viewState, setViewState] = useState("original");
 
+  if (!loading && !issue) {
+    return null;
+  }
+
   const formattedDate = issue?.created_at
     ? new Date(issue.created_at).toLocaleDateString("en-US", {
         year: "numeric",
