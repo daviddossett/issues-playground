@@ -37,10 +37,10 @@ const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
   };
 
   const issueBodyLengthThreshold = 1400;
-  console.log(issue?.body?.length);
 
+  // Ensures the summary doesn't show up for short issues
   if (!issue.body || issue.body.length < issueBodyLengthThreshold) {
-    return null; // Do not render the summary component if the issue body is too short
+    return null;
   }
 
   return (
