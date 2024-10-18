@@ -1,71 +1,19 @@
-import { Box, Avatar, Text, IconButton, Octicon, Label, Spinner, Button } from "@primer/react";
-import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
-import { CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
+import { Box, Avatar, Text, IconButton } from "@primer/react";
+import { SkeletonText, SkeletonAvatar } from "@primer/react/drafts";
+import { KebabHorizontalIcon } from "@primer/octicons-react";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
 import styles from "./content.module.css";
-import { useState } from "react";
-import { useFetchIssueSummary } from "@/app/hooks/useFetchIssueSummary";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import "./github-markdown.css";
+import IssueSummary from "../issueSummary/IssueSummary";
 
 interface ContentProps {
   issue: Issue;
   loading: boolean;
 }
-
-const IssueSummaryContent: React.FC<{ issue: Issue }> = ({ issue }) => {
-  const { issueSummary, summaryLoading } = useFetchIssueSummary(issue);
-
-  if (summaryLoading) {
-    return <Spinner size={"small"} />;
-  }
-
-  return (
-    <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} className={"markdown-body"}>
-      {issueSummary}
-    </Markdown>
-  );
-};
-
-const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
-  const [showSummary, setShowSummary] = useState(false);
-  const handleSummarizeClick = () => {
-    setShowSummary(true);
-  };
-
-  const issueBodyLengthThreshold = 1400;
-
-  // Ensures the summary doesn't show up for short issues
-  if (!issue.body || issue.body.length < issueBodyLengthThreshold) {
-    return null;
-  }
-
-  return (
-    <Box className={styles.issueSummary}>
-      <Box className={styles.issueSummaryHeader}>
-        <Box className={styles.issueSummaryHeaderLeft}>
-          <Box className={styles.copilotIcon}>
-            <Octicon icon={CopilotIcon} size={12} />
-          </Box>
-          <Text as="h3" className={styles.issueSummaryTitle}>
-            Copilot
-          </Text>
-          <Text as="span" className={styles.issueSummaryDescription}>
-            Summarize the issue with Copilot
-          </Text>
-          <Label>Preview</Label>
-        </Box>
-        <Button variant={"default"} onClick={handleSummarizeClick}>
-          Summarize
-        </Button>
-      </Box>
-      {showSummary && <IssueSummaryContent issue={issue} />}
-    </Box>
-  );
-};
 
 export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
