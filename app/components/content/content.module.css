@@ -31,6 +31,12 @@
   z-index: 1;
 }
 
+.issueNavigationArrows {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .issueHeader {
   padding: 16px 0;
   display: flex;

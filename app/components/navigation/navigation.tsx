@@ -1,12 +1,12 @@
 import { NavList, Box, Button, IconButton, Octicon, Text } from "@primer/react";
 import { GitPullRequestIcon, SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
 import { Blankslate, SkeletonText } from "@primer/react/drafts";
-import { useState } from "react";
 import { Issue } from "../../page";
 import styles from "./navigation.module.css";
 import { IssueOpenedIcon } from "@primer/octicons-react";
 
 interface NavigationProps {
+  currentItem: number;
   setCurrentItem: (index: number) => void;
   repo: string;
   issues: Issue[];
@@ -26,14 +26,14 @@ const EmptyState = () => {
   );
 };
 
-export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, hasMore }: NavigationProps) => {
-  const [currentItem, setCurrentItemState] = useState(0);
-
-  const handleItemClick = (index: number) => {
-    setCurrentItemState(index);
-    setCurrentItem(index);
-  };
-
+export const Navigation = ({
+  currentItem,
+  setCurrentItem,
+  issues,
+  loading,
+  loadMoreIssues,
+  hasMore,
+}: NavigationProps) => {
   const LoadingNavItems = () => (
     <>
       {Array.from({ length: 4 }).map((_, index) => (
@@ -47,12 +47,11 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
   const LoadedNavItems = () => (
     <>
       {issues.map((issue, index) => {
-        const isSelected = index === currentItem;
         return (
           <NavList.Item
             key={issue.id}
-            aria-current={isSelected ? "page" : undefined}
-            onClick={() => handleItemClick(index)}
+            aria-current={currentItem === index}
+            onClick={() => setCurrentItem(index)}
             className={styles.navItem}
           >
             <Box>

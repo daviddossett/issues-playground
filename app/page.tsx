@@ -29,6 +29,8 @@ export default function Home() {
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
 
+  console.log(currentItem);
+
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
       setCurrentItem(0);
@@ -38,6 +40,25 @@ export default function Home() {
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
   };
+
+  const handleSetCurrentItem = async (change: number) => {
+    const newIndex = currentItem + change;
+    if (newIndex >= issues.length) {
+      if (hasMore) {
+        const previousIssuesLength = issues.length;
+        await loadMoreIssues();
+        setCurrentItem(previousIssuesLength);
+      } else {
+        setCurrentItem(issues.length - 1);
+      }
+    } else if (newIndex < 0) {
+      setCurrentItem(0);
+    } else {
+      setCurrentItem(newIndex);
+    }
+  };
+
+  const isLastItem = currentItem === issues.length - 1;
 
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
@@ -49,13 +70,22 @@ export default function Home() {
             <Box className={styles.mainContent}>
               <Navigation
                 setCurrentItem={setCurrentItem}
+                currentItem={currentItem}
                 repo={selectedRepo.name}
                 issues={issues}
                 loading={loading}
                 loadMoreIssues={loadMoreIssues}
                 hasMore={hasMore}
               />
-              <Content issue={issues[currentItem]} loading={loading} />
+              <Content
+                issue={issues[currentItem]}
+                loading={loading}
+                currentItem={currentItem}
+                setCurrentItem={handleSetCurrentItem}
+                loadMoreIssues={loadMoreIssues}
+                hasMore={hasMore}
+                isLastItem={isLastItem}
+              />
             </Box>
           </Box>
         </Box>
