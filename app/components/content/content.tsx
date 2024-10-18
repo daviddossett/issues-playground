@@ -105,9 +105,12 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
       {loading ? (
         <SkeletonText lines={3} />
       ) : (
-        <Markdown className={"markdown-body"} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {issue.body}
-        </Markdown>
+        <>
+          <IssueSummary issue={issue} />
+          <Markdown className={"markdown-body"} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+            {issue.body}
+          </Markdown>
+        </>
       )}
     </Box>
   );
@@ -124,7 +127,6 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
             <IssueAuthor />
           </Box>
           <Box className={styles.mainContent}>
-            <IssueSummary issue={issue} />
             <IssueBody />
           </Box>
         </Box>
