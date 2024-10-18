@@ -10,7 +10,6 @@
 
 @import "@primer/primitives/dist/css/functional/themes/light.css";
 @import "@primer/primitives/dist/css/functional/themes/dark.css";
-/* @import "@primer/primitives/dist/css/functional/themes/dark-dimmed.css"; */
 
 h1 {
   font-size: var(--text-title-size-large);
@@ -28,7 +27,7 @@ p,
 span,
 li {
   font-size: var(--text-body-size-medium);
-  line-height: var(--text-body-lineHeight-medium);
+  line-height: var(--text-body-lineHeight-large);
 }
 
 ul {

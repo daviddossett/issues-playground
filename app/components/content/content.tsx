@@ -9,7 +9,7 @@ import { useFetchIssueSummary } from "@/app/hooks/useFetchIssueSummary";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import "github-markdown-css";
+import "./github-markdown.css";
 
 interface ContentProps {
   issue: Issue;
@@ -23,7 +23,11 @@ const IssueSummaryContent: React.FC<{ issue: Issue }> = ({ issue }) => {
     return <Spinner size={"small"} />;
   }
 
-  return <Markdown className={"markdown-body"}>{issueSummary}</Markdown>;
+  return (
+    <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} className={"markdown-body"}>
+      {issueSummary}
+    </Markdown>
+  );
 };
 
 const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {

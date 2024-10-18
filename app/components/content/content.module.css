@@ -10,8 +10,7 @@
 .innerContainer {
   max-width: 800px;
   width: 100%;
-  padding-bottom: 96px;
-  padding: 0 16px;
+  padding: 0 16px 96px 0;
 }
 
 .mainContent {

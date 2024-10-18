@@ -25,6 +25,7 @@ export interface Issue {
 }
 
 const repos: Repo[] = [
+  { name: "vscode", owner: "microsoft" },
   { name: "vscode-codicons", owner: "microsoft" },
   { name: "react", owner: "primer" },
   { name: "grid-playground", owner: "daviddossett" },
