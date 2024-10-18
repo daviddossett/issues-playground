@@ -20,7 +20,14 @@ interface ContentProps {
   isLastItem: boolean;
 }
 
-export const Content: React.FC<ContentProps> = ({ issue, loading, setCurrentItem }) => {
+export const Content: React.FC<ContentProps> = ({
+  issue,
+  loading,
+  currentItem,
+  setCurrentItem,
+  hasMore,
+  isLastItem,
+}) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
 
   if (!loading && !issue) {
@@ -96,8 +103,18 @@ export const Content: React.FC<ContentProps> = ({ issue, loading, setCurrentItem
       <>
         <Box className={styles.issueToolbar}>
           <Box className={styles.issueNavigationArrows}>
-            <IconButton icon={ArrowUpIcon} aria-label="Previous" onClick={handlePreviousClick} />
-            <IconButton icon={ArrowDownIcon} aria-label="Next" onClick={handleNextClick} />
+            <IconButton
+              icon={ArrowUpIcon}
+              aria-label="Previous"
+              onClick={handlePreviousClick}
+              disabled={currentItem === 0}
+            />
+            <IconButton
+              icon={ArrowDownIcon}
+              aria-label="Next"
+              onClick={handleNextClick}
+              disabled={isLastItem && !hasMore}
+            />
           </Box>
           <IconButton icon={KebabHorizontalIcon} aria-label="More" />
         </Box>

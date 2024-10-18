@@ -29,8 +29,6 @@ export default function Home() {
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
 
-  console.log(currentItem);
-
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
       setCurrentItem(0);
