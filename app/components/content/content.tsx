@@ -41,9 +41,14 @@ const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
     <Box className={`${styles.issueSummary} ${showSummary ? styles.issueSummaryOpened : ""}`}>
       <Box className={styles.issueSummaryHeader}>
         <Box className={styles.issueSummaryHeaderLeft}>
-          <Octicon icon={CopilotIcon} size={16} />
+          <Box className={styles.copilotIcon}>
+            <Octicon icon={CopilotIcon} size={12} />
+          </Box>
           <Text as="h3" className={styles.issueSummaryTitle}>
-            Summarize with Copilot
+            Copilot
+          </Text>
+          <Text as="span" className={styles.issueSummaryDescription}>
+            Summarize the issue with Copilot
           </Text>
           <Label>Preview</Label>
         </Box>
