@@ -32,10 +32,16 @@ const IssueSummaryContent: React.FC<{ issue: Issue }> = ({ issue }) => {
 
 const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
   const [showSummary, setShowSummary] = useState(false);
-
   const handleSummarizeClick = () => {
     setShowSummary(true);
   };
+
+  const ISSUE_BODY_LENGTH_THRESHOLD = 1400; // Define your threshold length here
+  console.log(issue?.body?.length);
+
+  if (!issue.body || issue.body.length < ISSUE_BODY_LENGTH_THRESHOLD) {
+    return null; // Do not render the summary component if the issue body is too short
+  }
 
   return (
     <Box className={`${styles.issueSummary} ${showSummary ? styles.issueSummaryOpened : ""}`}>
