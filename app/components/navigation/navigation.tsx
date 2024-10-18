@@ -1,6 +1,6 @@
 import { NavList, Box, Button, IconButton } from "@primer/react";
 import { SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
-import { Blankslate, SkeletonText } from "@primer/react/drafts";
+import { SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../../page";
 import styles from "./navigation.module.css";
@@ -12,18 +12,6 @@ interface NavigationProps {
   loadMoreIssues: () => void;
   hasMore: boolean; // Add this line
 }
-
-const EmptyState = () => {
-  return (
-    <Box>
-      <Blankslate>
-        <Blankslate.Description>
-          There aren&apos;t any open issues in this repo. Go take a break!
-        </Blankslate.Description>
-      </Blankslate>
-    </Box>
-  );
-};
 
 export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, hasMore }: NavigationProps) => {
   const [currentItem, setCurrentItemState] = useState(0);
@@ -69,19 +57,13 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
         <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" />
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
-      {!loading && issues.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <>
-          <NavList className={styles.list}>{navItems}</NavList>
-          {!loading &&
-            hasMore && ( // Conditionally render the button
-              <Box className={styles.loadMoreButton}>
-                <Button onClick={loadMoreIssues}>Load More</Button>
-              </Box>
-            )}
-        </>
-      )}
+      <NavList className={styles.list}>{navItems}</NavList>
+      {!loading &&
+        hasMore && ( // Conditionally render the button
+          <Box className={styles.loadMoreButton}>
+            <Button onClick={loadMoreIssues}>Load More</Button>
+          </Box>
+        )}
     </Box>
   );
 };

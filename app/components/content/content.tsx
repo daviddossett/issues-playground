@@ -1,6 +1,6 @@
 import { Box, Avatar, Text, SegmentedControl, IconButton, Octicon, Label, Spinner } from "@primer/react";
-import { Blankslate, SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
-import { CopilotIcon, IssueOpenedIcon, KebabHorizontalIcon } from "@primer/octicons-react";
+import { SkeletonAvatar, SkeletonText } from "@primer/react/drafts";
+import { CopilotIcon, KebabHorizontalIcon } from "@primer/octicons-react";
 import ReactMarkdown from "react-markdown";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
@@ -12,20 +12,6 @@ interface ContentProps {
   issue: Issue;
   loading: boolean;
 }
-
-const EmptyState = () => {
-  return (
-    <Box className={styles.emptyState}>
-      <Blankslate spacious>
-        <Blankslate.Visual>
-          <IssueOpenedIcon size="medium" />
-        </Blankslate.Visual>
-        <Blankslate.Heading>Select an issue</Blankslate.Heading>
-        <Blankslate.Description>Select an issue in the sidebar to get started.</Blankslate.Description>
-      </Blankslate>
-    </Box>
-  );
-};
 
 const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
   const { issueSummaries, summaryLoading } = useFetchIssueSummary(issue);
@@ -130,5 +116,9 @@ export const Content: React.FC<ContentProps> = ({ issue, loading }) => {
     );
   };
 
-  return <Box className={styles.container}>{!loading && !issue ? <EmptyState /> : <IssueContent />}</Box>;
+  return (
+    <Box className={styles.container}>
+      <IssueContent />
+    </Box>
+  );
 };
