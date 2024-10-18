@@ -37,6 +37,7 @@ export default function Home() {
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
+    setCurrentItem(0); // Reset to first issue whenever a new repo is selected
   };
 
   const handleSetCurrentItem = async (change: number) => {
