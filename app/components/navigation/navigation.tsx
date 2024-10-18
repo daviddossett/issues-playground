@@ -4,6 +4,7 @@ import { Blankslate, SkeletonText } from "@primer/react/drafts";
 import { Issue } from "../../page";
 import styles from "./navigation.module.css";
 import { IssueOpenedIcon } from "@primer/octicons-react";
+import { useRef, useEffect } from "react";
 
 interface NavigationProps {
   currentItem: number;
@@ -34,6 +35,19 @@ export const Navigation = ({
   loadMoreIssues,
   hasMore,
 }: NavigationProps) => {
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  useEffect(() => {
+    const currentItemRef = itemRefs.current[currentItem];
+    if (currentItemRef) {
+      const { top, bottom } = currentItemRef.getBoundingClientRect();
+      const { innerHeight } = window;
+      if (top < 0 || bottom > innerHeight) {
+        currentItemRef.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+  }, [currentItem]);
+
   const LoadingNavItems = () => (
     <>
       {Array.from({ length: 4 }).map((_, index) => (
@@ -53,6 +67,9 @@ export const Navigation = ({
             aria-current={currentItem === index}
             onClick={() => setCurrentItem(index)}
             className={styles.navItem}
+            ref={(el) => {
+              itemRefs.current[index] = el as HTMLLIElement | null;
+            }}
           >
             <Box>
               <Box className={styles.navItemIssueMeta}>
