@@ -6,6 +6,8 @@
   overflow: hidden;
   background-color: var(--bgColor-default);
   color: var(--fgColor-default);
+  overflow: auto;
+  max-height: 100vh;
 }
 
 .innerContainer {
