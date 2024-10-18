@@ -8,26 +8,19 @@ import { Content } from "./components/content/content";
 import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
+import { Endpoints } from "@octokit/types"; // Import Endpoints from Octokit
 
 export interface Repo {
   name: string;
   owner: string;
 }
 
-export interface Issue {
-  id: number;
-  title: string;
-  body?: string | null;
-  user: {
-    login: string;
-  } | null;
-  created_at: string;
-}
+export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
 const repos: Repo[] = [
+  { name: "react", owner: "primer" },
   { name: "vscode", owner: "microsoft" },
   { name: "vscode-codicons", owner: "microsoft" },
-  { name: "react", owner: "primer" },
   { name: "grid-playground", owner: "daviddossett" },
 ];
 
@@ -56,6 +49,7 @@ export default function Home() {
             <Box className={styles.mainContent}>
               <Navigation
                 setCurrentItem={setCurrentItem}
+                repo={selectedRepo.name}
                 issues={issues}
                 loading={loading}
                 loadMoreIssues={loadMoreIssues}

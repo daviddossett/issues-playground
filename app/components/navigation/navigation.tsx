@@ -1,12 +1,14 @@
-import { NavList, Box, Button, IconButton } from "@primer/react";
-import { SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
+import { NavList, Box, Button, IconButton, Octicon, Text } from "@primer/react";
+import { GitPullRequestIcon, SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
 import { Blankslate, SkeletonText } from "@primer/react/drafts";
 import { useState } from "react";
 import { Issue } from "../../page";
 import styles from "./navigation.module.css";
+import { IssueOpenedIcon } from "@primer/octicons-react";
 
 interface NavigationProps {
   setCurrentItem: (index: number) => void;
+  repo: string;
   issues: Issue[];
   loading: boolean;
   loadMoreIssues: () => void;
@@ -34,7 +36,7 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
 
   const LoadingNavItems = () => (
     <>
-      {Array.from({ length: 6 }).map((_, index) => (
+      {Array.from({ length: 4 }).map((_, index) => (
         <NavList.Item key={index}>
           <SkeletonText maxWidth={`${Math.random() * (80 - 50) + 50}%`} />
         </NavList.Item>
@@ -53,7 +55,17 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
             onClick={() => handleItemClick(index)}
             className={styles.navItem}
           >
-            {issue.title}
+            <Box>
+              <Box className={styles.navItemIssueMeta}>
+                <Octicon
+                  icon={issue.pull_request ? GitPullRequestIcon : IssueOpenedIcon}
+                  size={14}
+                  className={styles.navItemsIssueMetaIcon}
+                />
+                <Text as="span" className={styles.navItemsIssueMetaLabel}>{`#${issue.number}`}</Text>
+              </Box>
+              {issue.title}
+            </Box>
           </NavList.Item>
         );
       })}
@@ -71,7 +83,7 @@ export const Navigation = ({ setCurrentItem, issues, loading, loadMoreIssues, ha
       <NavList className={styles.list}>{navItems}</NavList>
       {!loading && hasMore && (
         <Box className={styles.loadMoreButton}>
-          <Button onClick={loadMoreIssues}>Load More</Button>
+          <Button onClick={loadMoreIssues}>Load more</Button>
         </Box>
       )}
     </Box>

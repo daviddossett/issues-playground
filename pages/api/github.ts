@@ -8,7 +8,7 @@ const octokit = new Octokit({
     auth: GITHUB_PAT,
 });
 
-type IssuesResponse = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"];
+export type IssuesResponse = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"];
 type RepoDetailsResponse = Endpoints["GET /repos/{owner}/{repo}"]["response"];
 type UserResponse = Endpoints["GET /users/{username}"]["response"];
 
