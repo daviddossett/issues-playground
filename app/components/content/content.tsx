@@ -38,7 +38,7 @@ const IssueSummary: React.FC<{ issue: Issue }> = ({ issue }) => {
   };
 
   return (
-    <Box className={styles.issueSummary}>
+    <Box className={`${styles.issueSummary} ${showSummary ? styles.issueSummaryOpened : ""}`}>
       <Box className={styles.issueSummaryHeader}>
         <Box className={styles.issueSummaryHeaderLeft}>
           <Octicon icon={CopilotIcon} size={16} />

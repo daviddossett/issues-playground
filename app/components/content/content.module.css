@@ -77,6 +77,12 @@
   margin-bottom: 24px;
 }
 
+.issueSummaryOpened {
+  background-color: var(--bgColor-accent-muted);
+  border-color: var(--borderColor-accent-muted);
+  padding-bottom: 16px;
+}
+
 .issueSummaryHeader {
   display: flex;
   flex-direction: row;
