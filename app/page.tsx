@@ -10,6 +10,7 @@ import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types"; // Import Endpoints from Octokit
 import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
+import { createIssue } from "./client";
 
 export interface Repo {
   name: string;
@@ -20,9 +21,9 @@ export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["d
 
 const repos: Repo[] = [
   { name: "grid-playground", owner: "daviddossett" },
-  { name: "react", owner: "primer" },
-  { name: "vscode", owner: "microsoft" },
-  { name: "vscode-codicons", owner: "microsoft" },
+  // { name: "react", owner: "primer" },
+  // { name: "vscode", owner: "microsoft" },
+  // { name: "vscode-codicons", owner: "microsoft" },
 ];
 
 export default function Home() {
@@ -73,13 +74,15 @@ export default function Home() {
     setCurrentItem(0);
   };
 
-  const handleCreateIssue = (title: string, body: string) => {
-    if (tempIssue) {
-      const newIssue = { ...tempIssue, title, body };
+  const handleCreateIssue = async (title: string, body: string) => {
+    try {
+      const newIssue = await createIssue(selectedRepo, title, body);
       issues.unshift(newIssue);
       setTempIssue(null);
       setIsCreatingIssue(false);
       setCurrentItem(0);
+    } catch (error) {
+      console.error("Failed to create issue:", error);
     }
   };
 

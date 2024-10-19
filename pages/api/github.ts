@@ -16,9 +16,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { endpoint, username, page, owner, repo } = req.query;
 
     try {
-        if (endpoint === "issues") {
+        if (endpoint === "issues" && req.method === "GET") {
             const issues = await fetchIssues({ owner: owner as string, repo: repo as string }, Number(page) || 1);
             res.status(200).json(issues);
+        } else if (endpoint === "issues" && req.method === "POST") {
+            const { title, body } = req.body;
+            const newIssue = await createIssue({ owner: owner as string, repo: repo as string }, title, body);
+            res.status(201).json(newIssue);
         } else if (endpoint === "repo") {
             const repoDetails = await fetchRepoDetails({ owner: owner as string, repo: repo as string });
             res.status(200).json(repoDetails);
@@ -66,5 +70,18 @@ const fetchUserAvatarUrl = async (username: string): Promise<string> => {
         },
     });
     return response.data.avatar_url;
+};
+
+const createIssue = async (repo: { owner: string, repo: string }, title: string, body: string) => {
+    const response = await octokit.request("POST /repos/{owner}/{repo}/issues", {
+        ...repo,
+        title,
+        body,
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        },
+    });
+
+    return response.data;
 };
 

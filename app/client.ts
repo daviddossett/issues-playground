@@ -47,3 +47,20 @@ export async function fetchAvatarUrl(username: string) {
     const data = await response.json();
     return data.avatar_url;
 }
+
+export async function createIssue(repo: Repo, title: string, body: string) {
+    const response = await fetch(`/api/github?endpoint=issues&owner=${repo.owner}&repo=${repo.name}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, body })
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to create issue");
+    }
+
+    const data = await response.json();
+    return data;
+}
