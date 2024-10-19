@@ -30,8 +30,8 @@ export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
-  const [isCreatingIssue, setIsCreatingIssue] = useState(false); // Add state for new issue form
-  const [tempIssue, setTempIssue] = useState<Issue | null>(null); // Add state for temporary issue
+  const [isCreatingIssue, setIsCreatingIssue] = useState(false);
+  const [tempIssue, setTempIssue] = useState<Issue | null>(null);
 
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {

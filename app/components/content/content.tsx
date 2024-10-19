@@ -14,7 +14,7 @@ interface ContentProps {
   issue: Issue;
   loading: boolean;
   currentItem: number;
-  setCurrentItem: (change: number) => void; // Accepts change in index
+  setCurrentItem: (change: number) => void;
   loadMoreIssues: () => void;
   hasMore: boolean;
   isLastItem: boolean;
