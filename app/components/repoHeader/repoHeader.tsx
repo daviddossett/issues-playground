@@ -9,9 +9,18 @@ interface RepoHeaderProps {
   repos: Repo[];
   selectedRepo: Repo;
   onRepoSelected: (repo: Repo) => void;
+  onNewIssue: () => void;
 }
 
-const RepoSelector = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) => {
+const RepoSelector = ({
+  repos,
+  selectedRepo,
+  onRepoSelected,
+}: {
+  repos: Repo[];
+  selectedRepo: Repo;
+  onRepoSelected: (repo: Repo) => void;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const items: ItemInput[] = repos.map((repo) => ({
@@ -59,11 +68,13 @@ const RepoSelector = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) 
   );
 };
 
-export const RepoHeader = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) => {
+export const RepoHeader = ({ repos, selectedRepo, onRepoSelected, onNewIssue }: RepoHeaderProps) => {
   return (
     <Box className={style.container}>
       <RepoSelector repos={repos} selectedRepo={selectedRepo} onRepoSelected={onRepoSelected} />
-      <Button variant="primary">New issue</Button>
+      <Button variant="primary" onClick={onNewIssue}>
+        New issue
+      </Button>
     </Box>
   );
 };

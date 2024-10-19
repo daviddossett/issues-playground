@@ -9,6 +9,7 @@ import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types"; // Import Endpoints from Octokit
+import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
 
 export interface Repo {
   name: string;
@@ -18,16 +19,18 @@ export interface Repo {
 export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
 const repos: Repo[] = [
+  { name: "grid-playground", owner: "daviddossett" },
   { name: "react", owner: "primer" },
   { name: "vscode", owner: "microsoft" },
   { name: "vscode-codicons", owner: "microsoft" },
-  { name: "grid-playground", owner: "daviddossett" },
 ];
 
 export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
+  const [isCreatingIssue, setIsCreatingIssue] = useState(false); // Add state for new issue form
+  const [tempIssue, setTempIssue] = useState<Issue | null>(null); // Add state for temporary issue
 
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
@@ -57,6 +60,34 @@ export default function Home() {
     }
   };
 
+  const handleNewIssue = () => {
+    const newTempIssue = {
+      id: Date.now(),
+      title: "New issue",
+      body: "",
+      user: { login: "current_user" },
+      created_at: new Date().toISOString(),
+    } as Issue;
+    setTempIssue(newTempIssue);
+    setIsCreatingIssue(true);
+    setCurrentItem(0);
+  };
+
+  const handleCreateIssue = (title: string, body: string) => {
+    if (tempIssue) {
+      const newIssue = { ...tempIssue, title, body };
+      issues.unshift(newIssue);
+      setTempIssue(null);
+      setIsCreatingIssue(false);
+      setCurrentItem(0);
+    }
+  };
+
+  const handleDiscardIssue = () => {
+    setTempIssue(null);
+    setIsCreatingIssue(false);
+  };
+
   const isLastItem = currentItem === issues.length - 1;
 
   return (
@@ -64,27 +95,36 @@ export default function Home() {
       <BaseStyles>
         <Box className={styles.container}>
           <AppHeader />
-          <RepoHeader repos={repos} selectedRepo={selectedRepo} onRepoSelected={handleRepoSelection} />
+          <RepoHeader
+            repos={repos}
+            selectedRepo={selectedRepo}
+            onRepoSelected={handleRepoSelection}
+            onNewIssue={handleNewIssue}
+          />
           <Box className={styles.innerContainer}>
             <Box className={styles.mainContent}>
               <Navigation
                 setCurrentItem={setCurrentItem}
                 currentItem={currentItem}
                 repo={selectedRepo.name}
-                issues={issues}
+                issues={tempIssue ? [tempIssue, ...issues] : issues}
                 loading={loading}
                 loadMoreIssues={loadMoreIssues}
                 hasMore={hasMore}
               />
-              <Content
-                issue={issues[currentItem]}
-                loading={loading}
-                currentItem={currentItem}
-                setCurrentItem={handleSetCurrentItem}
-                loadMoreIssues={loadMoreIssues}
-                hasMore={hasMore}
-                isLastItem={isLastItem}
-              />
+              {isCreatingIssue ? (
+                <NewIssueForm onCreate={handleCreateIssue} onDiscard={handleDiscardIssue} />
+              ) : (
+                <Content
+                  issue={issues[currentItem]}
+                  loading={loading}
+                  currentItem={currentItem}
+                  setCurrentItem={handleSetCurrentItem}
+                  loadMoreIssues={loadMoreIssues}
+                  hasMore={hasMore}
+                  isLastItem={isLastItem}
+                />
+              )}
             </Box>
           </Box>
         </Box>
