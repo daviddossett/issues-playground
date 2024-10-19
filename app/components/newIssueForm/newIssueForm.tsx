@@ -23,7 +23,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard 
         </Text>
         <Box className={styles.formContainer}>
           <FormControl>
-            <FormControl.Label>Title</FormControl.Label>
+            <FormControl.Label required>Add a title</FormControl.Label>
             <TextInput
               placeholder="Title"
               value={title}
@@ -32,7 +32,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard 
             />
           </FormControl>
           <FormControl>
-            <FormControl.Label>Description</FormControl.Label>
+            <FormControl.Label>Add a description</FormControl.Label>
             <Textarea
               placeholder="Description"
               value={body}
