@@ -64,6 +64,7 @@ export default function Chat() {
       <form onSubmit={handleSubmit} className={styles.form}>
         <Box className={styles.inputContainer}>
           <FormControl>
+            <FormControl.Label visuallyHidden={true}>Ask Copilot</FormControl.Label>
             <TextInput
               value={input}
               onChange={handleInputChange}
