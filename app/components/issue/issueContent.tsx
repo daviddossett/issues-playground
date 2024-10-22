@@ -20,7 +20,7 @@ interface ContentProps {
   isLastItem: boolean;
 }
 
-export const Content: React.FC<ContentProps> = ({
+export const IssueContent: React.FC<ContentProps> = ({
   issue,
   loading,
   currentItem,
