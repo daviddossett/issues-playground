@@ -1,7 +1,7 @@
 import { useChat } from "ai/react";
-import { Box, TextInput, FormControl, Stack, Avatar, Octicon } from "@primer/react";
+import { Box, TextInput, FormControl, Stack, Avatar, Octicon, IconButton } from "@primer/react";
 import styles from "./chat.module.css";
-import { PaperAirplaneIcon, CopilotIcon } from "@primer/octicons-react";
+import { PaperAirplaneIcon, CopilotIcon, SidebarCollapseIcon, PlusIcon } from "@primer/octicons-react";
 import { useCallback, useEffect } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -19,7 +19,7 @@ export default function Chat() {
         role: "system",
         content: "You are an expert in helping users summarize and answer questions about GitHub issues.",
       },
-      { id: "2", role: "assistant", content: "Hello! I am here to help you with your queries." },
+      { id: "2", role: "assistant", content: "Hi, how can I help?" },
     ]);
   }, [setMessages]);
 
@@ -35,6 +35,10 @@ export default function Chat() {
 
   return (
     <Box className={styles.container}>
+      <Box className={styles.toolbar}>
+        <IconButton icon={PlusIcon} aria-label="New thread" />
+        <IconButton icon={SidebarCollapseIcon} aria-label="Hide sidebar" />
+      </Box>
       <Box className={styles.messages}>
         {messages
           .filter((m) => m.role !== "system")

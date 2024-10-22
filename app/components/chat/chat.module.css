@@ -56,3 +56,16 @@
   display: flex;
   align-items: flex-start;
 }
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  background-color: var(--bgColor-muted);
+  border-bottom: 1px solid var(--borderColor-default);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
