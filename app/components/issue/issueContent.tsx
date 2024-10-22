@@ -3,7 +3,7 @@ import { SkeletonText, SkeletonAvatar } from "@primer/react/drafts";
 import { ArrowDownIcon, ArrowUpIcon, KebabHorizontalIcon } from "@primer/octicons-react";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
-import styles from "./content.module.css";
+import styles from "./issueContent.module.css";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
