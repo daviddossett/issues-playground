@@ -5,10 +5,11 @@ import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { Content } from "./components/content/content";
+import Chat from "./components/chat/chat";
 import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
-import { Endpoints } from "@octokit/types"; // Import Endpoints from Octokit
+import { Endpoints } from "@octokit/types";
 import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
 import { createIssue } from "./client";
 
@@ -128,6 +129,7 @@ export default function Home() {
                   isLastItem={isLastItem}
                 />
               )}
+              <Chat />
             </Box>
           </Box>
         </Box>
