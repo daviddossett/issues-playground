@@ -53,7 +53,8 @@ export default function Chat({ issue, loading }: ChatProps) {
 
   useEffect(() => {
     if (messages.length > 0 && !hasScrolled) {
-      const middlePosition = messagesEndRef.current?.offsetTop! - (messagesEndRef.current?.parentElement?.clientHeight! / 2);
+      const middlePosition =
+        (messagesEndRef.current?.offsetTop ?? 0) - (messagesEndRef.current?.parentElement?.clientHeight ?? 0) / 2;
       messagesEndRef.current?.parentElement?.scrollTo({ top: middlePosition - 50, behavior: "smooth" });
       setHasScrolled(true);
     }
@@ -81,20 +82,25 @@ export default function Chat({ issue, loading }: ChatProps) {
           .filter((m) => m.role !== "system")
           .map((m) => (
             <Box key={m.id} className={styles.messageContainer}>
-              {m.role === "user" ? (
-                <Box className={styles.userAvatar}>
-                  <Avatar src={userAvatarUrl} size={20} />
-                </Box>
-              ) : (
-                <Box className={styles.copilotIcon}>
-                  <Octicon icon={CopilotIcon} size={14} />
-                </Box>
-              )}
-              <Box ml={2}>
-                <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} className={styles.content}>
-                  {m.content}
-                </Markdown>
+              <Box className={styles.messageHeader}>
+                {m.role === "user" ? (
+                  <>
+                    <Avatar src={userAvatarUrl} size={24} />
+                    <Text>daviddossett</Text>
+                  </>
+                ) : (
+                  <>
+                    <Box className={styles.copilotIcon}>
+                      <Octicon icon={CopilotIcon} size={14} />
+                    </Box>
+                    <Text>Copilot</Text>
+                  </>
+                )}
               </Box>
+
+              <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} className={styles.content}>
+                {m.content}
+              </Markdown>
             </Box>
           ))}
         <div ref={messagesEndRef} />
@@ -102,16 +108,13 @@ export default function Chat({ issue, loading }: ChatProps) {
       <form onSubmit={handleSubmit} className={styles.form}>
         <Box className={styles.inputContainer}>
           {!loading && issue ? (
-            <Box className={styles.inputIssueLabel}>
-              <Text className={styles.inputIssueCaption}>Chatting about</Text>
-              <Token
-                className={styles.inputIssueToken}
-                text={issue.title}
-                leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
-              />
-            </Box>
+            <Token
+              className={styles.inputIssueToken}
+              text={issue.title}
+              leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
+            />
           ) : (
-            <SkeletonText maxWidth={`${Math.random() * (80 - 50) + 50}%`} />
+            <SkeletonText maxWidth={100} />
           )}
 
           <FormControl>

@@ -32,12 +32,6 @@ li {
   line-height: var(--text-body-lineHeight-large);
 }
 
-ul {
-  margin: 0;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
 body {
   overflow: hidden;
 }
