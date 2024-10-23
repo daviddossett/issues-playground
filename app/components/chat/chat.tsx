@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Issue } from "@/app/page";
 
-const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4";
+const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4"; // Hardcoded to me for now
 
 interface ChatProps {
   issue: Issue;
@@ -23,6 +23,7 @@ export default function Chat({ issue, loading }: ChatProps) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
 
+  // Set the welcome message
   useEffect(() => {
     if (!initialMessageDisplayed) {
       setMessages((prevMessages) => [
@@ -37,6 +38,7 @@ export default function Chat({ issue, loading }: ChatProps) {
     }
   }, [initialMessageDisplayed, setMessages]);
 
+  // Set the system message
   useEffect(() => {
     if (!loading && issue?.title && issue?.body && issue !== issueRef.current) {
       issueRef.current = issue;
@@ -51,6 +53,7 @@ export default function Chat({ issue, loading }: ChatProps) {
     }
   }, [issue, loading, setMessages]);
 
+  // Scroll to the bottom when a new message is added. This needs work.
   useEffect(() => {
     if (messages.length > 0 && !hasScrolled) {
       const middlePosition =
@@ -79,7 +82,7 @@ export default function Chat({ issue, loading }: ChatProps) {
       </Box>
       <Box className={styles.messages}>
         {messages
-          .filter((m) => m.role !== "system")
+          .filter((m) => m.role !== "system") // Don't render the system message. Maybe there's a better way to do this.
           .map((m) => (
             <Box key={m.id} className={styles.messageContainer}>
               <Box className={styles.messageHeader}>
