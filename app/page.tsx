@@ -22,9 +22,9 @@ export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["d
 
 const repos: Repo[] = [
   { name: "grid-playground", owner: "daviddossett" },
-  // { name: "react", owner: "primer" },
-  // { name: "vscode", owner: "microsoft" },
-  // { name: "vscode-codicons", owner: "microsoft" },
+  { name: "react", owner: "primer" },
+  { name: "vscode", owner: "microsoft" },
+  { name: "vscode-codicons", owner: "microsoft" },
 ];
 
 export default function Home() {
@@ -129,7 +129,7 @@ export default function Home() {
                   isLastItem={isLastItem}
                 />
               )}
-              <Chat />
+              <Chat issue={issues[currentItem]} loading={loading} />
             </Box>
           </Box>
         </Box>

@@ -23,6 +23,23 @@
   gap: 8px;
 }
 
+.inputIssueLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inputIssueCaption {
+  font: var(--text-body-shorthand-small);
+  color: var(--fgColor-muted);
+  white-space: nowrap;
+}
+
+.inputIssueToken span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .inputContainer {
   display: flex;
   flex-direction: column;

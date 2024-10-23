@@ -1,27 +1,38 @@
-import { useChat } from "ai/react";
-import { Box, TextInput, FormControl, Stack, Avatar, Octicon, IconButton } from "@primer/react";
+import { Message, useChat } from "ai/react";
+import { Box, Text, TextInput, FormControl, Stack, Avatar, Octicon, IconButton, Token } from "@primer/react";
 import styles from "./chat.module.css";
-import { PaperAirplaneIcon, CopilotIcon, SidebarCollapseIcon, PlusIcon } from "@primer/octicons-react";
-import { useCallback, useEffect } from "react";
+import { PaperAirplaneIcon, CopilotIcon, SidebarCollapseIcon, PlusIcon, IssueOpenedIcon } from "@primer/octicons-react";
+import { SkeletonText } from "@primer/react/drafts";
+import { useCallback, useEffect, useRef } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import { Issue } from "@/app/page";
 
 const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4";
 
-export default function Chat() {
+interface ChatProps {
+  issue: Issue;
+  loading: boolean;
+}
+
+export default function Chat({ issue, loading }: ChatProps) {
   const { messages, setMessages, input, handleInputChange, handleSubmit } = useChat();
+  const issueRef = useRef<Issue | null>(null);
 
   useEffect(() => {
-    setMessages([
-      {
-        id: "1",
-        role: "system",
-        content: "You are an expert in helping users summarize and answer questions about GitHub issues.",
-      },
-      { id: "2", role: "assistant", content: "Hi, how can I help?" },
-    ]);
-  }, [setMessages]);
+    if (!loading && issue?.title && issue?.body && issue !== issueRef.current) {
+      issueRef.current = issue;
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: `${Date.now()}`,
+          role: "system",
+          content: `You are an expert in helping users summarize and answer questions about GitHub issues. The current issue is: ${issue.title}. The issue description is: ${issue.body}`,
+        },
+      ]);
+    }
+  }, [issue, loading, setMessages]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -63,6 +74,19 @@ export default function Chat() {
       </Box>
       <form onSubmit={handleSubmit} className={styles.form}>
         <Box className={styles.inputContainer}>
+          {!loading && issue ? (
+            <Box className={styles.inputIssueLabel}>
+              <Text className={styles.inputIssueCaption}>Chatting about</Text>
+              <Token
+                className={styles.inputIssueToken}
+                text={issue.title}
+                leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
+              />
+            </Box>
+          ) : (
+            <SkeletonText maxWidth={`${Math.random() * (80 - 50) + 50}%`} />
+          )}
+
           <FormControl>
             <FormControl.Label visuallyHidden={true}>Ask Copilot</FormControl.Label>
             <TextInput
