@@ -13,7 +13,7 @@ type RepoDetailsResponse = Endpoints["GET /repos/{owner}/{repo}"]["response"];
 type UserResponse = Endpoints["GET /users/{username}"]["response"];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { endpoint, username, page, owner, repo } = req.query;
+    const { endpoint, username, page, owner, repo, path } = req.query;
 
     try {
         if (endpoint === "issues" && req.method === "GET") {
@@ -29,6 +29,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } else if (endpoint === "avatar" && typeof username === "string") {
             const avatarUrl = await fetchUserAvatarUrl(username);
             res.status(200).json({ avatar_url: avatarUrl });
+        } else if (endpoint === "content" && typeof path === "string") {
+            const content = await fetchFileContent({ owner: owner as string, repo: repo as string }, path);
+            res.status(200).json(content);
         } else {
             res.status(400).json({ error: "Invalid endpoint" });
         }
@@ -77,6 +80,18 @@ const createIssue = async (repo: { owner: string, repo: string }, title: string,
         ...repo,
         title,
         body,
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        },
+    });
+
+    return response.data;
+};
+
+const fetchFileContent = async (repo: { owner: string, repo: string }, path: string) => {
+    const response = await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
+        ...repo,
+        path,
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         },

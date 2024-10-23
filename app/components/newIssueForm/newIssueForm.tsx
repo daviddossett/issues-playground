@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, FormControl, Text, TextInput, Textarea } from "@primer/react";
+import { Box, Button, FormControl, Text, TextInput, Textarea, SegmentedControl } from "@primer/react"; // Added SegmentedControl
 import styles from "./newIssueForm.module.css";
 
 interface NewIssueFormProps {
@@ -10,6 +10,7 @@ interface NewIssueFormProps {
 export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [mode, setMode] = useState("write"); // Added state for mode
 
   const handleCreate = () => {
     onCreate(title, body);
@@ -17,6 +18,16 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard 
 
   return (
     <Box className={styles.container}>
+      <Box className={styles.issueToolbar}>
+        <SegmentedControl aria-label="Issue mode">
+          <SegmentedControl.Button selected={mode === "write"} onClick={() => setMode("write")}>
+            Write
+          </SegmentedControl.Button>
+          <SegmentedControl.Button selected={mode === "preview"} onClick={() => setMode("preview")}>
+            Preview
+          </SegmentedControl.Button>
+        </SegmentedControl>
+      </Box>
       <Box className={styles.innerContainer}>
         <Text as="h2" className={styles.formTitle}>
           New issue

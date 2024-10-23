@@ -64,3 +64,19 @@ export async function createIssue(repo: Repo, title: string, body: string) {
     const data = await response.json();
     return data;
 }
+
+export async function fetchFileContent(repo: Repo, path: string) {
+    const response = await fetch(`/api/github?endpoint=content&owner=${repo.owner}&repo=${repo.name}&path=${path}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch file content");
+    }
+
+    const data = await response.json();
+    return atob(data.content); // GitHub API returns base64 encoded content
+}

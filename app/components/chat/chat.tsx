@@ -14,14 +14,32 @@ const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4"; //
 interface ChatProps {
   issue: Issue;
   loading: boolean;
+  issueTemplate: string | null;
 }
 
-export default function Chat({ issue, loading }: ChatProps) {
+export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
   const { messages, setMessages, input, handleInputChange, handleSubmit } = useChat();
   const issueRef = useRef<Issue | null>(null);
   const [initialMessageDisplayed, setInitialMessageDisplayed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
+
+  // Set the system message
+  useEffect(() => {
+    if (!loading && issue?.title && issue?.body && issue !== issueRef.current && issueTemplate) {
+      issueRef.current = issue;
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: `${Date.now()}`,
+          role: "system",
+          content: `You are an expert in helping users summarize and answer questions about GitHub issues. The current issue is: ${issue.title}. The issue description is: ${issue.body}. If asked for summaries, be very brief. Use one or two sentences followed by 2-3 bullets at most. If the user asks for feedback on the issue or wants you to suggest a rewrite or revision, use this to recommend improvement: ${issueTemplate}. Always tell users what your guidelines are before responding to any feedback, rewrite, or revision requests.`,
+        },
+      ]);
+    }
+  }, [issue, loading, setMessages, issueTemplate]);
+
+  console.log(issueTemplate);
 
   // Set the welcome message
   useEffect(() => {
@@ -37,21 +55,6 @@ export default function Chat({ issue, loading }: ChatProps) {
       setInitialMessageDisplayed(true);
     }
   }, [initialMessageDisplayed, setMessages]);
-
-  // Set the system message
-  useEffect(() => {
-    if (!loading && issue?.title && issue?.body && issue !== issueRef.current) {
-      issueRef.current = issue;
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: `${Date.now()}`,
-          role: "system",
-          content: `You are an expert in helping users summarize and answer questions about GitHub issues. The current issue is: ${issue.title}. The issue description is: ${issue.body}. If asked for summaries, be very brief. Use one or two sentences followed by 2-3 bullets at most.`,
-        },
-      ]);
-    }
-  }, [issue, loading, setMessages]);
 
   // Scroll to the bottom when a new message is added. This needs work.
   useEffect(() => {

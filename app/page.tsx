@@ -11,7 +11,7 @@ import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types";
 import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
-import { createIssue } from "./client";
+import { createIssue, fetchFileContent } from "./client";
 
 export interface Repo {
   name: string;
@@ -33,12 +33,29 @@ export default function Home() {
   const [currentItem, setCurrentItem] = useState(0);
   const [isCreatingIssue, setIsCreatingIssue] = useState(false);
   const [tempIssue, setTempIssue] = useState<Issue | null>(null);
+  const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
+
+  console.log(issueTemplate);
 
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
       setCurrentItem(0);
     }
   }, [currentItem, issues]);
+
+  useEffect(() => {
+    const fetchIssueTemplate = async () => {
+      try {
+        const content = await fetchFileContent(selectedRepo, ".github/issue-template.md");
+        setIssueTemplate(content);
+      } catch (error) {
+        console.error("Failed to fetch issue template:", error);
+        setIssueTemplate(null);
+      }
+    };
+
+    fetchIssueTemplate();
+  }, [selectedRepo]);
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
@@ -129,7 +146,7 @@ export default function Home() {
                   isLastItem={isLastItem}
                 />
               )}
-              <Chat issue={issues[currentItem]} loading={loading} />
+              <Chat issue={issues[currentItem]} loading={loading} issueTemplate={issueTemplate} />
             </Box>
           </Box>
         </Box>
