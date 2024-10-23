@@ -11,6 +11,8 @@
 @import "@primer/primitives/dist/css/functional/themes/light.css";
 @import "@primer/primitives/dist/css/functional/themes/dark.css";
 
+@import "./github-markdown.css";
+
 h1 {
   font-size: var(--text-title-size-large);
   line-height: var(--text-title-lineHeight-large);

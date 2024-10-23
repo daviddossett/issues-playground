@@ -7,7 +7,6 @@ import styles from "./issueContent.module.css";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import "./github-markdown.css";
 import IssueSummary from "../issueSummary/issueSummary";
 
 interface ContentProps {
