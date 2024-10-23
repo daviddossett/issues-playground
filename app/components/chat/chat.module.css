@@ -50,6 +50,12 @@
   width: 100%;
 }
 
+.tokenContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .input {
   flex-grow: 1;
   margin-right: 8px;
@@ -93,10 +99,20 @@
   margin-top: 8px;
 }
 
-.content pre {
+.content pre,
+.dialogMarkdown pre {
   white-space: pre;
   overflow-x: auto;
   padding: 12px;
   background-color: var(--bgColor-muted);
   border-radius: var(--borderRadius-medium);
+}
+
+.content img {
+  width: 100%;
+}
+
+.dialogMarkdown img,
+.dialogMarkdown pre {
+  width: 100%;
 }

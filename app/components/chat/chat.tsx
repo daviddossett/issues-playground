@@ -1,9 +1,16 @@
 import { useChat } from "ai/react";
-import { Box, Text, TextInput, FormControl, Stack, Avatar, Octicon, IconButton, Token } from "@primer/react";
-import styles from "./chat.module.css";
-import { PaperAirplaneIcon, CopilotIcon, SidebarCollapseIcon, PlusIcon, IssueOpenedIcon } from "@primer/octicons-react";
+import { Box, Text, TextInput, FormControl, Stack, Avatar, Octicon, IconButton, Token, Dialog } from "@primer/react";
+import {
+  PaperAirplaneIcon,
+  CopilotIcon,
+  SidebarCollapseIcon,
+  PlusIcon,
+  IssueOpenedIcon,
+  FileIcon,
+} from "@primer/octicons-react";
 import { SkeletonText } from "@primer/react/drafts";
 import { useCallback, useEffect, useRef, useState } from "react";
+import styles from "./chat.module.css";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -19,27 +26,43 @@ interface ChatProps {
 
 export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
   const { messages, setMessages, input, handleInputChange, handleSubmit } = useChat();
-  const issueRef = useRef<Issue | null>(null);
   const [initialMessageDisplayed, setInitialMessageDisplayed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const issueRef = useRef<Issue | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
+
+  const openModal = (content: string, title: string) => {
+    setModalContent(content);
+    setModalTitle(title);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent("");
+    setModalTitle("");
+  };
 
   // Set the system message
   useEffect(() => {
-    if (!loading && issue?.title && issue?.body && issue !== issueRef.current && issueTemplate) {
+    if (!loading && issue?.title && issue?.body && issue !== issueRef.current) {
       issueRef.current = issue;
+      const systemMessageContent = `You are an expert in helping users answer questions and write or revise GitHub issues. The current issue is: ${issue.title}. The issue description is: ${issue.body}. If asked for summaries, be very brief. Use one or two sentences followed by 2-3 bullets at most. If the user asks for feedback on the issue or wants you to suggest a rewrite or revision, use this to recommend improvement: ${issueTemplate}. Always tell users what your guidelines are, word for word, before responding to any feedback, rewrite, or revision requests.`;
+
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           id: `${Date.now()}`,
           role: "system",
-          content: `You are an expert in helping users summarize and answer questions about GitHub issues. The current issue is: ${issue.title}. The issue description is: ${issue.body}. If asked for summaries, be very brief. Use one or two sentences followed by 2-3 bullets at most. If the user asks for feedback on the issue or wants you to suggest a rewrite or revision, use this to recommend improvement: ${issueTemplate}. Always tell users what your guidelines are before responding to any feedback, rewrite, or revision requests.`,
+          content: systemMessageContent,
         },
       ]);
     }
   }, [issue, loading, setMessages, issueTemplate]);
-
-  console.log(issueTemplate);
 
   // Set the welcome message
   useEffect(() => {
@@ -113,12 +136,23 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
       </Box>
       <form onSubmit={handleSubmit} className={styles.form}>
         <Box className={styles.inputContainer}>
-          {!loading && issue ? (
-            <Token
-              className={styles.inputIssueToken}
-              text={issue.title}
-              leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
-            />
+          {!loading && issue && issue.body ? (
+            <Box className={styles.tokenContainer}>
+              <Token
+                className={styles.inputIssueToken}
+                text={issue.title}
+                leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
+                onClick={() => openModal(issue.body ?? "", issue.title ?? "")}
+              />
+              {issueTemplate && (
+                <Token
+                  className={styles.inputIssueToken}
+                  text={"Issue guidelines"}
+                  leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
+                  onClick={() => openModal(issueTemplate, "Issue guidelines")}
+                />
+              )}
+            </Box>
           ) : (
             <SkeletonText maxWidth={100} />
           )}
@@ -146,6 +180,15 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
           </FormControl>
         </Box>
       </form>
+
+      <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide>
+        <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
+        <Box p={4} className={styles.dialogMarkdown}>
+          <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+            {modalContent}
+          </Markdown>
+        </Box>
+      </Dialog>
     </Box>
   );
 }

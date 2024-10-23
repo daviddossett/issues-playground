@@ -21,9 +21,9 @@ export interface Repo {
 export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
 const repos: Repo[] = [
+  { name: "vscode", owner: "microsoft" },
   { name: "grid-playground", owner: "daviddossett" },
   { name: "react", owner: "primer" },
-  { name: "vscode", owner: "microsoft" },
   { name: "vscode-codicons", owner: "microsoft" },
 ];
 
@@ -34,8 +34,6 @@ export default function Home() {
   const [isCreatingIssue, setIsCreatingIssue] = useState(false);
   const [tempIssue, setTempIssue] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
-
-  console.log(issueTemplate);
 
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
@@ -60,6 +58,7 @@ export default function Home() {
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
     setCurrentItem(0); // Reset to first issue whenever a new repo is selected
+    setIssueTemplate(null);
   };
 
   const handleSetCurrentItem = async (change: number) => {
