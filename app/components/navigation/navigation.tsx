@@ -96,12 +96,14 @@ export const Navigation = ({
         <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" />
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
-      <NavList className={styles.list}>{navItems}</NavList>
-      {!loading && hasMore && (
-        <Box className={styles.loadMoreButton}>
-          <Button onClick={loadMoreIssues}>Load more</Button>
-        </Box>
-      )}
+      <NavList className={styles.list}>
+        {navItems}
+        {!loading && hasMore && (
+          <Box className={styles.loadMoreButton}>
+            <Button onClick={loadMoreIssues}>Load more</Button>
+          </Box>
+        )}
+      </NavList>
     </Box>
   );
 };
