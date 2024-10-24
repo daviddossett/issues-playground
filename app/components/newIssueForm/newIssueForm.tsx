@@ -5,15 +5,29 @@ import styles from "./newIssueForm.module.css";
 interface NewIssueFormProps {
   onCreate: (title: string, body: string) => void;
   onDiscard: () => void;
+  onTitleChange: (title: string) => void;
+  onBodyChange: (body: string) => void;
 }
 
-export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard }) => {
+export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard, onTitleChange, onBodyChange }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [mode, setMode] = useState("write"); // Added state for mode
 
   const handleCreate = () => {
     onCreate(title, body);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    onTitleChange(newTitle);
+  };
+
+  const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newBody = e.target.value;
+    setBody(newBody);
+    onBodyChange(newBody);
   };
 
   return (
@@ -38,7 +52,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard 
             <TextInput
               placeholder="Title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={handleTitleChange}
               className={styles.issueTitleInput}
             />
           </FormControl>
@@ -47,7 +61,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard 
             <Textarea
               placeholder="Description"
               value={body}
-              onChange={(e) => setBody(e.target.value)}
+              onChange={handleBodyChange}
               className={styles.issueBodyInput}
               cols={300}
               rows={20}

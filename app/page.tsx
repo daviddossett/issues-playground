@@ -107,6 +107,7 @@ export default function Home() {
   const handleDiscardIssue = () => {
     setTempIssue(null);
     setIsCreatingIssue(false);
+    setCurrentItem(0);
   };
 
   const isLastItem = currentItem === issues.length - 1;
@@ -134,7 +135,12 @@ export default function Home() {
                 hasMore={hasMore}
               />
               {isCreatingIssue ? (
-                <NewIssueForm onCreate={handleCreateIssue} onDiscard={handleDiscardIssue} />
+                <NewIssueForm
+                  onCreate={handleCreateIssue}
+                  onDiscard={handleDiscardIssue}
+                  onTitleChange={(title) => setTempIssue((prev) => prev && { ...prev, title })}
+                  onBodyChange={(body) => setTempIssue((prev) => prev && { ...prev, body })}
+                />
               ) : (
                 <IssueContent
                   issue={issues[currentItem]}
@@ -146,7 +152,7 @@ export default function Home() {
                   isLastItem={isLastItem}
                 />
               )}
-              <Chat issue={issues[currentItem]} loading={loading} issueTemplate={issueTemplate} />
+              <Chat issue={tempIssue || issues[currentItem]} loading={loading} issueTemplate={issueTemplate} />
             </Box>
           </Box>
         </Box>
