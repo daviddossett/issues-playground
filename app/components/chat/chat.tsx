@@ -120,7 +120,7 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
       </Box>
       <form onSubmit={addMessageWithContext} className={styles.form}>
         <Box className={styles.inputContainer}>
-          {!loading && issue && issue.body ? (
+          {!loading && issue && issue.title ? (
             <Box className={styles.tokenContainer}>
               <Token
                 className={styles.inputIssueToken}

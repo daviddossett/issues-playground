@@ -22,6 +22,7 @@ export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["d
 
 const repos: Repo[] = [
   { name: "grid-playground", owner: "daviddossett" },
+  { name: "swr", owner: "vercel" },
   { name: "vscode", owner: "microsoft" },
   { name: "react", owner: "primer" },
   { name: "vscode-codicons", owner: "microsoft" },
