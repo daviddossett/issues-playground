@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Button, FormControl, Text, TextInput, Textarea, SegmentedControl } from "@primer/react"; // Added SegmentedControl
+import React, { useState } from "react";
+import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea } from "@primer/react";
 import styles from "./newIssueForm.module.css";
 
 interface NewIssueFormProps {
@@ -12,7 +12,10 @@ interface NewIssueFormProps {
 export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard, onTitleChange, onBodyChange }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [mode, setMode] = useState("write"); // Added state for mode
+  const [mode, setMode] = useState("write");
+  // const [highlightedBody, setHighlightedBody] = useState("");
+  // const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // const highlightRef = useRef<HTMLDivElement>(null);
 
   const handleCreate = () => {
     onCreate(title, body);
@@ -28,7 +31,37 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard,
     const newBody = e.target.value;
     setBody(newBody);
     onBodyChange(newBody);
+    // highlightWords(newBody);
   };
+
+  // const highlightWords = (text: string) => {
+  //   const words = text
+  //     .split(/\n/)
+  //     .map((line) =>
+  //       line
+  //         .split(/\s+/)
+  //         .map((word) => `<span class="${styles.highlightedWord}">${word}</span>`)
+  //         .join(" ")
+  //     )
+  //     .join("<br>");
+  //   setHighlightedBody(words);
+  // };
+
+  // useEffect(() => {
+  //   if (textareaRef.current && highlightRef.current) {
+  //     const syncScroll = () => {
+  //       if (textareaRef.current && highlightRef.current) {
+  //         highlightRef.current.scrollTop = textareaRef.current.scrollTop;
+  //         highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
+  //       }
+  //     };
+  //     const textarea = textareaRef.current;
+  //     if (textarea) {
+  //       textarea.addEventListener("scroll", syncScroll);
+  //       return () => textarea.removeEventListener("scroll", syncScroll);
+  //     }
+  //   }
+  // }, [body]);
 
   return (
     <Box className={styles.container}>
@@ -58,21 +91,30 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard,
           </FormControl>
           <FormControl>
             <FormControl.Label>Add a description</FormControl.Label>
-            <Textarea
-              placeholder="Description"
-              value={body}
-              onChange={handleBodyChange}
-              className={styles.issueBodyInput}
-              cols={300}
-              rows={20}
-            />
+            <Box className={styles.textareaContainer}>
+              {/* <div
+                className={styles.highlightOverlay}
+                ref={highlightRef}
+                dangerouslySetInnerHTML={{ __html: highlightedBody }}
+              /> */}
+              <Textarea
+                placeholder="Description"
+                value={body}
+                onChange={handleBodyChange}
+                className={styles.issueBodyInput}
+                // ref={textareaRef}
+                cols={300}
+                rows={20}
+                resize="vertical"
+              />
+            </Box>
           </FormControl>
           <Box className={styles.buttonContainer}>
-            <Button variant="primary" onClick={handleCreate}>
-              Create
-            </Button>
             <Button variant="danger" onClick={onDiscard}>
               Discard
+            </Button>
+            <Button variant="primary" onClick={handleCreate}>
+              Create
             </Button>
           </Box>
         </Box>

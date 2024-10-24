@@ -59,7 +59,7 @@ export default function Home() {
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
-    setCurrentItem(0); // Reset to first issue whenever a new repo is selected
+    setCurrentItem(0);
     setIssueTemplate(null);
   };
 
@@ -139,8 +139,8 @@ export default function Home() {
                 <NewIssueForm
                   onCreate={handleCreateIssue}
                   onDiscard={handleDiscardIssue}
-                  onTitleChange={(title) => setTempIssue((prev) => prev && { ...prev, title })}
-                  onBodyChange={(body) => setTempIssue((prev) => prev && { ...prev, body })}
+                  onTitleChange={(title: string) => setTempIssue((prev) => prev && { ...prev, title })}
+                  onBodyChange={(body: string) => setTempIssue((prev) => prev && { ...prev, body })}
                 />
               ) : (
                 <IssueContent

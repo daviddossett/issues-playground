@@ -16,7 +16,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Issue } from "@/app/page";
 
-const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4"; // Hardcoded to me for now
+const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4";
 
 interface ChatProps {
   issue: Issue;
@@ -93,7 +93,7 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
       </Box>
       <Box className={styles.messages}>
         {messages
-          .filter((m) => m.role !== "system") // Don't render the system message. Maybe there's a better way to do this.
+          .filter((m) => m.role !== "system")
           .map((m) => (
             <Box key={m.id} className={styles.messageContainer}>
               <Box className={styles.messageHeader}>
