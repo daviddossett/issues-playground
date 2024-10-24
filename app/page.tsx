@@ -21,19 +21,20 @@ export interface Repo {
 export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
 const repos: Repo[] = [
-  { name: "vscode", owner: "microsoft" },
   { name: "grid-playground", owner: "daviddossett" },
+  { name: "vscode", owner: "microsoft" },
   { name: "react", owner: "primer" },
   { name: "vscode-codicons", owner: "microsoft" },
 ];
 
 export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
-  const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const [currentItem, setCurrentItem] = useState(0);
   const [isCreatingIssue, setIsCreatingIssue] = useState(false);
   const [tempIssue, setTempIssue] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
+
+  const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
 
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
