@@ -95,7 +95,7 @@ export const Navigation = ({
   return (
     <Box className={styles.container}>
       <Box className={styles.actionBar}>
-        <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" onClick={toggleNavVisibility} />
+        <IconButton icon={SidebarExpandIcon} aria-label="Hide nav" onClick={toggleNavVisibility} />
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
       <NavList className={styles.list}>

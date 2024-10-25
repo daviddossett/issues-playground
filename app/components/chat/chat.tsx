@@ -91,7 +91,7 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
     <Box className={`${styles.container} ${isChatVisible ? styles.chatVisible : styles.chatHidden}`}>
       <Box className={styles.toolbar}>
         <IconButton icon={PlusIcon} aria-label="New thread" />
-        <IconButton icon={SidebarCollapseIcon} aria-label="Hide sidebar" onClick={toggleChatVisibility} />
+        <IconButton icon={SidebarCollapseIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
       </Box>
       <Box className={styles.messages}>
         {messages

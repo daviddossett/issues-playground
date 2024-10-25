@@ -82,7 +82,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
       <Box className={styles.issueToolbar}>
         <Box className={styles.issueToolbarLeft}>
           {!isNavVisible && (
-            <IconButton icon={SidebarCollapseIcon} aria-label="Hide nav" onClick={toggleNavVisibility} />
+            <IconButton icon={SidebarCollapseIcon} aria-label="Show nav" onClick={toggleNavVisibility} />
           )}
           <SegmentedControl aria-label="Issue mode">
             <SegmentedControl.Button selected={mode === "write"} onClick={() => setMode("write")}>
@@ -94,7 +94,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
           </SegmentedControl>
         </Box>
         {!isChatVisible && (
-          <IconButton icon={SidebarExpandIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
+          <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
         )}
       </Box>
 
