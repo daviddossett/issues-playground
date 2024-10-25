@@ -127,7 +127,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
                 className={styles.issueBodyInput}
                 // ref={textareaRef}
                 cols={300}
-                rows={20}
+                rows={12}
                 resize="vertical"
               />
             </Box>
