@@ -1,6 +1,12 @@
 import { Box, Avatar, Text, IconButton } from "@primer/react";
 import { SkeletonText, SkeletonAvatar } from "@primer/react/drafts";
-import { ArrowDownIcon, ArrowUpIcon, KebabHorizontalIcon } from "@primer/octicons-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  KebabHorizontalIcon,
+  SidebarExpandIcon,
+  SidebarCollapseIcon,
+} from "@primer/octicons-react";
 import { Issue } from "../../page";
 import { useFetchAvatarUrl } from "../../hooks/useFetchAvatarUrl";
 import styles from "./issueContent.module.css";
@@ -17,6 +23,10 @@ interface ContentProps {
   loadMoreIssues: () => void;
   hasMore: boolean;
   isLastItem: boolean;
+  isNavVisible: boolean;
+  toggleNavVisibility: () => void;
+  isChatVisible: boolean;
+  toggleChatVisibility: () => void;
 }
 
 export const IssueContent: React.FC<ContentProps> = ({
@@ -26,6 +36,10 @@ export const IssueContent: React.FC<ContentProps> = ({
   setCurrentItem,
   hasMore,
   isLastItem,
+  isNavVisible,
+  toggleNavVisibility,
+  isChatVisible,
+  toggleChatVisibility,
 }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
 
@@ -101,7 +115,10 @@ export const IssueContent: React.FC<ContentProps> = ({
     return (
       <>
         <Box className={styles.issueToolbar}>
-          <Box className={styles.issueNavigationArrows}>
+          <Box className={styles.issueToolbarLeft}>
+            {!isNavVisible && (
+              <IconButton icon={SidebarCollapseIcon} aria-label="Show nav" onClick={toggleNavVisibility} />
+            )}
             <IconButton
               icon={ArrowUpIcon}
               aria-label="Previous"
@@ -115,7 +132,12 @@ export const IssueContent: React.FC<ContentProps> = ({
               disabled={isLastItem && !hasMore}
             />
           </Box>
-          <IconButton icon={KebabHorizontalIcon} aria-label="More" />
+          <Box className={styles.issueToolbarRight}>
+            <IconButton icon={KebabHorizontalIcon} aria-label="More" />
+            {!isChatVisible && (
+              <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
+            )}
+          </Box>
         </Box>
         <Box className={styles.innerContainer}>
           <Box className={styles.issueHeader}>

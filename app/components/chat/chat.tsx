@@ -22,9 +22,11 @@ interface ChatProps {
   issue: Issue;
   loading: boolean;
   issueTemplate: string | null;
+  isChatVisible: boolean;
+  toggleChatVisibility: () => void;
 }
 
-export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
+export default function Chat({ issue, loading, issueTemplate, isChatVisible, toggleChatVisibility }: ChatProps) {
   const prompt = `You are an expert in helping users answer questions and write or revise GitHub issues.`;
   const context = issue
     ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueTemplate} `
@@ -86,10 +88,10 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
   };
 
   return (
-    <Box className={styles.container}>
+    <Box className={`${styles.container} ${isChatVisible ? styles.chatVisible : styles.chatHidden}`}>
       <Box className={styles.toolbar}>
         <IconButton icon={PlusIcon} aria-label="New thread" />
-        <IconButton icon={SidebarCollapseIcon} aria-label="Hide sidebar" />
+        <IconButton icon={SidebarCollapseIcon} aria-label="Hide sidebar" onClick={toggleChatVisibility} />
       </Box>
       <Box className={styles.messages}>
         {messages

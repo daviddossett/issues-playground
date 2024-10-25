@@ -34,6 +34,8 @@ export default function Home() {
   const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
   const [tempIssue, setTempIssue] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
+  const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
+  const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
 
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
 
@@ -91,6 +93,8 @@ export default function Home() {
     setTempIssue(newTempIssue);
     setIsCreatingIssue(true);
     setCurrentItem(0);
+    setIsChatVisible(false); // Hide chat when creating a new issue
+    setIsNavVisible(false); // Hide navigation when creating a new issue
   };
 
   const handleCreateIssue = async (title: string, body: string) => {
@@ -109,6 +113,15 @@ export default function Home() {
     setTempIssue(null);
     setIsCreatingIssue(false);
     setCurrentItem(0);
+    setIsChatVisible(true); // Show chat when discarding a new issue
+  };
+
+  const toggleNavVisibility = () => {
+    setIsNavVisible(!isNavVisible);
+  };
+
+  const toggleChatVisibility = () => {
+    setIsChatVisible(!isChatVisible);
   };
 
   const isLastItem = currentItem === issues.length - 1;
@@ -126,21 +139,28 @@ export default function Home() {
           />
           <Box className={styles.innerContainer}>
             <Box className={styles.mainContent}>
-              <Navigation
-                setCurrentItem={setCurrentItem}
-                currentItem={currentItem}
-                repo={selectedRepo.name}
-                issues={tempIssue ? [tempIssue, ...issues] : issues}
-                loading={loading}
-                loadMoreIssues={loadMoreIssues}
-                hasMore={hasMore}
-              />
+              {isNavVisible && (
+                <Navigation
+                  setCurrentItem={setCurrentItem}
+                  currentItem={currentItem}
+                  repo={selectedRepo.name}
+                  issues={tempIssue ? [tempIssue, ...issues] : issues}
+                  loading={loading}
+                  loadMoreIssues={loadMoreIssues}
+                  hasMore={hasMore}
+                  toggleNavVisibility={toggleNavVisibility}
+                />
+              )}
               {isCreatingIssue ? (
                 <NewIssueForm
                   onCreate={handleCreateIssue}
                   onDiscard={handleDiscardIssue}
                   onTitleChange={(title: string) => setTempIssue((prev) => prev && { ...prev, title })}
                   onBodyChange={(body: string) => setTempIssue((prev) => prev && { ...prev, body })}
+                  toggleNavVisibility={toggleNavVisibility}
+                  toggleChatVisibility={toggleChatVisibility}
+                  isNavVisible={isNavVisible}
+                  isChatVisible={isChatVisible}
                 />
               ) : (
                 <IssueContent
@@ -151,9 +171,21 @@ export default function Home() {
                   loadMoreIssues={loadMoreIssues}
                   hasMore={hasMore}
                   isLastItem={isLastItem}
+                  isNavVisible={isNavVisible}
+                  toggleNavVisibility={toggleNavVisibility}
+                  isChatVisible={isChatVisible}
+                  toggleChatVisibility={toggleChatVisibility}
                 />
               )}
-              <Chat issue={tempIssue || issues[currentItem]} loading={loading} issueTemplate={issueTemplate} />
+              {isChatVisible && (
+                <Chat
+                  issue={tempIssue || issues[currentItem]}
+                  loading={loading}
+                  issueTemplate={issueTemplate}
+                  isChatVisible={isChatVisible}
+                  toggleChatVisibility={toggleChatVisibility}
+                />
+              )}
             </Box>
           </Box>
         </Box>

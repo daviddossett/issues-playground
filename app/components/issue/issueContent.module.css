@@ -31,7 +31,8 @@
   z-index: 1;
 }
 
-.issueNavigationArrows {
+.issueToolbarLeft,
+.issueToolbarRight {
   display: flex;
   gap: 8px;
   align-items: center;

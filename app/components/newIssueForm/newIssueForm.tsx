@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea } from "@primer/react";
+import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea, IconButton } from "@primer/react";
+import { SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
 import styles from "./newIssueForm.module.css";
 
 interface NewIssueFormProps {
@@ -7,9 +8,22 @@ interface NewIssueFormProps {
   onDiscard: () => void;
   onTitleChange: (title: string) => void;
   onBodyChange: (body: string) => void;
+  toggleNavVisibility: () => void;
+  toggleChatVisibility: () => void;
+  isNavVisible: boolean;
+  isChatVisible: boolean;
 }
 
-export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard, onTitleChange, onBodyChange }) => {
+export const NewIssueForm: React.FC<NewIssueFormProps> = ({
+  onCreate,
+  onDiscard,
+  onTitleChange,
+  onBodyChange,
+  toggleNavVisibility,
+  isNavVisible,
+  isChatVisible,
+  toggleChatVisibility,
+}) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [mode, setMode] = useState("write");
@@ -66,15 +80,24 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({ onCreate, onDiscard,
   return (
     <Box className={styles.container}>
       <Box className={styles.issueToolbar}>
-        <SegmentedControl aria-label="Issue mode">
-          <SegmentedControl.Button selected={mode === "write"} onClick={() => setMode("write")}>
-            Write
-          </SegmentedControl.Button>
-          <SegmentedControl.Button selected={mode === "preview"} onClick={() => setMode("preview")}>
-            Preview
-          </SegmentedControl.Button>
-        </SegmentedControl>
+        <Box className={styles.issueToolbarLeft}>
+          {!isNavVisible && (
+            <IconButton icon={SidebarCollapseIcon} aria-label="Hide nav" onClick={toggleNavVisibility} />
+          )}
+          <SegmentedControl aria-label="Issue mode">
+            <SegmentedControl.Button selected={mode === "write"} onClick={() => setMode("write")}>
+              Write
+            </SegmentedControl.Button>
+            <SegmentedControl.Button selected={mode === "preview"} onClick={() => setMode("preview")}>
+              Preview
+            </SegmentedControl.Button>
+          </SegmentedControl>
+        </Box>
+        {!isChatVisible && (
+          <IconButton icon={SidebarExpandIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
+        )}
       </Box>
+
       <Box className={styles.innerContainer}>
         <Text as="h2" className={styles.formTitle}>
           New issue

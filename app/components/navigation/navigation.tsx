@@ -14,6 +14,7 @@ interface NavigationProps {
   loading: boolean;
   loadMoreIssues: () => void;
   hasMore: boolean;
+  toggleNavVisibility: () => void;
 }
 
 const EmptyState = () => {
@@ -34,6 +35,7 @@ export const Navigation = ({
   loading,
   loadMoreIssues,
   hasMore,
+  toggleNavVisibility,
 }: NavigationProps) => {
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
@@ -93,7 +95,7 @@ export const Navigation = ({
   return (
     <Box className={styles.container}>
       <Box className={styles.actionBar}>
-        <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" />
+        <IconButton icon={SidebarExpandIcon} aria-label="Hide sidebar" onClick={toggleNavVisibility} />
         <IconButton icon={SyncIcon} aria-label="Refresh" />
       </Box>
       <NavList className={styles.list}>
