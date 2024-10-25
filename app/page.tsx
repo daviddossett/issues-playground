@@ -29,9 +29,9 @@ const repos: Repo[] = [
 ];
 
 export default function Home() {
-  const [selectedRepo, setSelectedRepo] = useState(repos[0]);
-  const [currentItem, setCurrentItem] = useState(0);
-  const [isCreatingIssue, setIsCreatingIssue] = useState(false);
+  const [selectedRepo, setSelectedRepo] = useState<Repo>(repos[0]);
+  const [currentItem, setCurrentItem] = useState<number>(0);
+  const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
   const [tempIssue, setTempIssue] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
 

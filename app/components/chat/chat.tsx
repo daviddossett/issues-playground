@@ -51,17 +51,17 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
   const [modalContent, setModalContent] = useState("");
   const [modalTitle, setModalTitle] = useState("");
 
-  const openModal = (content: string, title: string) => {
-    setModalContent(content);
-    setModalTitle(title);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent("");
-    setModalTitle("");
-  };
+  useEffect(() => {
+    const newPromptWithContext = `${prompt}\n\n${context}`;
+    setMessages((prevMessages) => [
+      {
+        id: "0",
+        role: "system",
+        content: newPromptWithContext,
+      },
+      ...prevMessages.filter((m) => m.role !== "system"),
+    ]);
+  }, [context, prompt, setMessages]);
 
   const addMessageWithContext = useCallback(
     (event: React.SyntheticEvent) => {
@@ -73,17 +73,17 @@ export default function Chat({ issue, loading, issueTemplate }: ChatProps) {
     [issue, handleSubmit, loading]
   );
 
-  useEffect(() => {
-    const newPromptWithContext = `${prompt}\n\n${context}`;
-    setMessages([
-      {
-        id: "0",
-        role: "system",
-        content: newPromptWithContext,
-      },
-      ...messages.filter((m) => m.role !== "system"),
-    ]);
-  }, [context, issue, messages, prompt, setMessages]);
+  const openModal = (content: string, title: string) => {
+    setModalContent(content);
+    setModalTitle(title);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent("");
+    setModalTitle("");
+  };
 
   return (
     <Box className={styles.container}>
