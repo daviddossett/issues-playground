@@ -24,9 +24,17 @@ interface ChatProps {
   issueTemplate: string | null;
   isChatVisible: boolean;
   toggleChatVisibility: () => void;
+  isCreatingIssue: boolean;
 }
 
-export default function Chat({ issue, loading, issueTemplate, isChatVisible, toggleChatVisibility }: ChatProps) {
+export default function Chat({
+  issue,
+  loading,
+  issueTemplate,
+  isChatVisible,
+  toggleChatVisibility,
+  isCreatingIssue,
+}: ChatProps) {
   const prompt = `You are an expert in helping users answer questions and write or revise GitHub issues.`;
   const context = issue
     ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueTemplate} `
@@ -130,14 +138,15 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
                 leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
                 onClick={() => openModal(issue.body ?? "", issue.title ?? "")}
               />
-              {issueTemplate && (
-                <Token
-                  className={styles.inputIssueToken}
-                  text={"Issue guidelines"}
-                  leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
-                  onClick={() => openModal(issueTemplate, "Issue guidelines")}
-                />
-              )}
+              {isCreatingIssue &&
+                issueTemplate && ( // Only show when writing an issue
+                  <Token
+                    className={styles.inputIssueToken}
+                    text={"Issue guidelines"}
+                    leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
+                    onClick={() => openModal(issueTemplate, "Issue guidelines")}
+                  />
+                )}
             </Box>
           ) : (
             <SkeletonText maxWidth={100} />

@@ -184,6 +184,7 @@ export default function Home() {
                   issueTemplate={issueTemplate}
                   isChatVisible={isChatVisible}
                   toggleChatVisibility={toggleChatVisibility}
+                  isCreatingIssue={isCreatingIssue} // Pass isCreatingIssue to Chat
                 />
               )}
             </Box>
