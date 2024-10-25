@@ -16,7 +16,7 @@ export async function fetchIssues(repo: Repo, page: number = 1) {
 }
 
 export async function fetchIssueSummary(issueBody: string) {
-    const response = await fetch("/api/openai", {
+    const response = await fetch("/api/summary", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -25,6 +25,8 @@ export async function fetchIssueSummary(issueBody: string) {
     });
 
     if (!response.ok) {
+        const errorText = await response.text(); // Capture error response text
+        console.error("Failed to fetch issue summary:", errorText); // Log the error response
         throw new Error("Failed to fetch issue summary");
     }
 
@@ -79,4 +81,21 @@ export async function fetchFileContent(repo: Repo, path: string) {
 
     const data = await response.json();
     return atob(data.content); // GitHub API returns base64 encoded content
+}
+
+export async function fetchImprovements(issueBody: string, issueTemplate: string | null) {
+    const response = await fetch("/api/improvements", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ issueBody, issueTemplate }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch improvements");
+    }
+
+    const data = await response.json();
+    return data;
 }

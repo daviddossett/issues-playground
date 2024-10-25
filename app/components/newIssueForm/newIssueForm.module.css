@@ -47,8 +47,20 @@
   overflow: hidden;
 }
 
-.highlightedWord {
-  background-color: rgba(255, 215, 0, 0.5);
+.bgYellow200 {
+  background-color: rgba(255, 255, 0, 0.5);
+}
+
+.bgGreen200 {
+  background-color: rgba(0, 255, 0, 0.5);
+}
+
+.bgBlue200 {
+  background-color: rgba(0, 0, 255, 0.5);
+}
+
+.rounded {
+  border-radius: 4px;
 }
 
 .formTitle {

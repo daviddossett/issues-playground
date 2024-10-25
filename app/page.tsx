@@ -161,6 +161,7 @@ export default function Home() {
                   toggleChatVisibility={toggleChatVisibility}
                   isNavVisible={isNavVisible}
                   isChatVisible={isChatVisible}
+                  issueTemplate={issueTemplate}
                 />
               ) : (
                 <IssueContent
