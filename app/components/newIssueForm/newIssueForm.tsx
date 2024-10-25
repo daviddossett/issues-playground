@@ -27,9 +27,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [mode, setMode] = useState("write");
-  // const [highlightedBody, setHighlightedBody] = useState("");
-  // const textareaRef = useRef<HTMLTextAreaElement>(null);
-  // const highlightRef = useRef<HTMLDivElement>(null);
 
   const handleCreate = () => {
     onCreate(title, body);
@@ -45,37 +42,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
     const newBody = e.target.value;
     setBody(newBody);
     onBodyChange(newBody);
-    // highlightWords(newBody);
   };
-
-  // const highlightWords = (text: string) => {
-  //   const words = text
-  //     .split(/\n/)
-  //     .map((line) =>
-  //       line
-  //         .split(/\s+/)
-  //         .map((word) => `<span class="${styles.highlightedWord}">${word}</span>`)
-  //         .join(" ")
-  //     )
-  //     .join("<br>");
-  //   setHighlightedBody(words);
-  // };
-
-  // useEffect(() => {
-  //   if (textareaRef.current && highlightRef.current) {
-  //     const syncScroll = () => {
-  //       if (textareaRef.current && highlightRef.current) {
-  //         highlightRef.current.scrollTop = textareaRef.current.scrollTop;
-  //         highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
-  //       }
-  //     };
-  //     const textarea = textareaRef.current;
-  //     if (textarea) {
-  //       textarea.addEventListener("scroll", syncScroll);
-  //       return () => textarea.removeEventListener("scroll", syncScroll);
-  //     }
-  //   }
-  // }, [body]);
 
   return (
     <Box className={styles.container}>
@@ -115,11 +82,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
           <FormControl>
             <FormControl.Label>Add a description</FormControl.Label>
             <Box className={styles.textareaContainer}>
-              {/* <div
-                className={styles.highlightOverlay}
-                ref={highlightRef}
-                dangerouslySetInnerHTML={{ __html: highlightedBody }}
-              /> */}
               <Textarea
                 placeholder="Description"
                 value={body}
