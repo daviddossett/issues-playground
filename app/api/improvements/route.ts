@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod.mjs';
 import { z } from 'zod';
@@ -24,9 +23,8 @@ const prompt = `
 - Keep your reasoning concise: 5 words or less.
 `;
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { issueBody, issueTemplate } = req.body;
+export async function POST(req: Request) {
+    const { issueBody, issueTemplate } = await req.json();
 
     try {
         const response = await openai.beta.chat.completions.parse({
@@ -47,9 +45,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error("Response content is null");
         }
         const improvements = content;
-        res.status(200).json(improvements);
+        return new Response(JSON.stringify(improvements), { status: 200 });
     } catch (error) {
         console.error("Error fetching improvements:", error);
-        res.status(500).json({ error: "Failed to fetch improvements" });
+        return new Response(JSON.stringify({ error: "Failed to fetch improvements" }), { status: 500 });
     }
 }

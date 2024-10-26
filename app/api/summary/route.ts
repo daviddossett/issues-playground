@@ -1,14 +1,18 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { issueBody } = req.body;
-
+export async function POST(req: NextRequest) {
     try {
+        const { issueBody } = await req.json();
+
+        if (!issueBody) {
+            return NextResponse.json({ error: "Missing issueBody parameter" }, { status: 400 });
+        }
+
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
@@ -17,9 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ],
             max_tokens: 200,
         });
-        res.status(200).json({ summary: response.choices[0].message.content });
+
+        const summary = response.choices[0].message.content;
+        return NextResponse.json({ summary }, { status: 200 });
     } catch (error) {
         console.error("Error fetching issue summary:", error);
-        res.status(500).json({ error: "Failed to fetch issue summary" });
+        return NextResponse.json({ error: "Failed to fetch issue summary" }, { status: 500 });
     }
 }
