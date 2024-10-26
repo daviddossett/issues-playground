@@ -16,6 +16,14 @@ export const ImprovementProposal = z.object({
         })),
 });
 
+const prompt = `
+- You are an expert at helping users refine a WIP draft of GitHub Issue that they are writing. The goal will be to highlight specific sections of the issue that could be improved and allow users to accept/discard proposed improvements.
+- The improvements are based on a template that the repo maintainer has provided.
+- Don't fully rewrite the issue.
+- Generate >=1 discrete proposed edits. Keep the proposed edits as small as possible to avoid completely rewriting the issue.
+- Keep your reasoning concise: 5 words or less.
+`;
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { issueBody, issueTemplate } = req.body;
@@ -26,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             messages: [
                 {
                     role: "system",
-                    content: `You are an assistant that proposes an array of improvements to the body of a WIP GitHub issue that a user is writing. The improvements are based on a template that the repo maintainer has provided. I don't want a full rewrite of the issue. I want multiple discrete edits on specific parts of the issue. Keep your reasoning concise: 5 words or less.`,
+                    content: prompt,
                 },
                 { role: "user", content: `Issue Body: ${issueBody}\nIssue Template: ${issueTemplate || ''}` },
             ],
