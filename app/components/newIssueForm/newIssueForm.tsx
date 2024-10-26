@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  Text,
-  TextInput,
-  SegmentedControl,
-  Textarea,
-  IconButton,
-  Spinner,
-} from "@primer/react";
+import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea, IconButton } from "@primer/react";
 import { SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
 import styles from "./newIssueForm.module.css";
 import { useImproveIssue } from "@/app/hooks/useImproveIssue";
@@ -54,13 +44,13 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
 }) => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>(
-    `I'M SO ANGRY THAT THE TITLEBAR IS BROKEN AND HERE ARE MY EMOJIS TO PROVE IT 😡😡😡`
+    `WHEN CLICKING THE "STOP" BUTTON IN THE RUN TOOLBAR, THE SELECTED LAUNCH CONFIGURATION IS STOPPED, AS EXPECTED. HOWEVER, THE TOOLBAR DISAPPEARS EVEN THOUGH THREE OTHER LAUNCHED CONFIGURATIONS ARE STILL RUNNING, WHICH IS NOT EXPECTED. What is expected is for the toolbar to stay open as long as at least one launched configuration is still alive. 🌊🏴‍☠️ An "all" option in the dropdown to stop, pause, or resume everything at once would be grand, matey! ⚔️☠️⚓️`
   );
   const [mode, setMode] = useState<string>("write");
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [activePattern, setActivePattern] = useState<HighlightPattern | null>(null);
 
-  const { improvements, improvementsLoading, fetchIssueImprovements } = useImproveIssue(body, issueTemplate);
+  const { improvementsList, improvementsListLoading, fetchIssueImprovements } = useImproveIssue(body, issueTemplate);
 
   const highlightPatterns: HighlightPatterns = {
     numbers: /\d+/g,
@@ -106,10 +96,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
       }
 
       parts.push(
-        <span
-          key={`highlight-${index}`}
-          className={`${highlightColors[highlight.type]} ${styles.rounded} ${styles.px1}`}
-        >
+        <span key={`highlight-${index}`} className={`${highlightColors[highlight.type]}`}>
           {body.slice(highlight.start, highlight.end + 1)}
         </span>
       );
@@ -143,6 +130,29 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
 
   const handleFetchImprovements = (): void => {
     fetchIssueImprovements();
+  };
+
+  const ImprovementsList = () => {
+    return (
+      <Box className={styles.improvementsContainer}>
+        {improvementsList?.improvements &&
+          improvementsList.improvements.map(
+            (improvement: { original: string; proposed: string; reasoning: string }, index: number) => (
+              <Box key={index} className={styles.improvementItem}>
+                <Text as="p">
+                  <strong>{index + 1}. Original:</strong> {improvement.original}
+                </Text>
+                <Text as="p">
+                  <strong>Proposed:</strong> {improvement.proposed}
+                </Text>
+                <Text as="p">
+                  <strong>Reasoning:</strong> {improvement.reasoning}
+                </Text>
+              </Box>
+            )
+          )}
+      </Box>
+    );
   };
 
   return (
@@ -217,25 +227,11 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
             <Button variant="primary" onClick={handleCreate}>
               Create
             </Button>
-            <Button onClick={handleFetchImprovements} disabled={improvementsLoading}>
-              {improvementsLoading ? "Fetching Improvements..." : "Fetch Improvements"}
+            <Button onClick={handleFetchImprovements} disabled={improvementsListLoading}>
+              {improvementsListLoading ? "Fetching Improvements..." : "Fetch Improvements"}
             </Button>
           </Box>
-
-          <Box className={styles.improvementsContainer}>
-            <Text as="h3">Improvements</Text>
-            {improvementsLoading ? (
-              <Spinner size="small" />
-            ) : (
-              improvements && (
-                <Box className={styles.improvement}>
-                  <Text as="p">
-                    <strong>Proposed:</strong> {improvements}
-                  </Text>
-                </Box>
-              )
-            )}
-          </Box>
+          <ImprovementsList />
         </Box>
       </Box>
     </Box>
