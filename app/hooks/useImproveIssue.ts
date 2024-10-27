@@ -2,15 +2,12 @@ import { useState, useCallback } from "react";
 import { fetchImprovements } from "@/app/client";
 
 interface ImprovementProposal {
-    improvements: [
-        {
-            original: string;
-            proposed: string;
-            reasoning: string;
-        }
-    ]
+    improvements: {
+        original: string;
+        proposed: string;
+        reasoning: string;
+    }[];
 }
-
 
 export const useImproveIssue = (issueBody: string, issueTemplate: string | null) => {
     const [improvementsList, setImprovementsList] = useState<ImprovementProposal>();
@@ -31,5 +28,5 @@ export const useImproveIssue = (issueBody: string, issueTemplate: string | null)
         }
     }, [issueBody, issueTemplate]);
 
-    return { improvementsList, improvementsListLoading, error, fetchIssueImprovements };
+    return { improvementsList, improvementsListLoading, error, fetchIssueImprovements, setImprovementsList };
 };
