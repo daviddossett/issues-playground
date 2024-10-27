@@ -28,13 +28,14 @@
   height: 100%;
   pointer-events: none;
   white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   color: transparent;
   font: inherit;
   padding: 12px;
   box-sizing: border-box;
   line-height: 15px;
   overflow: hidden;
+  z-index: 10;
 }
 
 .issueBodyInput {
@@ -45,18 +46,6 @@
   box-sizing: border-box;
   line-height: 21px;
   overflow: hidden;
-}
-
-.bgYellow200 {
-  background-color: rgba(255, 255, 0, 0.5);
-}
-
-.bgGreen200 {
-  background-color: rgba(0, 255, 0, 0.5);
-}
-
-.bgBlue200 {
-  background-color: rgba(0, 0, 255, 0.5);
 }
 
 .formTitle {
@@ -99,4 +88,24 @@
   gap: 8px;
   width: 100%;
   justify-content: flex-end;
+}
+
+.highlight {
+  background-color: rgba(215, 255, 0, 0.1);
+  border-bottom: 2px dashed rgba(215, 255, 0, 0.5);
+  cursor: pointer;
+  pointer-events: auto; /* Allow pointer events */
+  transition:
+    background-color 0.15s,
+    border-bottom-color 0.15s;
+}
+
+.highlight:hover {
+  background-color: rgba(215, 255, 0, 0.2);
+  border-bottom: 2px dashed rgba(215, 255, 0, 0.5);
+}
+
+.hoveredImprovement {
+  margin-top: 16px;
+  padding: 12px;
 }
