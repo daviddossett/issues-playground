@@ -94,7 +94,7 @@ export default function Home() {
     setIsCreatingIssue(true);
     setCurrentItem(0);
     setIsChatVisible(true);
-    setIsNavVisible(true);
+    setIsNavVisible(false);
   };
 
   const handleCreateIssue = async (title: string, body: string) => {
