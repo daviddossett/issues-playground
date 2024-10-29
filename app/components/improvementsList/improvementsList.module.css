@@ -1,0 +1,84 @@
+.improvementsContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 400px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.improvementsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 8px 8px 16px;
+  background-color: var(--bgColor-muted);
+  border-bottom: 1px solid var(--borderColor-default);
+}
+
+.improvementsList {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.improvementsHeaderTitle {
+  font: var(--text-body-shorthand-medium);
+  font-weight: var(--text-title-weight-small);
+  color: var(--fgColor-default);
+  margin: 0;
+}
+
+.improvementItem {
+  border: 1px solid var(--borderColor-default);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.improvementItemOriginalText,
+.improvementItemProposedText {
+  margin: 0;
+}
+
+.improvementItemOriginalText {
+  background-color: var(--bgColor-danger-muted);
+  text-decoration: line-through;
+}
+
+.improvementItemProposedText {
+  background-color: var(--bgColor-success-muted);
+}
+
+.improvementReasoning {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.improvementItemReasoningText {
+  font: var(--text-caption-shorthand);
+  color: var(--fgColor-muted);
+}
+
+.improvementItem:hover {
+  border-color: var(--borderColor-accent-emphasis);
+  cursor: pointer;
+}
+
+.improvementItem:focus {
+  border-color: var(--borderColor-accent-emphasis);
+}
+
+.improvementItemButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.improvementItemApplyDiscardButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}

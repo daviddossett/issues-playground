@@ -7,12 +7,11 @@ const openai = new OpenAI({
 });
 
 export const ImprovementProposal = z.object({
-    improvements: z.array(
-        z.object({
-            original: z.string(),
-            proposed: z.string(),
-            reasoning: z.string(),
-        })),
+    items: z.array(z.object({
+        original: z.string(),
+        proposed: z.string(),
+        reasoning: z.string(),
+    })),
 });
 
 const prompt = `
@@ -24,6 +23,7 @@ const prompt = `
 - If applicable, propose edits that change the users original text to fit the formats shown in the issue example. E.g. Suggest a "steps to reproduce" edit that fills out the skeleton (e.g. Steps to reproduce: 1) /n 2) /n 3) ...) of that section for them for a partial ordered list, even if they haven't provided all the details yet.
 - The reasoning for the proposed edit should be echoed from the provided guidelines word for word in the response. 
 - If the proposed edit is to remove the text, return "" (an empty string).
+- Don't return duplicate edits.
 `;
 
 export async function POST(req: Request) {

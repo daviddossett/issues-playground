@@ -10,8 +10,10 @@ import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types";
-import { NewIssueForm, sampleBody } from "./components/newIssueForm/newIssueForm";
+import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
 import { createIssue, fetchFileContent } from "./client";
+import { useImproveIssue } from "./hooks/useImproveIssue";
+import { ImprovementsList } from "./components/improvementsList/improvementsList";
 
 export interface Repo {
   name: string;
@@ -36,8 +38,14 @@ export default function Home() {
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
   const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
+  const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(0);
+  const [isImprovementsVisible, setIsImprovementsVisible] = useState<boolean>(false);
 
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
+  const { improvements, setImprovements, fetchIssueImprovements } = useImproveIssue(
+    tempIssue?.body || "",
+    issueTemplate
+  );
 
   useEffect(() => {
     if (issues.length > 0 && currentItem >= issues.length) {
@@ -58,6 +66,12 @@ export default function Home() {
 
     fetchIssueTemplate();
   }, [selectedRepo]);
+
+  useEffect(() => {
+    if (improvements?.length) {
+      setIsImprovementsVisible(true);
+    }
+  }, [improvements]);
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
@@ -83,18 +97,20 @@ export default function Home() {
   };
 
   const handleNewIssue = () => {
+    const sampleBody = `THIS THING IS ALWAYS BROKEN 😡 It's almost as if you're trying to create a terrible app. It never generates the right grid layouts AND EVEN IF IT DID the css it spits out just overflows off the page, so I can't see it. Do better, guys.`;
+
     const newTempIssue = {
       id: Date.now(),
       title: "New issue",
-      body: sampleBody, // Ensure sampleBody is used here
+      body: sampleBody,
       user: { login: "current_user" },
       created_at: new Date().toISOString(),
     } as Issue;
     setTempIssue(newTempIssue);
     setIsCreatingIssue(true);
     setCurrentItem(0);
-    setIsChatVisible(true);
-    setIsNavVisible(true);
+    setIsChatVisible(false);
+    setIsNavVisible(false);
   };
 
   const handleCreateIssue = async (title: string, body: string) => {
@@ -113,7 +129,8 @@ export default function Home() {
     setTempIssue(null);
     setIsCreatingIssue(false);
     setCurrentItem(0);
-    setIsChatVisible(true); // Show chat when discarding a new issue
+    setIsChatVisible(true);
+    setIsNavVisible(true);
   };
 
   const toggleNavVisibility = () => {
@@ -122,6 +139,42 @@ export default function Home() {
 
   const toggleChatVisibility = () => {
     setIsChatVisible(!isChatVisible);
+  };
+
+  const handleImprovementClick = (index: number) => {
+    setFocusedImprovementIndex(index);
+  };
+
+  const handleAcceptImprovement = (index: number) => {
+    if (!improvements || !tempIssue?.body) return;
+
+    const improvement = improvements[index];
+    const updatedBody = tempIssue.body.replace(improvement.original, improvement.proposed);
+    setTempIssue((prev) => prev && { ...prev, body: updatedBody });
+    setImprovements((prevImprovements) => prevImprovements?.filter((_, i) => i !== index) || []);
+
+    if (improvements.length === 1) {
+      setIsImprovementsVisible(false);
+    } else {
+      setFocusedImprovementIndex(0);
+    }
+  };
+
+  const handleDiscardImprovement = (index: number) => {
+    if (!improvements) return;
+
+    const updatedImprovements = improvements.filter((_, i) => i !== index);
+    setImprovements(updatedImprovements);
+
+    if (updatedImprovements.length === 0) {
+      setIsImprovementsVisible(false);
+    } else {
+      setFocusedImprovementIndex(0);
+    }
+  };
+
+  const handleFetchImprovements = () => {
+    fetchIssueImprovements();
   };
 
   const isLastItem = currentItem === issues.length - 1;
@@ -161,7 +214,11 @@ export default function Home() {
                   toggleChatVisibility={toggleChatVisibility}
                   isNavVisible={isNavVisible}
                   isChatVisible={isChatVisible}
-                  issueTemplate={issueTemplate}
+                  onFetchImprovements={handleFetchImprovements}
+                  improvements={improvements}
+                  focusedImprovementIndex={focusedImprovementIndex}
+                  handleImprovementClick={handleImprovementClick}
+                  tempBody={tempIssue?.body || ""}
                 />
               ) : (
                 <IssueContent
@@ -185,10 +242,19 @@ export default function Home() {
                   issueTemplate={issueTemplate}
                   isChatVisible={isChatVisible}
                   toggleChatVisibility={toggleChatVisibility}
-                  isCreatingIssue={isCreatingIssue} // Pass isCreatingIssue to Chat
+                  isCreatingIssue={isCreatingIssue}
                 />
               )}
             </Box>
+            {isImprovementsVisible && (
+              <ImprovementsList
+                improvements={improvements}
+                focusedImprovementIndex={focusedImprovementIndex}
+                handleImprovementClick={handleImprovementClick}
+                handleAcceptImprovement={handleAcceptImprovement}
+                handleDiscardImprovement={handleDiscardImprovement}
+              />
+            )}
           </Box>
         </Box>
       </BaseStyles>

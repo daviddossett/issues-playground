@@ -17,6 +17,7 @@
   flex-grow: 1;
   overflow: hidden;
   padding: 0 16px 16px 16px;
+  gap: 16px;
 }
 
 .mainContent {

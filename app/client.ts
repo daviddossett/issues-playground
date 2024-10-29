@@ -96,6 +96,8 @@ export async function fetchImprovements(issueBody: string, issueTemplate: string
         throw new Error("Failed to fetch improvements");
     }
 
+
     const data = await response.json();
-    return data;
+    const improvements = data.items;
+    return improvements;
 }

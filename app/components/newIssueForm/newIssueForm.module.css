@@ -80,6 +80,12 @@
   align-items: center;
 }
 
+.issueToolbarRight {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .issueTitleInput {
   width: 100%;
 }
@@ -92,8 +98,8 @@
 }
 
 .highlight {
-  background-color: var(--bgColor-attention-muted);
-  border-bottom: 2px dotted var(--borderColor-attention-muted);
+  /* background-color: var(--bgColor-attention-muted); */
+  border-bottom: 2px dotted var(--borderColor-attention-emphasis);
   cursor: pointer;
   pointer-events: auto; /* Allow pointer events since they are ignored on the actual text area */
   transition:
@@ -108,57 +114,7 @@
 
 .focusedHighlight {
   background-color: var(--bgColor-attention-muted);
-  border: 2px dashed var(--borderColor-attention-emphasis);
-  border-radius: 4px;
-}
-
-.improvementsContainer {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  gap: 16px;
-  position: relative;
-}
-
-.improvementsHeader {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.improvementBox {
-  border: 1px solid var(--borderColor-default);
-  padding: 0 16px 16px 16px;
-  border-radius: 6px;
-}
-
-.improvementBox:hover {
-  border-color: var(--borderColor-accent-emphasis);
-  cursor: pointer;
-}
-
-.improvementBox:focus {
-  border-color: var(--borderColor-accent-emphasis);
-}
-
-.improvementBoxTitle {
-  font: var(--text-title-shorthand-small);
-  color: var(--fgColor-default);
-}
-
-.improvementBoxCaption {
-  color: var(--fgColor-muted);
-}
-
-.focusedImprovementBox {
-  border-color: var(--borderColor-accent-emphasis);
-}
-
-.improvementBoxButtons {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  border-bottom: 2px dashed var(--borderColor-attention-emphasis);
 }
 
 .mainContent {
