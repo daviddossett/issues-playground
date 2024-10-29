@@ -80,6 +80,12 @@
   align-items: center;
 }
 
+.issueToolbarRight {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .issueTitleInput {
   width: 100%;
 }
@@ -92,8 +98,8 @@
 }
 
 .highlight {
-  background-color: var(--bgColor-attention-muted);
-  border-bottom: 2px dotted var(--borderColor-attention-muted);
+  /* background-color: var(--bgColor-attention-muted); */
+  border-bottom: 2px dotted var(--borderColor-attention-emphasis);
   cursor: pointer;
   pointer-events: auto; /* Allow pointer events since they are ignored on the actual text area */
   transition:
@@ -108,7 +114,7 @@
 
 .focusedHighlight {
   background-color: var(--bgColor-attention-muted);
-  border: 2px dashed var(--borderColor-attention-emphasis);
+  border-bottom: 2px dashed var(--borderColor-attention-emphasis);
   border-radius: 4px;
 }
 
@@ -159,6 +165,8 @@
   display: flex;
   gap: 8px;
   margin-top: 8px;
+  background-color: var(--bgColor-attention-muted);
+  border-bottom: 2px dashed var(--borderColor-attention-emphasis);
 }
 
 .mainContent {

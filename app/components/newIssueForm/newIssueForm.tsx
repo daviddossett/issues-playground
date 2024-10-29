@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea, IconButton } from "@primer/react";
 import { CopilotIcon, SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
 import styles from "./newIssueForm.module.css";
-import { useImproveIssue } from "@/app/hooks/useImproveIssue";
+import { Improvement } from "@/app/hooks/useImproveIssue";
 
 interface NewIssueFormProps {
   onCreate: (title: string, body: string) => void;
@@ -13,14 +13,12 @@ interface NewIssueFormProps {
   toggleChatVisibility: () => void;
   isNavVisible: boolean;
   isChatVisible: boolean;
-  issueTemplate: string | null;
+  improvements: Improvement[] | null;
+  onFetchImprovements: () => void;
+  focusedImprovementIndex: number | null;
+  handleImprovementClick: (index: number) => void;
+  tempBody: string;
 }
-
-export const sampleBody = `THIS THING IS ALWAYS BROKEN 😡
-
-It's almost as if you're trying to create a terrible app. It never generates the right grid layouts AND EVEN IF IT DID the css it spits out just overflows off the page, so I can't see it.
-
-Do better, guys.`;
 
 export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   onCreate,
@@ -31,35 +29,33 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   isNavVisible,
   isChatVisible,
   toggleChatVisibility,
-  issueTemplate,
+  improvements,
+  onFetchImprovements,
+  focusedImprovementIndex,
+  handleImprovementClick,
+  tempBody,
 }) => {
   const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>(sampleBody);
+  const [body, setBody] = useState<string>(tempBody);
   const [mode, setMode] = useState<string>("write");
-  const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(null);
-  const [isImprovementsVisible, setIsImprovementsVisible] = useState<boolean>(false);
-
-  const { improvementsList, improvementsListLoading, fetchIssueImprovements, setImprovementsList } = useImproveIssue(
-    body,
-    issueTemplate
-  );
 
   useEffect(() => {
-    if (!improvementsListLoading && improvementsList?.improvements.length) {
-      setIsImprovementsVisible(true);
-      setFocusedImprovementIndex(0);
-    }
-  }, [improvementsListLoading, improvementsList]);
+    setBody(tempBody);
+  }, [tempBody]);
 
   const renderHighlightedText = (): React.ReactNode => {
-    if (!improvementsList?.improvements) return body;
+    if (!improvements) return body;
 
     let lastIndex = 0;
     const parts: React.ReactNode[] = [];
 
-    improvementsList.improvements.forEach((improvement, index) => {
+    improvements.forEach((improvement, index) => {
       const { original } = improvement;
+      if (!original.trim()) return; // Skip empty or whitespace-only strings
+
       const start = body.indexOf(original, lastIndex);
+
+      if (start === -1) return; // Skip if the original text is not found
 
       if (start > lastIndex) {
         parts.push(<span key={`text-${index}`}>{body.slice(lastIndex, start)}</span>);
@@ -69,7 +65,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
         <span
           key={`highlight-${index}`}
           className={`${styles.highlight} ${focusedImprovementIndex === index ? styles.focusedHighlight : ""}`}
-          onClick={() => setFocusedImprovementIndex(index)}
+          onClick={() => handleImprovementClick(index)}
         >
           {original}
         </span>
@@ -101,45 +97,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
     onBodyChange(newBody);
   };
 
-  const handleFetchImprovements = (): void => {
-    fetchIssueImprovements();
-  };
-
-  const handleImprovementClick = (index: number): void => {
-    setFocusedImprovementIndex(index);
-  };
-
-  const handleAcceptImprovement = (index: number): void => {
-    const improvement = improvementsList?.improvements[index];
-    if (!improvement) return;
-
-    const updatedBody = body.replace(improvement.original, improvement.proposed);
-    setBody(updatedBody);
-    onBodyChange(updatedBody);
-
-    const updatedImprovements = improvementsList.improvements.filter((_, i) => i !== index);
-    setImprovementsList({ ...improvementsList, improvements: updatedImprovements });
-
-    if (updatedImprovements.length === 0) {
-      setIsImprovementsVisible(false);
-    } else {
-      setFocusedImprovementIndex(0);
-    }
-  };
-
-  const handleDiscardImprovement = (index: number): void => {
-    if (!improvementsList) return;
-
-    const updatedImprovements = improvementsList.improvements.filter((_, i) => i !== index);
-    setImprovementsList({ ...improvementsList, improvements: updatedImprovements });
-
-    if (updatedImprovements.length === 0) {
-      setIsImprovementsVisible(false);
-    } else {
-      setFocusedImprovementIndex(0);
-    }
-  };
-
   return (
     <Box className={styles.container}>
       <Box className={styles.issueToolbar}>
@@ -156,9 +113,14 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
             </SegmentedControl.Button>
           </SegmentedControl>
         </Box>
-        {!isChatVisible && (
-          <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
-        )}
+        <Box className={styles.issueToolbarRight}>
+          <Button onClick={onFetchImprovements} leadingVisual={CopilotIcon}>
+            Generate issue feedback
+          </Button>
+          {!isChatVisible && (
+            <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
+          )}
+        </Box>
       </Box>
 
       <Box className={styles.mainContent}>
@@ -176,7 +138,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
                 className={styles.issueTitleInput}
               />
             </FormControl>
-
             <FormControl>
               <FormControl.Label>Add a description</FormControl.Label>
               <Box className={styles.textareaContainer}>
@@ -193,9 +154,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
               </Box>
             </FormControl>
             <Box className={styles.buttonContainer}>
-              <Button leadingVisual={CopilotIcon} onClick={handleFetchImprovements} disabled={improvementsListLoading}>
-                Refine issue
-              </Button>
               <Button variant="danger" onClick={onDiscard}>
                 Discard
               </Button>
@@ -203,52 +161,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
                 Create
               </Button>
             </Box>
-            {isImprovementsVisible && (
-              <Box className={styles.improvementsContainer}>
-                <Box className={styles.improvementsHeader}>
-                  <Text as="h2">Improvements</Text>
-                </Box>
-                {improvementsList?.improvements.map((improvement, index) => (
-                  <Box
-                    key={index}
-                    className={`${styles.improvementBox} ${focusedImprovementIndex === index ? styles.focusedImprovementBox : ""}`}
-                    onClick={() => handleImprovementClick(index)}
-                  >
-                    <Text as="h3" className={styles.improvementBoxTitle}>
-                      Proposed
-                    </Text>
-                    <Text as="p" className={styles.improvementBoxCaption}>
-                      {improvement.proposed || "[Suggest to remove this based on issue guidelines]"}
-                    </Text>
-                    <Text as="h3" className={styles.improvementBoxTitle}>
-                      Reasoning
-                    </Text>
-                    <Text as="p" className={styles.improvementBoxCaption}>
-                      {improvement.reasoning}
-                    </Text>
-                    <Box className={styles.improvementBoxButtons}>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAcceptImprovement(index);
-                        }}
-                      >
-                        Apply
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDiscardImprovement(index);
-                        }}
-                      >
-                        Discard
-                      </Button>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-            )}
           </Box>
         </Box>
       </Box>
