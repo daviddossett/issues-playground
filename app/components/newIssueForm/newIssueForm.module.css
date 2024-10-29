@@ -35,7 +35,7 @@
   box-sizing: border-box;
   line-height: 15px;
   overflow: hidden;
-  z-index: 10;
+  z-index: 0;
 }
 
 .issueBodyInput {
@@ -46,6 +46,7 @@
   box-sizing: border-box;
   line-height: 21px;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .formTitle {
@@ -91,23 +92,24 @@
 }
 
 .highlight {
-  background-color: rgba(215, 255, 0, 0.03);
-  border-bottom: 2px dotted rgba(215, 255, 0, 0.5);
+  background-color: var(--bgColor-attention-muted);
+  border-bottom: 2px dotted var(--borderColor-attention-muted);
   cursor: pointer;
-  pointer-events: auto; /* Allow pointer events */
+  pointer-events: auto; /* Allow pointer events since they are ignored on the actual text area */
   transition:
     background-color 0.15s,
     border-bottom-color 0.15s;
 }
 
 .highlight:hover {
-  background-color: rgba(215, 255, 0, 0.15);
-  border-bottom: 2px dashed rgba(215, 255, 0, 1);
+  background-color: var(--bgColor-attention-muted);
+  border-bottom: 2px dashed var(--borderColor-attention-emphasis);
 }
 
 .focusedHighlight {
-  background-color: rgba(215, 255, 0, 0.15);
-  border-bottom: 2px dashed rgba(215, 255, 0, 1);
+  background-color: var(--bgColor-attention-muted);
+  border: 2px dashed var(--borderColor-attention-emphasis);
+  border-radius: 4px;
 }
 
 .improvementsContainer {
