@@ -113,7 +113,7 @@ export default function Home() {
     setTempIssue(null);
     setIsCreatingIssue(false);
     setCurrentItem(0);
-    setIsChatVisible(true); // Show chat when discarding a new issue
+    setIsChatVisible(true);
   };
 
   const toggleNavVisibility = () => {
@@ -185,7 +185,7 @@ export default function Home() {
                   issueTemplate={issueTemplate}
                   isChatVisible={isChatVisible}
                   toggleChatVisibility={toggleChatVisibility}
-                  isCreatingIssue={isCreatingIssue} // Pass isCreatingIssue to Chat
+                  isCreatingIssue={isCreatingIssue}
                 />
               )}
             </Box>

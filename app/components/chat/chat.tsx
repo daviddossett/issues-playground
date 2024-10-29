@@ -88,39 +88,45 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
     setModalTitle("");
   };
 
-  return (
-    <Box className={`${styles.container} ${isChatVisible ? styles.chatVisible : styles.chatHidden}`}>
-      <Box className={styles.toolbar}>
-        <IconButton icon={PlusIcon} aria-label="New thread" />
-        <IconButton icon={SidebarCollapseIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
+  const Message = ({ m }: { m: Message }) => {
+    return (
+      <Box as={"li"} key={m.id} className={styles.messageContainer}>
+        <Box className={styles.messageHeader}>
+          {m.role === "user" ? (
+            <>
+              <Avatar src={userAvatarUrl} size={24} />
+              <Text>daviddossett</Text>
+            </>
+          ) : (
+            <>
+              <Box className={styles.copilotIcon}>
+                <Octicon icon={CopilotIcon} size={14} />
+              </Box>
+              <Text>Copilot</Text>
+            </>
+          )}
+        </Box>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} className={styles.content}>
+          {m.content}
+        </Markdown>
       </Box>
-      <Box className={styles.messages}>
+    );
+  };
+
+  const ChatMessageList = ({ messages }: { messages: Message[] }) => {
+    return (
+      <Box as={"ul"} className={styles.messages}>
         {messages
           .filter((m) => m.role !== "system")
           .map((m) => (
-            <Box key={m.id} className={styles.messageContainer}>
-              <Box className={styles.messageHeader}>
-                {m.role === "user" ? (
-                  <>
-                    <Avatar src={userAvatarUrl} size={24} />
-                    <Text>daviddossett</Text>
-                  </>
-                ) : (
-                  <>
-                    <Box className={styles.copilotIcon}>
-                      <Octicon icon={CopilotIcon} size={14} />
-                    </Box>
-                    <Text>Copilot</Text>
-                  </>
-                )}
-              </Box>
-
-              <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} className={styles.content}>
-                {m.content}
-              </Markdown>
-            </Box>
+            <Message key={m.id} m={m} />
           ))}
       </Box>
+    );
+  };
+
+  const ChatInput = () => {
+    return (
       <form onSubmit={addMessageWithContext} className={styles.form}>
         <Box className={styles.inputContainer}>
           {!loading && issue && issue.title ? (
@@ -131,7 +137,7 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
                 leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
                 onClick={() => openModal(issue.body ?? "", issue.title ?? "")}
               />
-              {issueTemplate && ( // Only show when writing an issue
+              {issueTemplate && (
                 <Token
                   className={styles.inputIssueToken}
                   text={"Issue guidelines"}
@@ -143,7 +149,6 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
           ) : (
             <SkeletonText maxWidth={100} />
           )}
-
           <FormControl>
             <FormControl.Label visuallyHidden={true}>Ask Copilot</FormControl.Label>
             <TextInput
@@ -166,7 +171,23 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
           </FormControl>
         </Box>
       </form>
+    );
+  };
 
+  const ChatHeader = () => {
+    return (
+      <Box className={styles.toolbar}>
+        <IconButton icon={PlusIcon} aria-label="New thread" />
+        <IconButton icon={SidebarCollapseIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
+      </Box>
+    );
+  };
+
+  return (
+    <Box className={`${styles.container} ${isChatVisible ? styles.chatVisible : styles.chatHidden}`}>
+      <ChatHeader />
+      <ChatMessageList messages={messages} />
+      <ChatInput />
       <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide>
         <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
         <Box p={4} className={styles.dialogMarkdown}>
