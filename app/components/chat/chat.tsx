@@ -27,14 +27,7 @@ interface ChatProps {
   isCreatingIssue: boolean;
 }
 
-export default function Chat({
-  issue,
-  loading,
-  issueTemplate,
-  isChatVisible,
-  toggleChatVisibility,
-  isCreatingIssue,
-}: ChatProps) {
+export default function Chat({ issue, loading, issueTemplate, isChatVisible, toggleChatVisibility }: ChatProps) {
   const prompt = `You are an expert in helping users answer questions and write or revise GitHub issues.`;
   const context = issue
     ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueTemplate} `
@@ -71,7 +64,7 @@ export default function Chat({
       },
       ...prevMessages.filter((m) => m.role !== "system"),
     ]);
-  }, [context, prompt, setMessages]);
+  }, [context, prompt, setMessages, issue?.body]);
 
   const addMessageWithContext = useCallback(
     (event: React.SyntheticEvent) => {
@@ -138,15 +131,14 @@ export default function Chat({
                 leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
                 onClick={() => openModal(issue.body ?? "", issue.title ?? "")}
               />
-              {isCreatingIssue &&
-                issueTemplate && ( // Only show when writing an issue
-                  <Token
-                    className={styles.inputIssueToken}
-                    text={"Issue guidelines"}
-                    leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
-                    onClick={() => openModal(issueTemplate, "Issue guidelines")}
-                  />
-                )}
+              {issueTemplate && ( // Only show when writing an issue
+                <Token
+                  className={styles.inputIssueToken}
+                  text={"Issue guidelines"}
+                  leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
+                  onClick={() => openModal(issueTemplate, "Issue guidelines")}
+                />
+              )}
             </Box>
           ) : (
             <SkeletonText maxWidth={100} />

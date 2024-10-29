@@ -10,7 +10,7 @@ import { useIssues } from "./hooks/useIssues";
 import styles from "./page.module.css";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types";
-import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
+import { NewIssueForm, sampleBody } from "./components/newIssueForm/newIssueForm";
 import { createIssue, fetchFileContent } from "./client";
 
 export interface Repo {
@@ -48,7 +48,7 @@ export default function Home() {
   useEffect(() => {
     const fetchIssueTemplate = async () => {
       try {
-        const content = await fetchFileContent(selectedRepo, ".github/issue-template.md");
+        const content = await fetchFileContent(selectedRepo, ".github/issue-guidelines.md");
         setIssueTemplate(content);
       } catch (error) {
         console.error("Failed to fetch issue template:", error);
@@ -86,15 +86,15 @@ export default function Home() {
     const newTempIssue = {
       id: Date.now(),
       title: "New issue",
-      body: "",
+      body: sampleBody, // Ensure sampleBody is used here
       user: { login: "current_user" },
       created_at: new Date().toISOString(),
     } as Issue;
     setTempIssue(newTempIssue);
     setIsCreatingIssue(true);
     setCurrentItem(0);
-    setIsChatVisible(false); // Hide chat when creating a new issue
-    setIsNavVisible(false); // Hide navigation when creating a new issue
+    setIsChatVisible(true);
+    setIsNavVisible(true);
   };
 
   const handleCreateIssue = async (title: string, body: string) => {

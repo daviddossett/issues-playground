@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea, IconButton } from "@primer/react";
-import { SidebarCollapseIcon, SidebarExpandIcon, XIcon } from "@primer/octicons-react";
+import { CopilotIcon, SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
 import styles from "./newIssueForm.module.css";
 import { useImproveIssue } from "@/app/hooks/useImproveIssue";
 
@@ -16,6 +16,12 @@ interface NewIssueFormProps {
   issueTemplate: string | null;
 }
 
+export const sampleBody = `THIS THING IS ALWAYS BROKEN 😡
+
+It's almost as if you're trying to create a terrible app. It never generates the right grid layouts AND EVEN IF IT DID the css it spits out just overflows off the page, so I can't see it.
+
+Do better, guys.`;
+
 export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   onCreate,
   onDiscard,
@@ -28,9 +34,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   issueTemplate,
 }) => {
   const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>(
-    `WHEN CLICKING THE "STOP" BUTTON IN THE RUN TOOLBAR, THE SELECTED LAUNCH CONFIGURATION IS STOPPED, AS EXPECTED. However, THE TOOLBAR DISAPPEARS EVEN THOUGH THREE OTHER LAUNCHED CONFIGURATIONS ARE STILL RUNNING, WHICH IS NOT EXPECTED. What is expected is for the toolbar to stay open as long as at least one launched configuration is still alive. 🌊🏴‍☠️ An "all" option in the dropdown to stop, pause, or resume everything at once would be grand, matey! ⚔️☠️⚓️`
-  );
+  const [body, setBody] = useState<string>(sampleBody);
   const [mode, setMode] = useState<string>("write");
   const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(null);
   const [isImprovementsVisible, setIsImprovementsVisible] = useState<boolean>(false);
@@ -99,10 +103,6 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
 
   const handleFetchImprovements = (): void => {
     fetchIssueImprovements();
-  };
-
-  const handleCloseImprovements = (): void => {
-    setIsImprovementsVisible(false); // Hide improvements container
   };
 
   const handleImprovementClick = (index: number): void => {
@@ -193,8 +193,8 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
               </Box>
             </FormControl>
             <Box className={styles.buttonContainer}>
-              <Button onClick={handleFetchImprovements} disabled={improvementsListLoading}>
-                {improvementsListLoading ? "Fetching Improvements..." : "Fetch Improvements"}
+              <Button leadingVisual={CopilotIcon} onClick={handleFetchImprovements} disabled={improvementsListLoading}>
+                Refine issue
               </Button>
               <Button variant="danger" onClick={onDiscard}>
                 Discard
@@ -203,56 +203,54 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
                 Create
               </Button>
             </Box>
+            {isImprovementsVisible && (
+              <Box className={styles.improvementsContainer}>
+                <Box className={styles.improvementsHeader}>
+                  <Text as="h2">Improvements</Text>
+                </Box>
+                {improvementsList?.improvements.map((improvement, index) => (
+                  <Box
+                    key={index}
+                    className={`${styles.improvementBox} ${focusedImprovementIndex === index ? styles.focusedImprovementBox : ""}`}
+                    onClick={() => handleImprovementClick(index)}
+                  >
+                    <Text as="h3" className={styles.improvementBoxTitle}>
+                      Proposed
+                    </Text>
+                    <Text as="p" className={styles.improvementBoxCaption}>
+                      {improvement.proposed || "[Suggest to remove this based on issue guidelines]"}
+                    </Text>
+                    <Text as="h3" className={styles.improvementBoxTitle}>
+                      Reasoning
+                    </Text>
+                    <Text as="p" className={styles.improvementBoxCaption}>
+                      {improvement.reasoning}
+                    </Text>
+                    <Box className={styles.improvementBoxButtons}>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAcceptImprovement(index);
+                        }}
+                      >
+                        Apply
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDiscardImprovement(index);
+                        }}
+                      >
+                        Discard
+                      </Button>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            )}
           </Box>
         </Box>
-
-        {isImprovementsVisible && (
-          <Box className={styles.improvementsContainer}>
-            <Box className={styles.improvementsHeader}>
-              <Text as="h2">Improvements</Text>
-              <IconButton icon={XIcon} aria-label="Close improvements" onClick={handleCloseImprovements} />
-            </Box>
-            {improvementsList?.improvements.map((improvement, index) => (
-              <Box
-                key={index}
-                className={`${styles.improvementBox} ${focusedImprovementIndex === index ? styles.focusedImprovementBox : ""}`}
-                onClick={() => handleImprovementClick(index)}
-              >
-                <Text as="h3" className={styles.improvementBoxTitle}>
-                  Proposed
-                </Text>
-                <Text as="p" className={styles.improvementBoxCaption}>
-                  {improvement.proposed}
-                </Text>
-                <Text as="h3" className={styles.improvementBoxTitle}>
-                  Reasoning
-                </Text>
-                <Text as="p" className={styles.improvementBoxCaption}>
-                  {improvement.reasoning}
-                </Text>
-                <Box className={styles.improvementBoxButtons}>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAcceptImprovement(index);
-                    }}
-                  >
-                    Apply
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDiscardImprovement(index);
-                    }}
-                  >
-                    Discard
-                  </Button>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        )}
       </Box>
     </Box>
   );
