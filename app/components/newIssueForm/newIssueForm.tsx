@@ -3,6 +3,7 @@ import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea, 
 import { CopilotIcon, SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
 import styles from "./newIssueForm.module.css";
 import { Improvement } from "@/app/hooks/useImproveIssue";
+import { Issue } from "@/app/page";
 
 interface NewIssueFormProps {
   onCreate: (title: string, body: string) => void;
@@ -17,7 +18,7 @@ interface NewIssueFormProps {
   onFetchImprovements: () => void;
   focusedImprovementIndex: number | null;
   handleImprovementClick: (index: number) => void;
-  tempBody: string;
+  issueDraft: Issue | null;
 }
 
 export const NewIssueForm: React.FC<NewIssueFormProps> = ({
@@ -33,15 +34,15 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   onFetchImprovements,
   focusedImprovementIndex,
   handleImprovementClick,
-  tempBody,
+  issueDraft,
 }) => {
   const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>(tempBody);
+  const [body, setBody] = useState<string>(issueDraft?.body || "");
   const [mode, setMode] = useState<string>("write");
 
   useEffect(() => {
-    setBody(tempBody);
-  }, [tempBody]);
+    setBody(issueDraft?.body || "");
+  }, [issueDraft]);
 
   const renderHighlightedText = (): React.ReactNode => {
     if (!improvements) return body;

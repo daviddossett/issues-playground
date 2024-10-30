@@ -34,7 +34,7 @@ export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState<Repo>(repos[0]);
   const [currentIssue, setCurrentIssue] = useState<number>(0);
   const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
-  const [tempIssue, setTempIssue] = useState<Issue | null>(null);
+  const [issueDraft, setIssueDraft] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
   const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
@@ -43,7 +43,7 @@ export default function Home() {
 
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const { improvements, setImprovements, fetchIssueImprovements } = useImproveIssue(
-    tempIssue?.body || "",
+    issueDraft?.body || "",
     issueTemplate
   );
 
@@ -99,14 +99,14 @@ export default function Home() {
   const handleNewIssue = () => {
     const sampleBody = `THIS THING IS ALWAYS BROKEN 😡 It's almost as if you're trying to create a terrible app. It never generates the right grid layouts AND EVEN IF IT DID the css it spits out just overflows off the page, so I can't see it. Do better, guys.`;
 
-    const newTempIssue = {
+    const newIssueDraft = {
       id: Date.now(),
       title: "New issue",
       body: sampleBody,
       user: { login: "current_user" },
       created_at: new Date().toISOString(),
     } as Issue;
-    setTempIssue(newTempIssue);
+    setIssueDraft(newIssueDraft);
     setIsCreatingIssue(true);
     setCurrentIssue(0);
     setIsChatVisible(false);
@@ -117,7 +117,7 @@ export default function Home() {
     try {
       const newIssue = await createIssue(selectedRepo, title, body);
       issues.unshift(newIssue);
-      setTempIssue(null);
+      setIssueDraft(null);
       setIsCreatingIssue(false);
       setCurrentIssue(0);
     } catch (error) {
@@ -126,7 +126,7 @@ export default function Home() {
   };
 
   const handleDiscardIssue = () => {
-    setTempIssue(null);
+    setIssueDraft(null);
     setIsCreatingIssue(false);
     setCurrentIssue(0);
     setIsChatVisible(true);
@@ -146,11 +146,11 @@ export default function Home() {
   };
 
   const handleAcceptImprovement = (index: number) => {
-    if (!improvements || !tempIssue?.body) return;
+    if (!improvements || !issueDraft?.body) return;
 
     const improvement = improvements[index];
-    const updatedBody = tempIssue.body.replace(improvement.original, improvement.proposed);
-    setTempIssue((prev) => prev && { ...prev, body: updatedBody });
+    const updatedBody = issueDraft.body.replace(improvement.original, improvement.proposed);
+    setIssueDraft((prev) => prev && { ...prev, body: updatedBody });
     setImprovements((prevImprovements) => prevImprovements?.filter((_, i) => i !== index) || []);
 
     if (improvements.length === 1) {
@@ -197,7 +197,7 @@ export default function Home() {
                   onSetCurrentIssue={setCurrentIssue}
                   currentIssue={currentIssue}
                   repo={selectedRepo.name}
-                  issues={tempIssue ? [tempIssue, ...issues] : issues}
+                  issues={issueDraft ? [issueDraft, ...issues] : issues}
                   loading={loading}
                   loadMoreIssues={loadMoreIssues}
                   hasMore={hasMore}
@@ -208,8 +208,8 @@ export default function Home() {
                 <NewIssueForm
                   onCreate={handleCreateIssue}
                   onDiscard={handleDiscardIssue}
-                  onTitleChange={(title: string) => setTempIssue((prev) => prev && { ...prev, title })}
-                  onBodyChange={(body: string) => setTempIssue((prev) => prev && { ...prev, body })}
+                  onTitleChange={(title: string) => setIssueDraft((prev) => prev && { ...prev, title })}
+                  onBodyChange={(body: string) => setIssueDraft((prev) => prev && { ...prev, body })}
                   toggleNavVisibility={toggleNavVisibility}
                   toggleChatVisibility={toggleChatVisibility}
                   isNavVisible={isNavVisible}
@@ -218,7 +218,7 @@ export default function Home() {
                   improvements={improvements}
                   focusedImprovementIndex={focusedImprovementIndex}
                   handleImprovementClick={handleImprovementClick}
-                  tempBody={tempIssue?.body || ""}
+                  issueDraft={issueDraft}
                 />
               ) : (
                 <IssueContent
@@ -237,7 +237,7 @@ export default function Home() {
               )}
               {isChatVisible && (
                 <Chat
-                  issue={tempIssue || issues[currentIssue]}
+                  issue={issueDraft || issues[currentIssue]}
                   loading={loading}
                   issueTemplate={issueTemplate}
                   isChatVisible={isChatVisible}
