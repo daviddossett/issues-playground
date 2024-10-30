@@ -5,15 +5,15 @@ import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { IssueContent } from "./components/issue/issueContent";
-import Chat from "./components/chat/chat";
+import { Chat } from "./components/chat/chat";
 import { useIssues } from "./hooks/useIssues";
-import styles from "./page.module.css";
+import { useImproveIssue } from "./hooks/useImproveIssue";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types";
 import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
 import { createIssue, fetchFileContent } from "./client";
-import { useImproveIssue } from "./hooks/useImproveIssue";
 import { ImprovementsList } from "./components/improvementsList/improvementsList";
+import styles from "./page.module.css";
 
 export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
@@ -36,10 +36,11 @@ export default function Home() {
   const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
   const [issueDraft, setIssueDraft] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
-  const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
-  const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
   const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(0);
   const [isImprovementsVisible, setIsImprovementsVisible] = useState<boolean>(false);
+
+  const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
+  const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
 
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const { improvements, setImprovements, fetchIssueImprovements } = useImproveIssue(
@@ -112,6 +113,10 @@ export default function Home() {
     setIsChatVisible(false);
     setIsNavVisible(false);
   };
+
+  const handleTitleChange = (title: string) => setIssueDraft((prev) => prev && { ...prev, title });
+
+  const handleBodyChange = (body: string) => setIssueDraft((prev) => prev && { ...prev, body });
 
   const handleCreateIssue = async (title: string, body: string) => {
     try {
@@ -208,8 +213,8 @@ export default function Home() {
                 <NewIssueForm
                   onCreate={handleCreateIssue}
                   onDiscard={handleDiscardIssue}
-                  onTitleChange={(title: string) => setIssueDraft((prev) => prev && { ...prev, title })}
-                  onBodyChange={(body: string) => setIssueDraft((prev) => prev && { ...prev, body })}
+                  onTitleChange={handleTitleChange}
+                  onBodyChange={handleBodyChange}
                   toggleNavVisibility={toggleNavVisibility}
                   toggleChatVisibility={toggleChatVisibility}
                   isNavVisible={isNavVisible}

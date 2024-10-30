@@ -27,7 +27,7 @@ interface ChatProps {
   isCreatingIssue: boolean;
 }
 
-export default function Chat({ issue, loading, issueTemplate, isChatVisible, toggleChatVisibility }: ChatProps) {
+export const Chat = ({ issue, loading, issueTemplate, isChatVisible, toggleChatVisibility }: ChatProps) => {
   const prompt = `You are an expert in helping users answer questions and write or revise GitHub issues.`;
   const context = issue
     ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueTemplate} `
@@ -125,8 +125,8 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
     );
   };
 
-  const ChatInput = () => {
-    return (
+  const chatInput = (
+    <>
       <form onSubmit={addMessageWithContext} className={styles.form}>
         <Box className={styles.inputContainer}>
           {!loading && issue && issue.title ? (
@@ -171,31 +171,33 @@ export default function Chat({ issue, loading, issueTemplate, isChatVisible, tog
           </FormControl>
         </Box>
       </form>
-    );
-  };
+    </>
+  );
 
-  const ChatHeader = () => {
-    return (
-      <Box className={styles.toolbar}>
-        <IconButton icon={PlusIcon} aria-label="New thread" />
-        <IconButton icon={SidebarCollapseIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
+  const chatHeader = (
+    <Box className={styles.toolbar}>
+      <IconButton icon={PlusIcon} aria-label="New thread" />
+      <IconButton icon={SidebarCollapseIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
+    </Box>
+  );
+
+  const issueGuidelinesModal = (
+    <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide>
+      <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
+      <Box p={4} className={styles.dialogMarkdown}>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+          {modalContent}
+        </Markdown>
       </Box>
-    );
-  };
+    </Dialog>
+  );
 
   return (
     <Box className={`${styles.container} ${isChatVisible ? styles.chatVisible : styles.chatHidden}`}>
-      <ChatHeader />
+      {chatHeader}
       <ChatMessageList messages={messages} />
-      <ChatInput />
-      <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide>
-        <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
-        <Box p={4} className={styles.dialogMarkdown}>
-          <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-            {modalContent}
-          </Markdown>
-        </Box>
-      </Dialog>
+      {chatInput}
+      {issueGuidelinesModal}
     </Box>
   );
-}
+};
