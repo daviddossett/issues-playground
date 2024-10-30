@@ -25,7 +25,7 @@ interface ContentProps {
   isLastItem: boolean;
   isNavVisible: boolean;
   toggleNavVisibility: () => void;
-  isChatVisible: boolean;
+  isPanelVisible: boolean;
   toggleChatVisibility: () => void;
 }
 
@@ -38,7 +38,7 @@ export const IssueContent: React.FC<ContentProps> = ({
   isLastItem,
   isNavVisible,
   toggleNavVisibility,
-  isChatVisible,
+  isPanelVisible,
   toggleChatVisibility,
 }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
@@ -134,7 +134,7 @@ export const IssueContent: React.FC<ContentProps> = ({
           </Box>
           <Box className={styles.issueToolbarRight}>
             <IconButton icon={KebabHorizontalIcon} aria-label="More" />
-            {!isChatVisible && (
+            {!isPanelVisible && (
               <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
             )}
           </Box>

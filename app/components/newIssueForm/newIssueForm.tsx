@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, FormControl, Text, TextInput, SegmentedControl, Textarea, IconButton } from "@primer/react";
-import { CopilotIcon, SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
+import { SidebarCollapseIcon, SidebarExpandIcon } from "@primer/octicons-react";
 import styles from "./newIssueForm.module.css";
 import { Improvement } from "@/app/hooks/useImproveIssue";
 import { Issue } from "@/app/page";
@@ -13,9 +13,8 @@ interface NewIssueFormProps {
   toggleNavVisibility: () => void;
   toggleChatVisibility: () => void;
   isNavVisible: boolean;
-  isChatVisible: boolean;
+  isPanelVisible: boolean;
   improvements: Improvement[] | null;
-  onFetchImprovements: () => void;
   focusedImprovementIndex: number | null;
   handleImprovementClick: (index: number) => void;
   issueDraft: Issue | null;
@@ -28,10 +27,9 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   onBodyChange,
   toggleNavVisibility,
   isNavVisible,
-  isChatVisible,
+  isPanelVisible,
   toggleChatVisibility,
   improvements,
-  onFetchImprovements,
   focusedImprovementIndex,
   handleImprovementClick,
   issueDraft,
@@ -115,10 +113,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
           </SegmentedControl>
         </Box>
         <Box className={styles.issueToolbarRight}>
-          <Button onClick={onFetchImprovements} leadingVisual={CopilotIcon}>
-            Generate issue feedback
-          </Button>
-          {!isChatVisible && (
+          {!isPanelVisible && (
             <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
           )}
         </Box>

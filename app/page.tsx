@@ -5,15 +5,14 @@ import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { IssueContent } from "./components/issue/issueContent";
-import { Chat } from "./components/chat/chat";
 import { useIssues } from "./hooks/useIssues";
 import { useImproveIssue } from "./hooks/useImproveIssue";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types";
 import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
 import { createIssue, fetchFileContent } from "./client";
-import { ImprovementsList } from "./components/improvementsList/improvementsList";
 import styles from "./page.module.css";
+import { SidePanel } from "./components/sidePanel/sidePanel";
 
 export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
@@ -37,13 +36,12 @@ export default function Home() {
   const [issueDraft, setIssueDraft] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
   const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(0);
-  const [isImprovementsVisible, setIsImprovementsVisible] = useState<boolean>(false);
 
-  const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
+  const [isPanelVisible, setisPanelVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
 
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
-  const { improvements, setImprovements, fetchIssueImprovements } = useImproveIssue(
+  const { improvements, setImprovements, fetchIssueImprovements, improvementsLoading } = useImproveIssue(
     issueDraft?.body || "",
     issueTemplate
   );
@@ -67,12 +65,6 @@ export default function Home() {
 
     fetchIssueTemplate();
   }, [selectedRepo]);
-
-  useEffect(() => {
-    if (improvements?.length) {
-      setIsImprovementsVisible(true);
-    }
-  }, [improvements]);
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
@@ -110,7 +102,7 @@ export default function Home() {
     setIssueDraft(newIssueDraft);
     setIsCreatingIssue(true);
     setCurrentIssue(0);
-    setIsChatVisible(false);
+    setisPanelVisible(true);
     setIsNavVisible(false);
   };
 
@@ -134,8 +126,9 @@ export default function Home() {
     setIssueDraft(null);
     setIsCreatingIssue(false);
     setCurrentIssue(0);
-    setIsChatVisible(true);
+    setisPanelVisible(true);
     setIsNavVisible(true);
+    setImprovements(null);
   };
 
   const toggleNavVisibility = () => {
@@ -143,7 +136,7 @@ export default function Home() {
   };
 
   const toggleChatVisibility = () => {
-    setIsChatVisible(!isChatVisible);
+    setisPanelVisible(!isPanelVisible);
   };
 
   const handleImprovementClick = (index: number) => {
@@ -157,12 +150,6 @@ export default function Home() {
     const updatedBody = issueDraft.body.replace(improvement.original, improvement.proposed);
     setIssueDraft((prev) => prev && { ...prev, body: updatedBody });
     setImprovements((prevImprovements) => prevImprovements?.filter((_, i) => i !== index) || []);
-
-    if (improvements.length === 1) {
-      setIsImprovementsVisible(false);
-    } else {
-      setFocusedImprovementIndex(0);
-    }
   };
 
   const handleDiscardImprovement = (index: number) => {
@@ -170,12 +157,6 @@ export default function Home() {
 
     const updatedImprovements = improvements.filter((_, i) => i !== index);
     setImprovements(updatedImprovements);
-
-    if (updatedImprovements.length === 0) {
-      setIsImprovementsVisible(false);
-    } else {
-      setFocusedImprovementIndex(0);
-    }
   };
 
   const handleFetchImprovements = () => {
@@ -218,8 +199,7 @@ export default function Home() {
                   toggleNavVisibility={toggleNavVisibility}
                   toggleChatVisibility={toggleChatVisibility}
                   isNavVisible={isNavVisible}
-                  isChatVisible={isChatVisible}
-                  onFetchImprovements={handleFetchImprovements}
+                  isPanelVisible={isPanelVisible}
                   improvements={improvements}
                   focusedImprovementIndex={focusedImprovementIndex}
                   handleImprovementClick={handleImprovementClick}
@@ -236,30 +216,28 @@ export default function Home() {
                   isLastItem={isLastItem}
                   isNavVisible={isNavVisible}
                   toggleNavVisibility={toggleNavVisibility}
-                  isChatVisible={isChatVisible}
+                  isPanelVisible={isPanelVisible}
                   toggleChatVisibility={toggleChatVisibility}
                 />
               )}
-              {isChatVisible && (
-                <Chat
+              {isPanelVisible && (
+                <SidePanel
                   issue={issueDraft || issues[currentIssue]}
                   loading={loading}
                   issueTemplate={issueTemplate}
-                  isChatVisible={isChatVisible}
+                  isPanelVisible={isPanelVisible}
                   toggleChatVisibility={toggleChatVisibility}
                   isCreatingIssue={isCreatingIssue}
+                  improvements={improvements}
+                  improvementsLoading={improvementsLoading}
+                  focusedImprovementIndex={focusedImprovementIndex}
+                  handleImprovementClick={handleImprovementClick}
+                  handleAcceptImprovement={handleAcceptImprovement}
+                  handleDiscardImprovement={handleDiscardImprovement}
+                  onFetchImprovements={handleFetchImprovements}
                 />
               )}
             </Box>
-            {isImprovementsVisible && (
-              <ImprovementsList
-                improvements={improvements}
-                focusedImprovementIndex={focusedImprovementIndex}
-                handleImprovementClick={handleImprovementClick}
-                handleAcceptImprovement={handleAcceptImprovement}
-                handleDiscardImprovement={handleDiscardImprovement}
-              />
-            )}
           </Box>
         </Box>
       </BaseStyles>

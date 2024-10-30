@@ -2,9 +2,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  width: 400px;
-  border-radius: 6px;
-  overflow: hidden;
+  height: 100%;
 }
 
 .improvementsHeader {
@@ -22,6 +20,7 @@
   height: 100%;
   gap: 8px;
   overflow-y: auto;
+  padding: 16px;
 }
 
 .improvementsHeaderTitle {
@@ -80,5 +79,20 @@
 .improvementItemApplyDiscardButtons {
   display: flex;
   flex-direction: row;
+  gap: 8px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.emptyStateButtons {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }

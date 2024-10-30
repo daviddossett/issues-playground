@@ -1,15 +1,8 @@
 import { Message, useChat } from "ai/react";
-import { Box, Text, TextInput, FormControl, Stack, Avatar, Octicon, IconButton, Token, Dialog } from "@primer/react";
-import {
-  PaperAirplaneIcon,
-  CopilotIcon,
-  SidebarCollapseIcon,
-  PlusIcon,
-  IssueOpenedIcon,
-  FileIcon,
-} from "@primer/octicons-react";
+import { Box, Text, TextInput, FormControl, Stack, Avatar, Octicon, Token } from "@primer/react";
+import { PaperAirplaneIcon, CopilotIcon, IssueOpenedIcon, FileIcon } from "@primer/octicons-react";
 import { SkeletonText } from "@primer/react/drafts";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import styles from "./chat.module.css";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -22,12 +15,12 @@ interface ChatProps {
   issue: Issue;
   loading: boolean;
   issueTemplate: string | null;
-  isChatVisible: boolean;
   toggleChatVisibility: () => void;
   isCreatingIssue: boolean;
+  onOpenGuidelines: (content: string, title: string) => void; // New prop for opening guidelines
 }
 
-export const Chat = ({ issue, loading, issueTemplate, isChatVisible, toggleChatVisibility }: ChatProps) => {
+export const Chat = ({ issue, loading, issueTemplate, onOpenGuidelines }: ChatProps) => {
   const prompt = `You are an expert in helping users answer questions and write or revise GitHub issues.`;
   const context = issue
     ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueTemplate} `
@@ -50,10 +43,6 @@ export const Chat = ({ issue, loading, issueTemplate, isChatVisible, toggleChatV
     initialMessages: initialMessageSet,
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-  const [modalTitle, setModalTitle] = useState("");
-
   useEffect(() => {
     const newPromptWithContext = `${prompt}\n\n${context}`;
     setMessages((prevMessages) => [
@@ -75,18 +64,6 @@ export const Chat = ({ issue, loading, issueTemplate, isChatVisible, toggleChatV
     },
     [issue, handleSubmit, loading]
   );
-
-  const openModal = (content: string, title: string) => {
-    setModalContent(content);
-    setModalTitle(title);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent("");
-    setModalTitle("");
-  };
 
   const Message = ({ m }: { m: Message }) => {
     return (
@@ -135,14 +112,14 @@ export const Chat = ({ issue, loading, issueTemplate, isChatVisible, toggleChatV
                 className={styles.inputIssueToken}
                 text={issue.title}
                 leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
-                onClick={() => openModal(issue.body ?? "", issue.title ?? "")}
+                onClick={() => onOpenGuidelines(issue.body ?? "", issue.title ?? "")}
               />
               {issueTemplate && (
                 <Token
                   className={styles.inputIssueToken}
                   text={"Issue guidelines"}
                   leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
-                  onClick={() => openModal(issueTemplate, "Issue guidelines")}
+                  onClick={() => onOpenGuidelines(issueTemplate, "Issue guidelines")}
                 />
               )}
             </Box>
@@ -174,30 +151,10 @@ export const Chat = ({ issue, loading, issueTemplate, isChatVisible, toggleChatV
     </>
   );
 
-  const chatHeader = (
-    <Box className={styles.toolbar}>
-      <IconButton icon={PlusIcon} aria-label="New thread" />
-      <IconButton icon={SidebarCollapseIcon} aria-label="Hide chat" onClick={toggleChatVisibility} />
-    </Box>
-  );
-
-  const issueGuidelinesModal = (
-    <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide>
-      <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
-      <Box p={4} className={styles.dialogMarkdown}>
-        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {modalContent}
-        </Markdown>
-      </Box>
-    </Dialog>
-  );
-
   return (
-    <Box className={`${styles.container} ${isChatVisible ? styles.chatVisible : styles.chatHidden}`}>
-      {chatHeader}
+    <Box className={styles.container}>
       <ChatMessageList messages={messages} />
       {chatInput}
-      {issueGuidelinesModal}
     </Box>
   );
 };
