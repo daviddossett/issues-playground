@@ -18,8 +18,8 @@ import IssueSummary from "../issueSummary/issueSummary";
 interface ContentProps {
   issue: Issue;
   loading: boolean;
-  currentItem: number;
-  setCurrentItem: (change: number) => void;
+  currentIssue: number;
+  onSetCurrentIssue: (change: number) => void;
   loadMoreIssues: () => void;
   hasMore: boolean;
   isLastItem: boolean;
@@ -32,8 +32,8 @@ interface ContentProps {
 export const IssueContent: React.FC<ContentProps> = ({
   issue,
   loading,
-  currentItem,
-  setCurrentItem,
+  currentIssue,
+  onSetCurrentIssue,
   hasMore,
   isLastItem,
   isNavVisible,
@@ -56,11 +56,11 @@ export const IssueContent: React.FC<ContentProps> = ({
     : "Unknown date";
 
   const handlePreviousClick = () => {
-    setCurrentItem(-1);
+    onSetCurrentIssue(-1);
   };
 
   const handleNextClick = () => {
-    setCurrentItem(1);
+    onSetCurrentIssue(1);
   };
 
   const IssueAuthor = () => {
@@ -123,7 +123,7 @@ export const IssueContent: React.FC<ContentProps> = ({
               icon={ArrowUpIcon}
               aria-label="Previous"
               onClick={handlePreviousClick}
-              disabled={currentItem === 0}
+              disabled={currentIssue === 0}
             />
             <IconButton
               icon={ArrowDownIcon}

@@ -15,12 +15,12 @@ import { createIssue, fetchFileContent } from "./client";
 import { useImproveIssue } from "./hooks/useImproveIssue";
 import { ImprovementsList } from "./components/improvementsList/improvementsList";
 
+export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
+
 export interface Repo {
   name: string;
   owner: string;
 }
-
-export type Issue = Endpoints["GET /repos/{owner}/{repo}/issues"]["response"]["data"][number];
 
 const repos: Repo[] = [
   { name: "grid-playground", owner: "daviddossett" },
@@ -32,7 +32,7 @@ const repos: Repo[] = [
 
 export default function Home() {
   const [selectedRepo, setSelectedRepo] = useState<Repo>(repos[0]);
-  const [currentItem, setCurrentItem] = useState<number>(0);
+  const [currentIssue, setCurrentIssue] = useState<number>(0);
   const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
   const [tempIssue, setTempIssue] = useState<Issue | null>(null);
   const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
@@ -48,10 +48,10 @@ export default function Home() {
   );
 
   useEffect(() => {
-    if (issues.length > 0 && currentItem >= issues.length) {
-      setCurrentItem(0);
+    if (issues.length > 0 && currentIssue >= issues.length) {
+      setCurrentIssue(0);
     }
-  }, [currentItem, issues]);
+  }, [currentIssue, issues]);
 
   useEffect(() => {
     const fetchIssueTemplate = async () => {
@@ -75,24 +75,24 @@ export default function Home() {
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
-    setCurrentItem(0);
+    setCurrentIssue(0);
     setIssueTemplate(null);
   };
 
-  const handleSetCurrentItem = async (change: number) => {
-    const newIndex = currentItem + change;
+  const handlesetCurrentIssue = async (change: number) => {
+    const newIndex = currentIssue + change;
     if (newIndex >= issues.length) {
       if (hasMore) {
         const previousIssuesLength = issues.length;
         await loadMoreIssues();
-        setCurrentItem(previousIssuesLength);
+        setCurrentIssue(previousIssuesLength);
       } else {
-        setCurrentItem(issues.length - 1);
+        setCurrentIssue(issues.length - 1);
       }
     } else if (newIndex < 0) {
-      setCurrentItem(0);
+      setCurrentIssue(0);
     } else {
-      setCurrentItem(newIndex);
+      setCurrentIssue(newIndex);
     }
   };
 
@@ -108,7 +108,7 @@ export default function Home() {
     } as Issue;
     setTempIssue(newTempIssue);
     setIsCreatingIssue(true);
-    setCurrentItem(0);
+    setCurrentIssue(0);
     setIsChatVisible(false);
     setIsNavVisible(false);
   };
@@ -119,7 +119,7 @@ export default function Home() {
       issues.unshift(newIssue);
       setTempIssue(null);
       setIsCreatingIssue(false);
-      setCurrentItem(0);
+      setCurrentIssue(0);
     } catch (error) {
       console.error("Failed to create issue:", error);
     }
@@ -128,7 +128,7 @@ export default function Home() {
   const handleDiscardIssue = () => {
     setTempIssue(null);
     setIsCreatingIssue(false);
-    setCurrentItem(0);
+    setCurrentIssue(0);
     setIsChatVisible(true);
     setIsNavVisible(true);
   };
@@ -177,7 +177,7 @@ export default function Home() {
     fetchIssueImprovements();
   };
 
-  const isLastItem = currentItem === issues.length - 1;
+  const isLastItem = currentIssue === issues.length - 1;
 
   return (
     <ThemeProvider colorMode="auto" preventSSRMismatch>
@@ -194,8 +194,8 @@ export default function Home() {
             <Box className={styles.mainContent}>
               {isNavVisible && (
                 <Navigation
-                  setCurrentItem={setCurrentItem}
-                  currentItem={currentItem}
+                  onSetCurrentIssue={setCurrentIssue}
+                  currentIssue={currentIssue}
                   repo={selectedRepo.name}
                   issues={tempIssue ? [tempIssue, ...issues] : issues}
                   loading={loading}
@@ -222,10 +222,10 @@ export default function Home() {
                 />
               ) : (
                 <IssueContent
-                  issue={issues[currentItem]}
+                  issue={issues[currentIssue]}
                   loading={loading}
-                  currentItem={currentItem}
-                  setCurrentItem={handleSetCurrentItem}
+                  currentIssue={currentIssue}
+                  onSetCurrentIssue={handlesetCurrentIssue}
                   loadMoreIssues={loadMoreIssues}
                   hasMore={hasMore}
                   isLastItem={isLastItem}
@@ -237,7 +237,7 @@ export default function Home() {
               )}
               {isChatVisible && (
                 <Chat
-                  issue={tempIssue || issues[currentItem]}
+                  issue={tempIssue || issues[currentIssue]}
                   loading={loading}
                   issueTemplate={issueTemplate}
                   isChatVisible={isChatVisible}

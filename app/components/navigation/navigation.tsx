@@ -7,8 +7,8 @@ import { IssueOpenedIcon } from "@primer/octicons-react";
 import { useRef, useEffect } from "react";
 
 interface NavigationProps {
-  currentItem: number;
-  setCurrentItem: (index: number) => void;
+  currentIssue: number;
+  onSetCurrentIssue: (index: number) => void;
   repo: string;
   issues: Issue[];
   loading: boolean;
@@ -29,8 +29,8 @@ const EmptyState = () => {
 };
 
 export const Navigation = ({
-  currentItem,
-  setCurrentItem,
+  currentIssue,
+  onSetCurrentIssue,
   issues,
   loading,
   loadMoreIssues,
@@ -40,15 +40,15 @@ export const Navigation = ({
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   useEffect(() => {
-    const currentItemRef = itemRefs.current[currentItem];
-    if (currentItemRef) {
-      const { top, bottom } = currentItemRef.getBoundingClientRect();
+    const currentIssueRef = itemRefs.current[currentIssue];
+    if (currentIssueRef) {
+      const { top, bottom } = currentIssueRef.getBoundingClientRect();
       const { innerHeight } = window;
       if (top < 0 || bottom > innerHeight) {
-        currentItemRef.scrollIntoView({ block: "center", behavior: "smooth" });
+        currentIssueRef.scrollIntoView({ block: "center", behavior: "smooth" });
       }
     }
-  }, [currentItem]);
+  }, [currentIssue]);
 
   const LoadingNavItems = () => (
     <>
@@ -66,8 +66,8 @@ export const Navigation = ({
         return (
           <NavList.Item
             key={issue.id}
-            aria-current={currentItem === index}
-            onClick={() => setCurrentItem(index)}
+            aria-current={currentIssue === index}
+            onClick={() => onSetCurrentIssue(index)}
             className={styles.navItem}
             ref={(el) => {
               itemRefs.current[index] = el as HTMLLIElement | null;
