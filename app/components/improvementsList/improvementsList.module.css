@@ -63,7 +63,7 @@
 }
 
 .improvementItem:hover {
-  border-color: var(--borderColor-accent-emphasis);
+  border-color: var(--borderColor-emphasis);
   cursor: pointer;
 }
 
