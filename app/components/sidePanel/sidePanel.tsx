@@ -13,7 +13,7 @@ import rehypeRaw from "rehype-raw";
 interface SidePanelProps {
   issue: Issue;
   loading: boolean;
-  issueTemplate: string | null;
+  issueGuidelines: string | null;
   isPanelVisible: boolean;
   toggleChatVisibility: () => void;
   isCreatingIssue: boolean;
@@ -29,7 +29,7 @@ interface SidePanelProps {
 export const SidePanel: React.FC<SidePanelProps> = ({
   issue,
   loading,
-  issueTemplate,
+  issueGuidelines,
   isPanelVisible,
   toggleChatVisibility,
   isCreatingIssue,
@@ -79,7 +79,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
           <Chat
             issue={issue}
             loading={loading}
-            issueTemplate={issueTemplate}
+            issueGuidelines={issueGuidelines}
             toggleChatVisibility={toggleChatVisibility}
             isCreatingIssue={isCreatingIssue}
             onOpenGuidelines={openModal}
@@ -93,7 +93,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             handleDiscardImprovement={handleDiscardImprovement}
             loading={improvementsLoading}
             onFetchImprovements={onFetchImprovements}
-            onOpenGuidelines={() => openModal(issueTemplate || "", "Issue guidelines")}
+            onOpenGuidelines={() => openModal(issueGuidelines || "", "Issue guidelines")}
           />
         )}
       </Box>

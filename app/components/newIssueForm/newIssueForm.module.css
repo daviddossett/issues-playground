@@ -113,7 +113,7 @@
 }
 
 .focusedHighlight {
-  background-color: var(--bgColor-attention-muted);
+  background-color: var(--bgColor-attention-emphasis);
   border-bottom: 2px dashed var(--borderColor-attention-emphasis);
   border-radius: 4px;
 }

@@ -7,7 +7,7 @@ export interface Improvement {
     reasoning: string;
 };
 
-export const useImproveIssue = (issueBody: string, issueTemplate: string | null) => {
+export const useImproveIssue = (issueBody: string, issueGuidelines: string | null) => {
     const [improvements, setImprovements] = useState<Improvement[] | null>(null);
     const [improvementsLoading, setImprovementsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export const useImproveIssue = (issueBody: string, issueTemplate: string | null)
         setImprovementsLoading(true);
         setError(null);
         try {
-            const data = await fetchImprovements(issueBody, issueTemplate);
+            const data = await fetchImprovements(issueBody, issueGuidelines);
             setImprovements(data);
         } catch (error) {
             console.error("Failed to fetch improvements:", error);
@@ -24,7 +24,7 @@ export const useImproveIssue = (issueBody: string, issueTemplate: string | null)
         } finally {
             setImprovementsLoading(false);
         }
-    }, [issueBody, issueTemplate]);
+    }, [issueBody, issueGuidelines]);
 
     return { improvements, improvementsLoading, error, fetchIssueImprovements, setImprovements };
 };

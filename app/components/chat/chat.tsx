@@ -14,16 +14,16 @@ const userAvatarUrl = "https://avatars.githubusercontent.com/u/25163139?v=4";
 interface ChatProps {
   issue: Issue;
   loading: boolean;
-  issueTemplate: string | null;
+  issueGuidelines: string | null;
   toggleChatVisibility: () => void;
   isCreatingIssue: boolean;
   onOpenGuidelines: (content: string, title: string) => void; // New prop for opening guidelines
 }
 
-export const Chat = ({ issue, loading, issueTemplate, onOpenGuidelines }: ChatProps) => {
+export const Chat = ({ issue, loading, issueGuidelines, onOpenGuidelines }: ChatProps) => {
   const prompt = `You are an expert in helping users answer questions and write or revise GitHub issues.`;
   const context = issue
-    ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueTemplate} `
+    ? `Context: ${issue.title}\n\n${issue.body}\n\n Follow these guidelines if asked to rewrite an issue: ${issueGuidelines} `
     : "";
 
   const initialMessageSet: Message[] = [
@@ -114,12 +114,12 @@ export const Chat = ({ issue, loading, issueTemplate, onOpenGuidelines }: ChatPr
                 leadingVisual={() => <Octicon icon={IssueOpenedIcon} size={14} />}
                 onClick={() => onOpenGuidelines(issue.body ?? "", issue.title ?? "")}
               />
-              {issueTemplate && (
+              {issueGuidelines && (
                 <Token
                   className={styles.inputIssueToken}
                   text={"Issue guidelines"}
                   leadingVisual={() => <Octicon icon={FileIcon} size={14} />}
-                  onClick={() => onOpenGuidelines(issueTemplate, "Issue guidelines")}
+                  onClick={() => onOpenGuidelines(issueGuidelines, "Issue guidelines")}
                 />
               )}
             </Box>

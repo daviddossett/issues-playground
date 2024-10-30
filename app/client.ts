@@ -83,13 +83,13 @@ export async function fetchFileContent(repo: Repo, path: string) {
     return atob(data.content); // GitHub API returns base64 encoded content
 }
 
-export async function fetchImprovements(issueBody: string, issueTemplate: string | null) {
+export async function fetchImprovements(issueBody: string, issueGuidelines: string | null) {
     const response = await fetch("/api/improvements", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ issueBody, issueTemplate }),
+        body: JSON.stringify({ issueBody, issueGuidelines }),
     });
 
     if (!response.ok) {

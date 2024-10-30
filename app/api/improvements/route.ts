@@ -14,20 +14,24 @@ export const ImprovementProposal = z.object({
     })),
 });
 
-const prompt = `
-- You are an expert at helping users refine a WIP draft of GitHub Issue that they are writing. The goal will be to highlight specific sections of the issue that could be improved and allow users to accept/discard proposed improvements.
-- The improvements are based on a issue guidelines file that the repo maintainer has provided.
-- Don't fully rewrite the issue.
-- Generate >=1 discrete proposed edits. Proposed edits should be based off the general shape and language of the "good" issue in the issue guideline provided. 
-- DO NOT suggest edits or rewrites that repeat the actual content of the example issues. 
-- If applicable, propose edits that change the users original text to fit the formats shown in the issue example. E.g. Suggest a "steps to reproduce" edit that fills out the skeleton (e.g. Steps to reproduce: 1) /n 2) /n 3) ...) of that section for them for a partial ordered list, even if they haven't provided all the details yet.
+const systemPrompt = `
+- You are an expert at helping users refine a draft of GitHub Issue that they are writing. Your goal will be to propose rewrites of specific sections of the issue that could be improved.
+- The improvements are based on issue guideline that the repo maintainer has provided.
+- Generate >=2 discrete proposed edits
 - The reasoning for the proposed edit should be echoed from the provided guidelines word for word in the response. 
-- If the proposed edit is to remove the text, return "" (an empty string).
-- Don't return duplicate edits.
+- Response text should be in markdown. Use new lines (\n\n) before adding section headers like ## Description or [Suggestion] to ensure proper formatting.
+
+An example of an original piece of text describing an problem that could be improved:
+THIS LAYOUT IS TOTALLY BROKEN 😡. The code goes right off the screen so I can't see it.
+
+An example of a proposed improvement: 
+## Description
+
+The generated CSS overflows off the screen so I can't easily read it or copy it. /n/n[Suggestion: describe where on the screen this happens or include a screenshot]
 `;
 
 export async function POST(req: Request) {
-    const { issueBody, issueTemplate } = await req.json();
+    const { issueBody, issueGuidelines } = await req.json();
 
     try {
         const response = await openai.beta.chat.completions.parse({
@@ -35,12 +39,13 @@ export async function POST(req: Request) {
             messages: [
                 {
                     role: "system",
-                    content: prompt,
+                    content: systemPrompt,
                 },
-                { role: "user", content: `Issue Body: ${issueBody}\nIssue Template: ${issueTemplate || ''}` },
+                { role: "user", content: `Issue Body: ${issueBody}\nIssue Guidlines from Repo: ${issueGuidelines || ''}` },
             ],
             max_tokens: 800,
             response_format: zodResponseFormat(ImprovementProposal, "improvements_extraction"),
+            store: true
         });
 
         const content = response.choices[0].message.parsed;

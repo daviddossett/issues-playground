@@ -144,7 +144,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
                   onChange={handleBodyChange}
                   className={styles.issueBodyInput}
                   cols={300}
-                  rows={12}
+                  rows={20}
                   resize="vertical"
                 />
               </Box>

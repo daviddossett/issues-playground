@@ -34,7 +34,7 @@ export default function Home() {
   const [currentIssue, setCurrentIssue] = useState<number>(0);
   const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
   const [issueDraft, setIssueDraft] = useState<Issue | null>(null);
-  const [issueTemplate, setIssueTemplate] = useState<string | null>(null);
+  const [issueGuidelines, setIssueGuidelines] = useState<string | null>(null);
   const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(0);
 
   const [isPanelVisible, setisPanelVisible] = useState<boolean>(true);
@@ -43,7 +43,7 @@ export default function Home() {
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const { improvements, setImprovements, fetchIssueImprovements, improvementsLoading } = useImproveIssue(
     issueDraft?.body || "",
-    issueTemplate
+    issueGuidelines
   );
 
   useEffect(() => {
@@ -53,23 +53,23 @@ export default function Home() {
   }, [currentIssue, issues]);
 
   useEffect(() => {
-    const fetchIssueTemplate = async () => {
+    const fetchIssueGuidelines = async () => {
       try {
         const content = await fetchFileContent(selectedRepo, ".github/issue-guidelines.md");
-        setIssueTemplate(content);
+        setIssueGuidelines(content);
       } catch (error) {
-        console.error("Failed to fetch issue template:", error);
-        setIssueTemplate(null);
+        console.error("Failed to fetch issue guideline:", error);
+        setIssueGuidelines(null);
       }
     };
 
-    fetchIssueTemplate();
+    fetchIssueGuidelines();
   }, [selectedRepo]);
 
   const handleRepoSelection = (repo: Repo) => {
     setSelectedRepo(repo);
     setCurrentIssue(0);
-    setIssueTemplate(null);
+    setIssueGuidelines(null);
   };
 
   const handlesetCurrentIssue = async (change: number) => {
@@ -90,7 +90,12 @@ export default function Home() {
   };
 
   const handleNewIssue = () => {
-    const sampleBody = `THIS THING IS ALWAYS BROKEN 😡 It's almost as if you're trying to create a terrible app. It never generates the right grid layouts AND EVEN IF IT DID the css it spits out just overflows off the page, so I can't see it. Do better, guys.`;
+    const sampleBody = `ADD ISSUE DESCRIPTION HERE
+
+first off the fact it deleted 2 of my labs in there entirety and has not done anything to restart them at all is really fucking annoying.
+second the fact i cant copy and paste is even more annoying especially since it never asks me to activate or change any settings to use the clipboard.
+
+Version: 1.95.0 Commit: 912bb683695358a54ae0c670461738984cbb5b95 User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Embedder: codespaces`;
 
     const newIssueDraft = {
       id: Date.now(),
@@ -224,7 +229,7 @@ export default function Home() {
                 <SidePanel
                   issue={issueDraft || issues[currentIssue]}
                   loading={loading}
-                  issueTemplate={issueTemplate}
+                  issueGuidelines={issueGuidelines}
                   isPanelVisible={isPanelVisible}
                   toggleChatVisibility={toggleChatVisibility}
                   isCreatingIssue={isCreatingIssue}
