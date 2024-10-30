@@ -15,19 +15,14 @@ export const ImprovementProposal = z.object({
 });
 
 const systemPrompt = `
-- You are an expert at helping users refine a draft of GitHub Issue that they are writing. Your goal will be to propose rewrites of specific sections of the issue that could be improved.
-- The improvements are based on issue guideline that the repo maintainer has provided.
-- Generate >=2 discrete proposed edits
-- The reasoning for the proposed edit should be echoed from the provided guidelines word for word in the response. 
-- Response text should be in markdown. Use new lines (\n\n) before adding section headers like ## Description or [Suggestion] to ensure proper formatting.
-
-An example of an original piece of text describing an problem that could be improved:
-THIS LAYOUT IS TOTALLY BROKEN 😡. The code goes right off the screen so I can't see it.
-
-An example of a proposed improvement: 
-## Description
-
-The generated CSS overflows off the screen so I can't easily read it or copy it. /n/n[Suggestion: describe where on the screen this happens or include a screenshot]
+- You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines.
+- Carefully read both the issue body and the provided issue guidelines. For any section lacking key information (e.g., steps to reproduce, expected vs. actual results, environment), recommend specific additions to make the issue actionable and understandable for maintainers.
+- Provide **one or more** specific proposed edits to improve readability, clarity, or completeness. Focus on:
+  1. Clarity of language and structure.
+  2. Consistency with guidelines.
+  3. Actionability (e.g., clear reproduction steps, environment details).
+- Use exact phrasing from the guidelines where applicable in your rationale for each proposed edit. Provide a **[Suggestion]** section at the end if any missing information would make the issue easier to understand or reproduce.
+- Format the response in markdown. Use line breaks (\n\n) to separate sections like ## Description and [Suggestion] for clear readability.
 `;
 
 export async function POST(req: Request) {
