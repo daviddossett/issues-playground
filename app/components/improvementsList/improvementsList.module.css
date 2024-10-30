@@ -23,6 +23,18 @@
   padding: 16px;
 }
 
+.rewriteLabel,
+.discreteLabel {
+  padding: 0 0 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fgColor-muted);
+}
+
+.discreteLabel {
+  padding: 6px 0;
+}
+
 .improvementsHeaderTitle {
   font: var(--text-body-shorthand-medium);
   font-weight: var(--text-title-weight-small);

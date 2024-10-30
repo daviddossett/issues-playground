@@ -2,10 +2,11 @@ import { useState, useCallback } from "react";
 import { fetchImprovements } from "@/app/client";
 
 export interface Improvement {
+    type: 'rewrite' | 'discrete';
     original: string;
     proposed: string;
     reasoning: string;
-};
+}
 
 export const useImproveIssue = (issueBody: string, issueGuidelines: string | null) => {
     const [improvements, setImprovements] = useState<Improvement[] | null>(null);
@@ -17,10 +18,14 @@ export const useImproveIssue = (issueBody: string, issueGuidelines: string | nul
         setError(null);
         try {
             const data = await fetchImprovements(issueBody, issueGuidelines);
-            setImprovements(data);
+            if (data?.items) {
+                setImprovements(data.items);
+            }
+            return data;
         } catch (error) {
             console.error("Failed to fetch improvements:", error);
             setError("Failed to fetch improvements");
+            return null;
         } finally {
             setImprovementsLoading(false);
         }

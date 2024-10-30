@@ -43,30 +43,62 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   }, [issueDraft]);
 
   const renderHighlightedText = (): React.ReactNode => {
-    if (!improvements) return body;
+    if (!improvements || improvements.length === 0) return body;
+
+    // Find if there's a focused rewrite improvement
+    const focusedImprovement = focusedImprovementIndex !== null ? improvements[focusedImprovementIndex] : null;
+
+    // If focused improvement is a rewrite, highlight the entire body
+    if (focusedImprovement?.type === "rewrite") {
+      return (
+        <span
+          className={`${styles.highlight} ${styles.focusedHighlight}`}
+          onClick={() => handleImprovementClick(focusedImprovementIndex!)}
+        >
+          {body}
+        </span>
+      );
+    }
+
+    // Sort improvements by their position in the text to avoid highlighting conflicts
+    const sortedImprovements = [...improvements].sort((a, b) => {
+      const posA = body.toLowerCase().indexOf(a.original.toLowerCase());
+      const posB = body.toLowerCase().indexOf(b.original.toLowerCase());
+      return posA - posB;
+    });
 
     let lastIndex = 0;
     const parts: React.ReactNode[] = [];
 
-    improvements.forEach((improvement, index) => {
+    sortedImprovements.forEach((improvement, arrayIndex) => {
+      // Skip rewrite improvements when showing discrete highlights
+      if (improvement.type === "rewrite") return;
+
       const { original } = improvement;
-      if (!original.trim()) return; // Skip empty or whitespace-only strings
+      if (!original.trim()) return;
 
-      const start = body.indexOf(original, lastIndex);
+      const bodyLower = body.toLowerCase();
+      const searchLower = original.toLowerCase();
+      const start = bodyLower.indexOf(searchLower, lastIndex);
 
-      if (start === -1) return; // Skip if the original text is not found
+      if (start === -1) return;
+
+      const actualText = body.slice(start, start + original.length);
 
       if (start > lastIndex) {
-        parts.push(<span key={`text-${index}`}>{body.slice(lastIndex, start)}</span>);
+        parts.push(<span key={`text-${arrayIndex}`}>{body.slice(lastIndex, start)}</span>);
       }
+
+      // Find the actual index in the improvements array
+      const improvedIndex = improvements.findIndex((imp) => imp === improvement);
 
       parts.push(
         <span
-          key={`highlight-${index}`}
-          className={`${styles.highlight} ${focusedImprovementIndex === index ? styles.focusedHighlight : ""}`}
-          onClick={() => handleImprovementClick(index)}
+          key={`highlight-${arrayIndex}`}
+          className={`${styles.highlight} ${focusedImprovementIndex === improvedIndex ? styles.focusedHighlight : ""}`}
+          onClick={() => handleImprovementClick(improvedIndex)}
         >
-          {original}
+          {actualText}
         </span>
       );
 
@@ -146,6 +178,9 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
                   cols={300}
                   rows={20}
                   resize="vertical"
+                  style={{
+                    pointerEvents: improvements && improvements.length > 0 ? "none" : "auto",
+                  }}
                 />
               </Box>
             </FormControl>

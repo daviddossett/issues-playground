@@ -8,6 +8,7 @@ const openai = new OpenAI({
 
 export const ImprovementProposal = z.object({
     items: z.array(z.object({
+        type: z.enum(['rewrite', 'discrete']),
         original: z.string(),
         proposed: z.string(),
         reasoning: z.string(),
@@ -16,13 +17,16 @@ export const ImprovementProposal = z.object({
 
 const systemPrompt = `
 - You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines.
-- Carefully read both the issue body and the provided issue guidelines. For any section lacking key information (e.g., steps to reproduce, expected vs. actual results, environment), recommend specific additions to make the issue actionable and understandable for maintainers.
-- Provide **one or more** specific proposed edits to improve readability, clarity, or completeness. Focus on:
-  1. Clarity of language and structure.
-  2. Consistency with guidelines.
-  3. Actionability (e.g., clear reproduction steps, environment details).
-- Use exact phrasing from the guidelines where applicable in your rationale for each proposed edit. Provide a **[Suggestion]** section at the end if any missing information would make the issue easier to understand or reproduce.
-- Format the response in markdown. Use line breaks (\n\n) to separate sections like ## Description and [Suggestion] for clear readability.
+- First, analyze if the issue needs a complete rewrite to match the guidelines structure.
+- If a rewrite is needed, provide it as the first improvement with type: 'rewrite'.
+- When analyzing content for discrete improvements:
+  - If this is a rewritten issue, focus on improving clarity and specific content details
+  - Ensure all original text references exactly match the content being improved
+  - Make specific, focused suggestions that can be applied independently
+  - Make suggestions for removing certain text if it is irrelevant or redundant
+- Keep improvements focused and actionable.
+- Format all responses following the ImprovementProposal schema.
+- Keep reasoning brief and clear.
 `;
 
 export async function POST(req: Request) {
@@ -38,7 +42,7 @@ export async function POST(req: Request) {
                 },
                 { role: "user", content: `Issue Body: ${issueBody}\nIssue Guidlines from Repo: ${issueGuidelines || ''}` },
             ],
-            max_tokens: 800,
+            max_tokens: 1200,
             response_format: zodResponseFormat(ImprovementProposal, "improvements_extraction"),
             store: true
         });

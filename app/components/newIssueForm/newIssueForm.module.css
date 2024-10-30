@@ -47,6 +47,7 @@
   line-height: 21px;
   overflow: hidden;
   pointer-events: none;
+  overflow-y: auto;
 }
 
 .formTitle {

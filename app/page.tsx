@@ -6,7 +6,7 @@ import { AppHeader } from "./components/header/header";
 import { Navigation } from "./components/navigation/navigation";
 import { IssueContent } from "./components/issue/issueContent";
 import { useIssues } from "./hooks/useIssues";
-import { useImproveIssue } from "./hooks/useImproveIssue";
+import { Improvement, useImproveIssue } from "./hooks/useImproveIssue";
 import { RepoHeader } from "./components/repoHeader/repoHeader";
 import { Endpoints } from "@octokit/types";
 import { NewIssueForm } from "./components/newIssueForm/newIssueForm";
@@ -35,7 +35,7 @@ export default function Home() {
   const [isCreatingIssue, setIsCreatingIssue] = useState<boolean>(false);
   const [issueDraft, setIssueDraft] = useState<Issue | null>(null);
   const [issueGuidelines, setIssueGuidelines] = useState<string | null>(null);
-  const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(0);
+  const [focusedImprovementIndex, setFocusedImprovementIndex] = useState<number | null>(null);
 
   const [isPanelVisible, setisPanelVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
@@ -90,12 +90,19 @@ export default function Home() {
   };
 
   const handleNewIssue = () => {
-    const sampleBody = `ADD ISSUE DESCRIPTION HERE
+    const sampleBody = `Search results are not cleard.
+Step 1: search for "foo"
 
-first off the fact it deleted 2 of my labs in there entirety and has not done anything to restart them at all is really fucking annoying.
-second the fact i cant copy and paste is even more annoying especially since it never asks me to activate or change any settings to use the clipboard.
+Found in file 1
+Found in file 2
+Step 2: search for "bar"
 
-Version: 1.95.0 Commit: 912bb683695358a54ae0c670461738984cbb5b95 User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Embedder: codespaces`;
+Found in file 1 (wrong, no "bar" here)
+Found in file 2 (wrong, no "bar" here)
+no other files shown
+This issue is sporadic and the only solution found is to restart the workspace
+
+`;
 
     const newIssueDraft = {
       id: Date.now(),
@@ -148,13 +155,41 @@ Version: 1.95.0 Commit: 912bb683695358a54ae0c670461738984cbb5b95 User Agent: Moz
     setFocusedImprovementIndex(index);
   };
 
-  const handleAcceptImprovement = (index: number) => {
+  const handleAcceptImprovement = async (index: number) => {
     if (!improvements || !issueDraft?.body) return;
 
     const improvement = improvements[index];
     const updatedBody = issueDraft.body.replace(improvement.original, improvement.proposed);
     setIssueDraft((prev) => prev && { ...prev, body: updatedBody });
-    setImprovements((prevImprovements) => prevImprovements?.filter((_, i) => i !== index) || []);
+
+    if (improvement.type === "rewrite") {
+      setImprovements(null);
+      setFocusedImprovementIndex(null); // Reset focus before fetching new improvements
+      const response = await fetchIssueImprovements();
+      if (response?.items) {
+        const validatedImprovements = response.items
+          .filter((imp: Improvement) => imp.type === "discrete")
+          .filter((imp: Improvement) => updatedBody.includes(imp.original));
+        setImprovements(validatedImprovements);
+        // Set focus to first improvement if available
+        if (validatedImprovements.length > 0) {
+          setFocusedImprovementIndex(0);
+        }
+      }
+    } else {
+      // When accepting a discrete improvement, filter out any rewrite improvements
+      // along with the accepted improvement
+      const updatedImprovements = improvements.filter((imp, i) => i !== index && imp.type !== "rewrite");
+      setImprovements(updatedImprovements);
+
+      // Update focus
+      if (updatedImprovements.length > 0) {
+        const nextIndex = index < updatedImprovements.length ? index : updatedImprovements.length - 1;
+        setFocusedImprovementIndex(nextIndex);
+      } else {
+        setFocusedImprovementIndex(null);
+      }
+    }
   };
 
   const handleDiscardImprovement = (index: number) => {
@@ -162,10 +197,26 @@ Version: 1.95.0 Commit: 912bb683695358a54ae0c670461738984cbb5b95 User Agent: Moz
 
     const updatedImprovements = improvements.filter((_, i) => i !== index);
     setImprovements(updatedImprovements);
+
+    // Focus the next improvement if available, otherwise the previous one
+    if (updatedImprovements.length > 0) {
+      if (index < updatedImprovements.length) {
+        setFocusedImprovementIndex(index);
+      } else {
+        setFocusedImprovementIndex(updatedImprovements.length - 1);
+      }
+    } else {
+      setFocusedImprovementIndex(null);
+    }
   };
 
-  const handleFetchImprovements = () => {
-    fetchIssueImprovements();
+  const handleFetchImprovements = async () => {
+    const data = await fetchIssueImprovements();
+    if (data?.items && data.items.length > 0) {
+      setImprovements(data.items);
+      // Ensure we set focus after improvements are loaded
+      setFocusedImprovementIndex(0);
+    }
   };
 
   const isLastItem = currentIssue === issues.length - 1;
