@@ -13,11 +13,11 @@ export const useImproveIssue = (issueBody: string, issueGuidelines: string | nul
     const [improvementsLoading, setImprovementsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchIssueImprovements = useCallback(async () => {
+    const fetchIssueImprovements = useCallback(async (bodyOverride?: string) => {
         setImprovementsLoading(true);
         setError(null);
         try {
-            const data = await fetchImprovements(issueBody, issueGuidelines);
+            const data = await fetchImprovements(bodyOverride || issueBody, issueGuidelines);
             if (data?.items) {
                 setImprovements(data.items);
             }

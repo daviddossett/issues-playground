@@ -160,18 +160,24 @@ This issue is sporadic and the only solution found is to restart the workspace
 
     const improvement = improvements[index];
     const updatedBody = issueDraft.body.replace(improvement.original, improvement.proposed);
+
+    // Update the draft first
     setIssueDraft((prev) => prev && { ...prev, body: updatedBody });
 
     if (improvement.type === "rewrite") {
       setImprovements(null);
-      setFocusedImprovementIndex(null); // Reset focus before fetching new improvements
-      const response = await fetchIssueImprovements();
+      setFocusedImprovementIndex(null);
+
+      // Wait for state update before fetching new improvements
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      // Pass the updated body directly
+      const response = await fetchIssueImprovements(updatedBody);
       if (response?.items) {
         const validatedImprovements = response.items
           .filter((imp: Improvement) => imp.type === "discrete")
           .filter((imp: Improvement) => updatedBody.includes(imp.original));
         setImprovements(validatedImprovements);
-        // Set focus to first improvement if available
         if (validatedImprovements.length > 0) {
           setFocusedImprovementIndex(0);
         }
@@ -291,6 +297,7 @@ This issue is sporadic and the only solution found is to restart the workspace
                   handleAcceptImprovement={handleAcceptImprovement}
                   handleDiscardImprovement={handleDiscardImprovement}
                   onFetchImprovements={handleFetchImprovements}
+                  selectedRepo={selectedRepo}
                 />
               )}
             </Box>

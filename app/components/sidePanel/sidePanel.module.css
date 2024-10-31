@@ -27,3 +27,25 @@
   flex-grow: 1;
   overflow-y: auto;
 }
+
+.dialog {
+  overflow: hidden;
+}
+
+.dialogBody {
+  overflow-y: auto;
+  max-height: 600px;
+  padding: 16px;
+}
+
+.dialogMarkdown {
+  padding: 0 16px 32px 16px !important;
+}
+
+.dialogMarkdown pre {
+  white-space: pre;
+  overflow-x: auto;
+  padding: 12px;
+  background-color: var(--bgColor-muted);
+  border-radius: var(--borderRadius-medium);
+}

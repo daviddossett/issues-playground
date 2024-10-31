@@ -26,7 +26,7 @@ const systemPrompt = `
   - Make suggestions for removing certain text if it is irrelevant or redundant
 - Keep improvements focused and actionable.
 - Format all responses following the ImprovementProposal schema.
-- Keep reasoning brief and clear.
+- Keep reasoning to 10 words or less.
 `;
 
 export async function POST(req: Request) {

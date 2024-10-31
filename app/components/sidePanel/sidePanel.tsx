@@ -4,7 +4,7 @@ import { Chat } from "../chat/chat";
 import { ImprovementsList } from "../improvementsList/improvementsList";
 import styles from "./sidePanel.module.css";
 import { Improvement } from "@/app/hooks/useImproveIssue";
-import { Issue } from "@/app/page";
+import { Issue, Repo } from "@/app/page";
 import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -24,6 +24,7 @@ interface SidePanelProps {
   handleAcceptImprovement: (index: number) => void;
   handleDiscardImprovement: (index: number) => void;
   onFetchImprovements: () => void;
+  selectedRepo: Repo;
 }
 
 export const SidePanel: React.FC<SidePanelProps> = ({
@@ -40,6 +41,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
   handleAcceptImprovement,
   handleDiscardImprovement,
   onFetchImprovements,
+  selectedRepo,
 }) => {
   const [selectedTab, setSelectedTab] = useState<"chat" | "improvements">("chat");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,7 +50,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
 
   const openModal = (content: string, title: string) => {
     setModalContent(content);
-    setModalTitle(title);
+    setModalTitle(`${title} for ${selectedRepo.owner}/${selectedRepo.name}`);
     setIsModalOpen(true);
   };
 
@@ -97,12 +99,14 @@ export const SidePanel: React.FC<SidePanelProps> = ({
           />
         )}
       </Box>
-      <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide>
+      <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide className={styles.dialog}>
         <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
-        <Box p={4} className={styles.dialogMarkdown}>
-          <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-            {modalContent}
-          </Markdown>
+        <Box className={styles.dialogBody}>
+          <Box p={4} className={styles.dialogMarkdown}>
+            <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+              {modalContent}
+            </Markdown>
+          </Box>
         </Box>
       </Dialog>
     </Box>
