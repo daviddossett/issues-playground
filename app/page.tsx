@@ -39,6 +39,7 @@ export default function Home() {
 
   const [isPanelVisible, setisPanelVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
+  const [isRefreshingAfterRewrite, setIsRefreshingAfterRewrite] = useState(false);
 
   const { issues, loading, loadMoreIssues, hasMore } = useIssues(selectedRepo);
   const { improvements, setImprovements, fetchIssueImprovements, improvementsLoading } = useImproveIssue(
@@ -165,22 +166,33 @@ This issue is sporadic and the only solution found is to restart the workspace
     setIssueDraft((prev) => prev && { ...prev, body: updatedBody });
 
     if (improvement.type === "rewrite") {
-      setImprovements(null);
+      // Immediately remove the rewrite improvement
+      setImprovements(improvements.filter((imp) => imp.type === "discrete"));
       setFocusedImprovementIndex(null);
+      setIsRefreshingAfterRewrite(true);
 
-      // Wait for state update before fetching new improvements
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      try {
+        // Wait for the draft update to complete
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
-      // Pass the updated body directly
-      const response = await fetchIssueImprovements(updatedBody);
-      if (response?.items) {
-        const validatedImprovements = response.items
-          .filter((imp: Improvement) => imp.type === "discrete")
-          .filter((imp: Improvement) => updatedBody.includes(imp.original));
-        setImprovements(validatedImprovements);
-        if (validatedImprovements.length > 0) {
-          setFocusedImprovementIndex(0);
+        // Pass the updated body directly to get new improvements
+        const response = await fetchIssueImprovements(updatedBody);
+
+        if (response?.items) {
+          // Only keep discrete improvements after a rewrite
+          const validatedImprovements = response.items
+            .filter((imp: Improvement) => imp.type === "discrete")
+            .filter((imp: Improvement) => updatedBody.includes(imp.original));
+
+          if (validatedImprovements.length > 0) {
+            setImprovements(validatedImprovements);
+            setFocusedImprovementIndex(0);
+          }
         }
+      } catch (error) {
+        console.error("Failed to fetch new improvements:", error);
+      } finally {
+        setIsRefreshingAfterRewrite(false);
       }
     } else {
       // When accepting a discrete improvement, filter out any rewrite improvements
@@ -266,6 +278,7 @@ This issue is sporadic and the only solution found is to restart the workspace
                   focusedImprovementIndex={focusedImprovementIndex}
                   handleImprovementClick={handleImprovementClick}
                   issueDraft={issueDraft}
+                  isRefreshingAfterRewrite={isRefreshingAfterRewrite}
                 />
               ) : (
                 <IssueContent
@@ -298,6 +311,7 @@ This issue is sporadic and the only solution found is to restart the workspace
                   handleDiscardImprovement={handleDiscardImprovement}
                   onFetchImprovements={handleFetchImprovements}
                   selectedRepo={selectedRepo}
+                  isRefreshingAfterRewrite={isRefreshingAfterRewrite}
                 />
               )}
             </Box>

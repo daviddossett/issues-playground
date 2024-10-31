@@ -25,6 +25,7 @@ interface SidePanelProps {
   handleDiscardImprovement: (index: number) => void;
   onFetchImprovements: () => void;
   selectedRepo: Repo;
+  isRefreshingAfterRewrite: boolean;
 }
 
 export const SidePanel: React.FC<SidePanelProps> = ({
@@ -42,6 +43,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
   handleDiscardImprovement,
   onFetchImprovements,
   selectedRepo,
+  isRefreshingAfterRewrite,
 }) => {
   const [selectedTab, setSelectedTab] = useState<"chat" | "improvements">("chat");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,6 +98,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             loading={improvementsLoading}
             onFetchImprovements={onFetchImprovements}
             onOpenGuidelines={() => openModal(issueGuidelines || "", "Issue guidelines")}
+            isRefreshingAfterRewrite={isRefreshingAfterRewrite}
           />
         )}
       </Box>

@@ -1,4 +1,5 @@
 import { Box, Button, Text } from "@primer/react";
+import { CopilotIcon } from "@primer/octicons-react";
 import { SkeletonText, Blankslate } from "@primer/react/drafts";
 import { Improvement } from "@/app/hooks/useImproveIssue";
 import styles from "./improvementsList.module.css";
@@ -12,38 +13,56 @@ interface ImprovementsListProps {
   handleDiscardImprovement: (index: number) => void;
   loading: boolean;
   onFetchImprovements: () => void;
-  onOpenGuidelines: () => void; // New prop for opening guidelines
+  onOpenGuidelines: () => void;
+  isRefreshingAfterRewrite?: boolean;
 }
 
-const LoadingImprovements = () => (
+const LoadingState = () => (
   <Box className={styles.improvementsList}>
-    <SkeletonText lines={4} />
+    <Text className={styles.sectionLabel}>Rewrite</Text>
+    <Box className={styles.improvementItem}>
+      <ImprovementSkeleton />
+    </Box>
+    <Text className={styles.sectionLabel}>Refine</Text>
+    <Box className={styles.improvementItem}>
+      <ImprovementSkeleton />
+    </Box>
+    <Box className={styles.improvementItem}>
+      <ImprovementSkeleton />
+    </Box>
   </Box>
 );
 
-const EmptyState = ({
-  onFetchImprovements,
-  onOpenGuidelines,
-}: {
-  onFetchImprovements: () => void;
-  onOpenGuidelines: () => void;
-}) => (
+const EmptyState = ({ onFetchImprovements }: { onFetchImprovements: () => void; onOpenGuidelines: () => void }) => (
   <Box className={styles.emptyState}>
     <Blankslate narrow>
       <Blankslate.Heading>No feedback</Blankslate.Heading>
       <Blankslate.Description>
-        Copilot can give you feedback on your issue according to this guidelines in this repo
+        Copilot helps you create actionable issues according to this repository&apos;s guidelines.
       </Blankslate.Description>
       <Box className={styles.emptyStateButtons}>
-        <Button variant="primary" onClick={onFetchImprovements} className={styles.emptyStatePrimaryButton}>
+        <Button onClick={onFetchImprovements} className={styles.emptyStatePrimaryButton} leadingVisual={CopilotIcon}>
           Generate feedback
-        </Button>
-        <Button onClick={onOpenGuidelines} className={styles.emptyStateSecondaryButton}>
-          View guidelines
         </Button>
       </Box>
     </Blankslate>
   </Box>
+);
+
+const ImprovementSkeleton = () => (
+  <>
+    <Text as="p" className={styles.improvementItemOriginalText}>
+      <SkeletonText />
+    </Text>
+    <Text as="p" className={styles.improvementItemProposedText}>
+      <SkeletonText />
+    </Text>
+    <Box className={styles.improvementReasoning}>
+      <Text as="p" className={styles.improvementItemReasoningText}>
+        <SkeletonText />
+      </Text>
+    </Box>
+  </>
 );
 
 export const ImprovementsList: React.FC<ImprovementsListProps> = ({
@@ -54,7 +73,8 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
   handleDiscardImprovement,
   loading,
   onFetchImprovements,
-  onOpenGuidelines, // New prop for opening guidelines
+  onOpenGuidelines,
+  isRefreshingAfterRewrite = false,
 }) => {
   const focusedItemRef = useRef<HTMLDivElement>(null);
 
@@ -73,66 +93,84 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
     }
   }, [focusedImprovementIndex, improvements]);
 
+  const renderImprovementContent = (improvement: Improvement, actualIndex: number) => {
+    if (isRefreshingAfterRewrite) {
+      return <ImprovementSkeleton />;
+    }
+
+    return (
+      <>
+        <Text as="p" className={styles.improvementItemOriginalText}>
+          {improvement.original}
+        </Text>
+        <Text as="p" className={styles.improvementItemProposedText}>
+          {improvement.proposed || "[Suggest to remove this based on issue guidelines]"}
+        </Text>
+        <Box className={styles.improvementReasoning}>
+          <Text as="p" className={styles.improvementItemReasoningText}>
+            {improvement.reasoning}
+          </Text>
+        </Box>
+        <Box className={styles.improvementItemButtons}>
+          <Box className={styles.improvementItemApplyDiscardButtons}>
+            <Button
+              disabled={isRefreshingAfterRewrite}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAcceptImprovement(actualIndex);
+              }}
+            >
+              Apply
+            </Button>
+            <Button
+              disabled={isRefreshingAfterRewrite}
+              variant="danger"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDiscardImprovement(actualIndex);
+              }}
+            >
+              Discard
+            </Button>
+          </Box>
+          <Button disabled={isRefreshingAfterRewrite} variant="invisible">
+            Refine
+          </Button>
+        </Box>
+      </>
+    );
+  };
+
   return (
     <Box className={styles.improvementsContainer}>
-      {loading ? (
-        <LoadingImprovements />
+      {loading && !isRefreshingAfterRewrite ? (
+        <LoadingState />
       ) : improvements && improvements.length > 0 ? (
         <Box className={styles.improvementsList}>
           {rewriteImprovement && (
             <>
-              <Text className={styles.rewriteLabel}>Suggested Rewrite</Text>
+              <Text className={styles.sectionLabel}>Rewrite</Text>
               <Box
                 ref={focusedImprovementIndex === improvements.indexOf(rewriteImprovement) ? focusedItemRef : null}
-                className={`${styles.improvementItem} ${styles.rewriteItem} ${
+                className={`${styles.improvementItem} ${
                   focusedImprovementIndex === improvements.indexOf(rewriteImprovement)
                     ? styles.focusedImprovementItem
                     : ""
                 }`}
-                onClick={() => handleImprovementClick(improvements.indexOf(rewriteImprovement))}
-                tabIndex={0}
+                onClick={() =>
+                  !isRefreshingAfterRewrite && handleImprovementClick(improvements.indexOf(rewriteImprovement))
+                }
+                tabIndex={isRefreshingAfterRewrite ? -1 : 0}
                 onFocus={() => handleImprovementClick(improvements.indexOf(rewriteImprovement))}
               >
-                <Text as="p" className={styles.improvementItemOriginalText}>
-                  {rewriteImprovement.original}
-                </Text>
-                <Text as="p" className={styles.improvementItemProposedText}>
-                  {rewriteImprovement.proposed}
-                </Text>
-                <Box className={styles.improvementReasoning}>
-                  <Text as="p" className={styles.improvementItemReasoningText}>
-                    {rewriteImprovement.reasoning}
-                  </Text>
-                </Box>
-                <Box className={styles.improvementItemButtons}>
-                  <Box className={styles.improvementItemApplyDiscardButtons}>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAcceptImprovement(improvements.indexOf(rewriteImprovement));
-                      }}
-                    >
-                      Apply Rewrite
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDiscardImprovement(improvements.indexOf(rewriteImprovement));
-                      }}
-                    >
-                      Discard
-                    </Button>
-                  </Box>
-                  <Button variant="invisible">Refine</Button>
-                </Box>
+                {renderImprovementContent(rewriteImprovement, improvements.indexOf(rewriteImprovement))}
               </Box>
             </>
           )}
 
           {discreteImprovements && discreteImprovements.length > 0 && (
             <>
-              <Text className={styles.discreteLabel}>Specific Improvements</Text>
+              <Text className={styles.sectionLabel}>Refine</Text>
               {discreteImprovements.map((improvement) => {
                 const actualIndex = improvements.indexOf(improvement);
                 return (
@@ -142,43 +180,11 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
                     className={`${styles.improvementItem} ${
                       focusedImprovementIndex === actualIndex ? styles.focusedImprovementItem : ""
                     }`}
-                    onClick={() => handleImprovementClick(actualIndex)}
-                    tabIndex={0}
+                    onClick={() => !isRefreshingAfterRewrite && handleImprovementClick(actualIndex)}
+                    tabIndex={isRefreshingAfterRewrite ? -1 : 0}
                     onFocus={() => handleImprovementClick(actualIndex)}
                   >
-                    <Text as="p" className={styles.improvementItemOriginalText}>
-                      {improvement.original}
-                    </Text>
-                    <Text as="p" className={styles.improvementItemProposedText}>
-                      {improvement.proposed || "[Suggest to remove this based on issue guidelines]"}
-                    </Text>
-                    <Box className={styles.improvementReasoning}>
-                      <Text as="p" className={styles.improvementItemReasoningText}>
-                        {improvement.reasoning}
-                      </Text>
-                    </Box>
-                    <Box className={styles.improvementItemButtons}>
-                      <Box className={styles.improvementItemApplyDiscardButtons}>
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAcceptImprovement(actualIndex);
-                          }}
-                        >
-                          Apply
-                        </Button>
-                        <Button
-                          variant="danger"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDiscardImprovement(actualIndex);
-                          }}
-                        >
-                          Discard
-                        </Button>
-                      </Box>
-                      <Button variant="invisible">Refine</Button>
-                    </Box>
+                    {renderImprovementContent(improvement, actualIndex)}
                   </Box>
                 );
               })}

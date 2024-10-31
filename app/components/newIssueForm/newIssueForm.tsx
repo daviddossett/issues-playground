@@ -18,6 +18,7 @@ interface NewIssueFormProps {
   focusedImprovementIndex: number | null;
   handleImprovementClick: (index: number) => void;
   issueDraft: Issue | null;
+  isRefreshingAfterRewrite: boolean;
 }
 
 export const NewIssueForm: React.FC<NewIssueFormProps> = ({
@@ -33,6 +34,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   focusedImprovementIndex,
   handleImprovementClick,
   issueDraft,
+  isRefreshingAfterRewrite,
 }) => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>(issueDraft?.body || "");
@@ -43,7 +45,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
   }, [issueDraft]);
 
   const renderHighlightedText = (): React.ReactNode => {
-    if (!improvements || improvements.length === 0) return body;
+    if (!improvements || improvements.length === 0 || isRefreshingAfterRewrite) return body;
 
     // Find if there's a focused rewrite improvement
     const focusedImprovement = focusedImprovementIndex !== null ? improvements[focusedImprovementIndex] : null;
