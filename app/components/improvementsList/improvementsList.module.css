@@ -44,7 +44,7 @@
 .improvementItem {
   border: 1px solid var(--borderColor-default);
   border-radius: 6px;
-  padding: 16px;
+  padding: 12px;
 }
 
 .improvementItemOriginalText,

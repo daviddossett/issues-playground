@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@primer/react";
+import { Box, Button, Link, Text } from "@primer/react";
 import { CopilotIcon } from "@primer/octicons-react";
 import { SkeletonText, Blankslate } from "@primer/react/drafts";
 import { Improvement } from "@/app/hooks/useImproveIssue";
@@ -23,7 +23,7 @@ const LoadingState = () => (
     <Box className={styles.improvementItem}>
       <ImprovementSkeleton />
     </Box>
-    <Text className={styles.sectionLabel}>Refine</Text>
+    <Text className={styles.sectionLabel}>Suggestions</Text>
     <Box className={styles.improvementItem}>
       <ImprovementSkeleton />
     </Box>
@@ -38,11 +38,14 @@ const EmptyState = ({ onFetchImprovements }: { onFetchImprovements: () => void; 
     <Blankslate narrow>
       <Blankslate.Heading>No feedback</Blankslate.Heading>
       <Blankslate.Description>
-        Copilot helps you create actionable issues according to the{" "}
-        <a href="https://github.com/daviddossett/grid-playground/blob/main/.github/issue-guidelines.md" target="_blank">
+        Write clear, actionable issues according to the{" "}
+        <Link
+          href="https://github.com/daviddossett/grid-playground/blob/main/.github/issue-guidelines.md"
+          target="_blank"
+        >
           guidelines
-        </a>{" "}
-        in this daviddossett/grid-playground.
+        </Link>{" "}
+        in daviddossett/grid-playground.
       </Blankslate.Description>
       <Box className={styles.emptyStateButtons}>
         <Button onClick={onFetchImprovements} className={styles.emptyStatePrimaryButton} leadingVisual={CopilotIcon}>
@@ -53,21 +56,7 @@ const EmptyState = ({ onFetchImprovements }: { onFetchImprovements: () => void; 
   </Box>
 );
 
-const ImprovementSkeleton = () => (
-  <>
-    <Text as="p" className={styles.improvementItemOriginalText}>
-      <SkeletonText />
-    </Text>
-    <Text as="p" className={styles.improvementItemProposedText}>
-      <SkeletonText />
-    </Text>
-    <Box className={styles.improvementReasoning}>
-      <Text as="p" className={styles.improvementItemReasoningText}>
-        <SkeletonText />
-      </Text>
-    </Box>
-  </>
-);
+const ImprovementSkeleton = () => <SkeletonText lines={2} />;
 
 export const ImprovementsList: React.FC<ImprovementsListProps> = ({
   improvements,
@@ -118,6 +107,7 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
         <Box className={styles.improvementItemButtons}>
           <Box className={styles.improvementItemApplyDiscardButtons}>
             <Button
+              size="small"
               disabled={isRefreshingAfterRewrite}
               onClick={(e) => {
                 e.stopPropagation();
@@ -127,6 +117,7 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
               Apply
             </Button>
             <Button
+              size="small"
               disabled={isRefreshingAfterRewrite}
               variant="danger"
               onClick={(e) => {
@@ -137,7 +128,7 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
               Discard
             </Button>
           </Box>
-          <Button disabled={isRefreshingAfterRewrite} variant="invisible">
+          <Button disabled={isRefreshingAfterRewrite} variant="invisible" size="small">
             Refine
           </Button>
         </Box>
@@ -174,7 +165,7 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
 
           {discreteImprovements && discreteImprovements.length > 0 && (
             <>
-              <Text className={styles.sectionLabel}>Refine</Text>
+              <Text className={styles.sectionLabel}>Suggestions</Text>
               {discreteImprovements.map((improvement) => {
                 const actualIndex = improvements.indexOf(improvement);
                 return (

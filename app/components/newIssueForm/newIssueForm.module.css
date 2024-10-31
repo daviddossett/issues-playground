@@ -36,6 +36,9 @@
   line-height: 15px;
   overflow: hidden;
   z-index: 0;
+  word-wrap: break-word;
+  word-break: keep-all;
+  tab-size: 8;
 }
 
 .issueBodyInput {
@@ -48,6 +51,10 @@
   overflow: hidden;
   pointer-events: none;
   overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: keep-all;
+  tab-size: 8;
 }
 
 .formTitle {
@@ -109,12 +116,12 @@
 }
 
 .highlight:hover {
-  background-color: var(--bgColor-attention-muted);
+  background-color: var(--bgColor-attention-emphasis);
   border-bottom: 2px dashed var(--borderColor-attention-emphasis);
 }
 
 .focusedHighlight {
-  background-color: var(--bgColor-attention-muted);
+  background-color: var(--bgColor-attention-emphasis);
   border-bottom: 2px dashed var(--borderColor-attention-emphasis);
   border-radius: 4px;
 }
