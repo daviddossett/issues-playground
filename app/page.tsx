@@ -91,19 +91,7 @@ export default function Home() {
   };
 
   const handleNewIssue = () => {
-    const sampleBody = `Search results are not cleard.
-Step 1: search for "foo"
-
-Found in file 1
-Found in file 2
-Step 2: search for "bar"
-
-Found in file 1 (wrong, no "bar" here)
-Found in file 2 (wrong, no "bar" here)
-no other files shown
-This issue is sporadic and the only solution found is to restart the workspace
-
-`;
+    const sampleBody = "";
 
     const newIssueDraft = {
       id: Date.now(),

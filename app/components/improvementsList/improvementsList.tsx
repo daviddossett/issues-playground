@@ -38,7 +38,11 @@ const EmptyState = ({ onFetchImprovements }: { onFetchImprovements: () => void; 
     <Blankslate narrow>
       <Blankslate.Heading>No feedback</Blankslate.Heading>
       <Blankslate.Description>
-        Copilot helps you create actionable issues according to this repository&apos;s guidelines.
+        Copilot helps you create actionable issues according to the{" "}
+        <a href="https://github.com/daviddossett/grid-playground/blob/main/.github/issue-guidelines.md" target="_blank">
+          guidelines
+        </a>{" "}
+        in this daviddossett/grid-playground.
       </Blankslate.Description>
       <Box className={styles.emptyStateButtons}>
         <Button onClick={onFetchImprovements} className={styles.emptyStatePrimaryButton} leadingVisual={CopilotIcon}>
