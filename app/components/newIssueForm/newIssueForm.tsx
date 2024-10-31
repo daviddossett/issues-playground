@@ -190,7 +190,7 @@ export const NewIssueForm: React.FC<NewIssueFormProps> = ({
               <Button variant="danger" onClick={onDiscard}>
                 Discard
               </Button>
-              <Button variant="primary" onClick={handleCreate}>
+              <Button variant="primary" onClick={handleCreate} disabled={!title}>
                 Create
               </Button>
             </Box>

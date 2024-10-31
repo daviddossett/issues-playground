@@ -18,7 +18,7 @@ export const ImprovementProposal = z.object({
 const systemPrompt = `
 - You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines.
 - First, analyze if the issue needs a complete rewrite to match the guidelines structure.
-- If a rewrite is needed, provide it as the first improvement with type: 'rewrite'.
+- If a rewrite is needed, provide **one** rewrite as the first improvement with type: 'rewrite'.
 - When analyzing content for discrete improvements:
   - If this is a rewritten issue, focus on improving clarity and specific content details
   - Ensure all original text references exactly match the content being improved
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     try {
         const response = await openai.beta.chat.completions.parse({
-            model: "gpt-4o-mini",
+            model: "gpt-4o",
             messages: [
                 {
                     role: "system",
