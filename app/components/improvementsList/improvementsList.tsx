@@ -74,10 +74,6 @@ export const ImprovementsList: React.FC<ImprovementsListProps> = ({
   const rewriteImprovement = improvements?.find((imp) => imp.type === "rewrite");
   const discreteImprovements = improvements?.filter((imp) => imp.type === "discrete");
 
-  // Remove the first useEffect that was trying to set initial focus
-  // Instead, rely on the parent component to set the initial focus
-
-  // Simplified focus effect
   useEffect(() => {
     if (focusedImprovementIndex !== null && focusedItemRef.current) {
       focusedItemRef.current.focus();
