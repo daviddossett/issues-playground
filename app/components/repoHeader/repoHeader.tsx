@@ -9,7 +9,6 @@ interface RepoHeaderProps {
   repos: Repo[];
   selectedRepo: Repo;
   onRepoSelected: (repo: Repo) => void;
-  onNewIssue: () => void;
 }
 
 const RepoSelector = ({
@@ -68,13 +67,10 @@ const RepoSelector = ({
   );
 };
 
-export const RepoHeader = ({ repos, selectedRepo, onRepoSelected, onNewIssue }: RepoHeaderProps) => {
+export const RepoHeader = ({ repos, selectedRepo, onRepoSelected }: RepoHeaderProps) => {
   return (
     <Box className={style.container}>
       <RepoSelector repos={repos} selectedRepo={selectedRepo} onRepoSelected={onRepoSelected} />
-      <Button variant="primary" onClick={onNewIssue}>
-        New issue
-      </Button>
     </Box>
   );
 };

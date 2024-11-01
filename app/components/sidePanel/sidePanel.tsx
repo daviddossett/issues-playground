@@ -1,9 +1,7 @@
 import { Box, IconButton, SegmentedControl, Dialog } from "@primer/react";
 import { SidebarCollapseIcon, FileIcon } from "@primer/octicons-react";
 import { Chat } from "../chat/chat";
-import { ImprovementsList } from "../improvementsList/improvementsList";
 import styles from "./sidePanel.module.css";
-import { Improvement } from "@/app/hooks/useImproveIssue";
 import { Issue, Repo } from "@/app/page";
 import { useState } from "react";
 import Markdown from "react-markdown";
@@ -14,36 +12,18 @@ interface SidePanelProps {
   issue: Issue;
   loading: boolean;
   issueGuidelines: string | null;
-  isPanelVisible: boolean;
   toggleChatVisibility: () => void;
-  isCreatingIssue: boolean;
-  improvements: Improvement[] | null;
-  improvementsLoading: boolean;
-  focusedImprovementIndex: number | null;
-  handleImprovementClick: (index: number) => void;
-  handleAcceptImprovement: (index: number) => void;
-  handleDiscardImprovement: (index: number) => void;
-  onFetchImprovements: () => void;
   selectedRepo: Repo;
-  isRefreshingAfterRewrite: boolean;
+  isCreatingIssue: boolean;
 }
 
 export const SidePanel: React.FC<SidePanelProps> = ({
   issue,
   loading,
   issueGuidelines,
-  isPanelVisible,
   toggleChatVisibility,
-  isCreatingIssue,
-  improvements,
-  improvementsLoading,
-  focusedImprovementIndex,
-  handleImprovementClick,
-  handleAcceptImprovement,
-  handleDiscardImprovement,
-  onFetchImprovements,
   selectedRepo,
-  isRefreshingAfterRewrite,
+  isCreatingIssue,
 }) => {
   const [selectedTab, setSelectedTab] = useState<"chat" | "improvements">("improvements");
   const [isModalOpen, setIsModalOpen] = useState(false);

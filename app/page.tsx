@@ -252,7 +252,6 @@ export default function Home() {
             repos={repos}
             selectedRepo={selectedRepo}
             onRepoSelected={handleRepoSelection}
-            onNewIssue={handleNewIssue}
           />
           <Box className={styles.innerContainer}>
             <Box className={styles.mainContent}>
@@ -260,11 +259,8 @@ export default function Home() {
                 <Navigation
                   onSetCurrentIssue={setCurrentIssue}
                   currentIssue={currentIssue}
-                  repo={selectedRepo.name}
                   issues={issueDraft ? [issueDraft, ...issues] : issues}
                   loading={loading}
-                  loadMoreIssues={loadMoreIssues}
-                  hasMore={hasMore}
                   toggleNavVisibility={toggleNavVisibility}
                 />
               )}
@@ -272,17 +268,9 @@ export default function Home() {
                 <NewIssueForm
                   onCreate={handleCreateIssue}
                   onDiscard={handleDiscardIssue}
-                  onTitleChange={handleTitleChange}
-                  onBodyChange={handleBodyChange}
                   toggleNavVisibility={toggleNavVisibility}
                   toggleChatVisibility={toggleChatVisibility}
-                  isNavVisible={isNavVisible}
-                  isPanelVisible={isPanelVisible}
-                  improvements={improvements}
-                  focusedImprovementIndex={focusedImprovementIndex}
-                  handleImprovementClick={handleImprovementClick}
                   issueDraft={issueDraft}
-                  isRefreshingAfterRewrite={isRefreshingAfterRewrite}
                 />
               ) : (
                 <IssueContent
@@ -290,12 +278,6 @@ export default function Home() {
                   loading={loading}
                   currentIssue={currentIssue}
                   onSetCurrentIssue={handlesetCurrentIssue}
-                  loadMoreIssues={loadMoreIssues}
-                  hasMore={hasMore}
-                  isLastItem={isLastItem}
-                  isNavVisible={isNavVisible}
-                  toggleNavVisibility={toggleNavVisibility}
-                  isPanelVisible={isPanelVisible}
                   toggleChatVisibility={toggleChatVisibility}
                 />
               )}
@@ -304,18 +286,9 @@ export default function Home() {
                   issue={issueDraft || issues[currentIssue]}
                   loading={loading}
                   issueGuidelines={issueGuidelines}
-                  isPanelVisible={isPanelVisible}
                   toggleChatVisibility={toggleChatVisibility}
                   isCreatingIssue={isCreatingIssue}
-                  improvements={improvements}
-                  improvementsLoading={improvementsLoading}
-                  focusedImprovementIndex={focusedImprovementIndex}
-                  handleImprovementClick={handleImprovementClick}
-                  handleAcceptImprovement={handleAcceptImprovement}
-                  handleDiscardImprovement={handleDiscardImprovement}
-                  onFetchImprovements={handleFetchImprovements}
                   selectedRepo={selectedRepo}
-                  isRefreshingAfterRewrite={isRefreshingAfterRewrite}
                 />
               )}
             </Box>

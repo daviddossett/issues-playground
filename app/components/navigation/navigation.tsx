@@ -9,11 +9,8 @@ import { useRef, useEffect } from "react";
 interface NavigationProps {
   currentIssue: number;
   onSetCurrentIssue: (index: number) => void;
-  repo: string;
   issues: Issue[];
   loading: boolean;
-  loadMoreIssues: () => void;
-  hasMore: boolean;
   toggleNavVisibility: () => void;
 }
 
@@ -33,8 +30,6 @@ export const Navigation = ({
   onSetCurrentIssue,
   issues,
   loading,
-  loadMoreIssues,
-  hasMore,
   toggleNavVisibility,
 }: NavigationProps) => {
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -100,11 +95,6 @@ export const Navigation = ({
       </Box>
       <NavList className={styles.list}>
         {navItems}
-        {!loading && hasMore && (
-          <Box className={styles.loadMoreButton}>
-            <Button onClick={loadMoreIssues}>Load more</Button>
-          </Box>
-        )}
       </NavList>
     </Box>
   );

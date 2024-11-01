@@ -20,12 +20,6 @@ interface ContentProps {
   loading: boolean;
   currentIssue: number;
   onSetCurrentIssue: (change: number) => void;
-  loadMoreIssues: () => void;
-  hasMore: boolean;
-  isLastItem: boolean;
-  isNavVisible: boolean;
-  toggleNavVisibility: () => void;
-  isPanelVisible: boolean;
   toggleChatVisibility: () => void;
 }
 
@@ -34,11 +28,6 @@ export const IssueContent: React.FC<ContentProps> = ({
   loading,
   currentIssue,
   onSetCurrentIssue,
-  hasMore,
-  isLastItem,
-  isNavVisible,
-  toggleNavVisibility,
-  isPanelVisible,
   toggleChatVisibility,
 }) => {
   const { avatarUrls, avatarLoading } = useFetchAvatarUrl(issue);
@@ -116,9 +105,6 @@ export const IssueContent: React.FC<ContentProps> = ({
       <>
         <Box className={styles.issueToolbar}>
           <Box className={styles.issueToolbarLeft}>
-            {!isNavVisible && (
-              <IconButton icon={SidebarCollapseIcon} aria-label="Show nav" onClick={toggleNavVisibility} />
-            )}
             <IconButton
               icon={ArrowUpIcon}
               aria-label="Previous"
@@ -129,14 +115,11 @@ export const IssueContent: React.FC<ContentProps> = ({
               icon={ArrowDownIcon}
               aria-label="Next"
               onClick={handleNextClick}
-              disabled={isLastItem && !hasMore}
             />
           </Box>
           <Box className={styles.issueToolbarRight}>
             <IconButton icon={KebabHorizontalIcon} aria-label="More" />
-            {!isPanelVisible && (
-              <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
-            )}
+            <IconButton icon={SidebarExpandIcon} aria-label="Show chat" onClick={toggleChatVisibility} />
           </Box>
         </Box>
         <Box className={styles.innerContainer}>
