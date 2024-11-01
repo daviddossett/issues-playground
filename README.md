@@ -8,7 +8,7 @@ First, install dependencies
 Next, setup appropriate values in your `.env.local` file:
 
 ```
-OPENAI_API_KEY=<your PAT here>
+OPENAI_API_KEY=<your key here>
 GITHUB_PAT=<your PAT here>
 ```
 
