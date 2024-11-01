@@ -109,7 +109,16 @@ export default function Home() {
 
   const handleTitleChange = (title: string) => setIssueDraft((prev) => prev && { ...prev, title });
 
-  const handleBodyChange = (body: string) => setIssueDraft((prev) => prev && { ...prev, body });
+  const handleBodyChange = (body: string) => {
+    setIssueDraft((prev) => {
+      if (!prev) return null;
+      const updated = {
+        ...prev,
+        body: body,
+      };
+      return updated;
+    });
+  };
 
   const handleCreateIssue = async (title: string, body: string) => {
     try {
@@ -148,10 +157,17 @@ export default function Home() {
     if (!improvements || !issueDraft?.body) return;
 
     const improvement = improvements[index];
+
+    // Validate that the improvement can be applied
+    if (!issueDraft.body.includes(improvement.original)) {
+      console.error("Cannot apply improvement - original text not found in body");
+      return;
+    }
+
     const updatedBody = issueDraft.body.replace(improvement.original, improvement.proposed);
 
-    // Update the draft first
-    setIssueDraft((prev) => prev && { ...prev, body: updatedBody });
+    // Update the draft
+    handleBodyChange(updatedBody);
 
     if (improvement.type === "rewrite") {
       // Immediately remove the rewrite improvement
