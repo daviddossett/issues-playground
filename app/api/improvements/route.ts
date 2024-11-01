@@ -17,6 +17,12 @@ export const ImprovementProposal = z.object({
 
 const systemPrompt = `
 - You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines.
+- Keep improvements focused and actionable.
+- Format all responses following the ImprovementProposal schema.
+- Keep reasoning to 10 words or less.
+`;
+
+const assistantPrompt = `
 - First, analyze if the issue needs a complete rewrite to match the guidelines structure.
 - If a rewrite is needed, provide **one** rewrite as the first improvement with type: 'rewrite'.
 - When analyzing content for discrete improvements:
@@ -24,10 +30,7 @@ const systemPrompt = `
   - Ensure all original text references exactly match the content being improved
   - Make specific, focused suggestions that can be applied independently
   - Make suggestions for removing certain text if it is irrelevant or redundant
-- Keep improvements focused and actionable.
-- Format all responses following the ImprovementProposal schema.
-- Keep reasoning to 10 words or less.
-`;
+  `
 
 export async function POST(req: Request) {
     const { issueBody, issueGuidelines } = await req.json();
@@ -40,7 +43,14 @@ export async function POST(req: Request) {
                     role: "system",
                     content: systemPrompt,
                 },
-                { role: "user", content: `Issue Body: ${issueBody}\nIssue Guidlines from Repo: ${issueGuidelines || ''}` },
+                { role: "assistant", content: `Use these guidelines ${issueGuidelines || ''} to inform what kind of suggestions you will make.` },
+                {
+                    role: "assistant",
+                    content: assistantPrompt,
+                },
+                {
+                    role: "user", content: `Provide improvements for this issue body: ${issueBody}.`
+                },
             ],
             max_tokens: 1200,
             response_format: zodResponseFormat(ImprovementProposal, "improvements_extraction"),
