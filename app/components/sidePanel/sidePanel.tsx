@@ -1,5 +1,5 @@
 import { Box, IconButton, SegmentedControl, Dialog } from "@primer/react";
-import { SidebarCollapseIcon } from "@primer/octicons-react";
+import { SidebarCollapseIcon, FileIcon } from "@primer/octicons-react";
 import { Chat } from "../chat/chat";
 import { ImprovementsList } from "../improvementsList/improvementsList";
 import styles from "./sidePanel.module.css";
@@ -45,7 +45,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
   selectedRepo,
   isRefreshingAfterRewrite,
 }) => {
-  const [selectedTab, setSelectedTab] = useState<"chat" | "improvements">("chat");
+  const [selectedTab, setSelectedTab] = useState<"chat" | "improvements">("improvements");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalTitle, setModalTitle] = useState("");
@@ -76,7 +76,14 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             Feedback
           </SegmentedControl.Button>
         </SegmentedControl>
-        <IconButton icon={SidebarCollapseIcon} aria-label="Hide panel" onClick={toggleChatVisibility} />
+        <Box className={styles.toolbarButtons}>
+          <IconButton
+            icon={FileIcon}
+            aria-label="View guidelines"
+            onClick={() => openModal(issueGuidelines || "", "Issue guidelines")}
+          />
+          <IconButton icon={SidebarCollapseIcon} aria-label="Hide panel" onClick={toggleChatVisibility} />
+        </Box>
       </Box>
       <Box className={styles.content}>
         {selectedTab === "chat" ? (

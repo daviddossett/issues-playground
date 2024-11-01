@@ -23,6 +23,12 @@
   z-index: 1;
 }
 
+.toolbarButtons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .content {
   flex-grow: 1;
   overflow-y: auto;
