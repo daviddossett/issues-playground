@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const token = process.env["GITHUB_PAT"];
+const endpoint = "https://models.inference.ai.azure.com";
+const modelName = "gpt-4o-mini";
+
+
+const openai = new OpenAI({ baseURL: endpoint, apiKey: token });
 
 export async function POST(req: NextRequest) {
     try {
@@ -14,7 +17,7 @@ export async function POST(req: NextRequest) {
         }
 
         const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: modelName,
             messages: [
                 { role: "system", content: "You are an assistant that creates concise summaries of GitHub issues. Keep it to one or two short sentences. Use 2-3 short bullets to illustrate the main points if the issue is long enough to warrant it." },
                 { role: "user", content: issueBody }
