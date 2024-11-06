@@ -73,7 +73,7 @@ export default function Home() {
     setIssueGuidelines(null);
   };
 
-  const handlesetCurrentIssue = async (change: number) => {
+  const handleSetCurrentIssue = async (change: number) => {
     const newIndex = currentIssue + change;
     if (newIndex >= issues.length) {
       if (hasMore) {
@@ -289,7 +289,7 @@ export default function Home() {
                   issue={issues[currentIssue]}
                   loading={loading}
                   currentIssue={currentIssue}
-                  onSetCurrentIssue={handlesetCurrentIssue}
+                  onSetCurrentIssue={handleSetCurrentIssue}
                   loadMoreIssues={loadMoreIssues}
                   hasMore={hasMore}
                   isLastItem={isLastItem}
