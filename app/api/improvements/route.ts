@@ -18,7 +18,7 @@ export const ImprovementProposal = z.object({
 export async function POST(req: Request) {
     const { issueBody, issueGuidelines } = await req.json();
 
-    const systemPrompt = `You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines. Keep improvements focused and actionable. Format all responses following the ImprovementProposal schema. Keep reasoning to 10 words or less.
+    const systemPrompt = `You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines. Keep improvements focused and actionable. Format all responses following the ImprovementProposal schema. Keep reasoning to 10 wo
         `;
 
     const userPrompt1 = `Here are the guidelines from the repo: ${issueGuidelines}.`
