@@ -18,16 +18,10 @@ export const ImprovementProposal = z.object({
 export async function POST(req: Request) {
     const { issueBody, issueGuidelines } = await req.json();
 
-    const systemPrompt = `You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines. Keep improvements focused and actionable. Format all responses following the ImprovementProposal schema. Keep reasoning to 10 wo
+    const systemPrompt = `You are an expert in helping users refine GitHub Issues to ensure clarity, completeness, and alignment with the repository maintainer's guidelines. Keep improvements focused and actionable. Format all responses following the ImprovementProposal schema. Keep reasoning to 10 words or less.
         `;
 
-    const userPrompt1 = `Here are the guidelines from the repo: ${issueGuidelines}.`
-
-    const userPrompt2 = `Here's the issue body: ${issueBody}`;
-
-    const userPrompt3 = `"Let's think step by step: First, carefully analyze if the issue needs a complete rewrite to match the guidelines structure. If a rewrite is needed, provide one rewrite as the first improvement with type: 'rewrite'. Skip this step if the issue already matches the example in the provided guidelines. Analyzing the issue content to find discrete improvements: If this is a rewritten issue, focus on improving clarity and specific content details. Take special care to not miss any vague words or phrases that might have suitable replacements in the issue guidelines. Make specific, focused suggestions that can be applied independently. Return an empty string for any suggestions that involve removing the original text based on the guidelines. CRITICAL: When suggesting improvements: The 'original' field must be an exact substring of the issue text. Do not modify punctuation, spacing, or capitalization in the 'original' field. Do not add periods or other punctuation that isn't in the source text. Verify that your 'original' selection exists in the input text before suggesting it as an improvement."`
-
-    const userPrompt4 = `Suggest improvements for the provided issue.`
+    const userPrompt1 = `Here are the guidelines from the repo: ${issueGuidelines} Here's the issue body: ${issueBody}`;
 
     try {
         const response = await openai.beta.chat.completions.parse({
@@ -40,17 +34,6 @@ export async function POST(req: Request) {
                 {
                     role: "user",
                     content: userPrompt1,
-                },
-                {
-                    role: "user",
-                    content: userPrompt2,
-                },
-                {
-                    role: "user",
-                    content: userPrompt4,
-                },
-                {
-                    role: "user", content: userPrompt3
                 },
             ],
             max_tokens: 2048,
