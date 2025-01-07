@@ -16,4 +16,4 @@ jobs:
       - name: Run GitHub Models Evals
         uses: github/prompt-evals-wip@main
         with:
-          config: ./smple.yml
+          config: ./simple.yml
