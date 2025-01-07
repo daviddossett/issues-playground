@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Run GitHub Models Evals
+        uses: github/promopt-evals-wip@main
         with:
-          token: ${{ secrets.PAT }}
-          config: ${{ github.event.inputs.config }}
+          config: ./smple.yml
