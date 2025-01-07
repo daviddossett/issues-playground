@@ -1,0 +1,48 @@
+models:
+  - model: gpt-4o-mini
+  # - label: gpt-4o-mini-with-preset
+  #   model: gpt-4o-mini
+  #   params:
+  #     temperature: 0.3
+
+prompts:
+  # inline prompt
+  - prompt: "What is the capital of {{input}}?"
+  # Reference local code
+  # - run:
+  #     cmd: node run.js "{{input}}"
+  #     cwd: ../prompt-function
+
+datasets:
+  # Inline data
+  - rows:
+      - input: "United States"
+        expected: "Washington, D.C."
+        # some_metadata: 'some_value'
+      - input: "Canada"
+        expected: "Ottawa"
+
+# Evaluators / criteria
+evaluators:
+  - string:
+      contains: "{{expected}}"
+
+  - llm:
+      name: llm-judge
+      # model: gpt-4o-mini # Defaults to gpt-4o-mini
+      prompt: |-
+        Judge whether the given answer for the question is a good answer, given the expected result.
+        Answer with just "Yes" or "No".
+
+        Question:
+        {{prompt}}
+
+        Answer:
+        {{completion}}
+
+        Expected:
+        {{expected}}
+
+      choices:
+        - "Yes": 1.0
+        - "No": 0.0
