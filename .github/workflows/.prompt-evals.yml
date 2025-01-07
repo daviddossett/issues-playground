@@ -6,7 +6,7 @@ on:
       config:
         description: "Evals configuration file to use"
         required: true
-        default: "./examples/simple/simple.yml"
+        default: "./simple.yml"
 
 jobs:
   run-eval:
