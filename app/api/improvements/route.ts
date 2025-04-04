@@ -3,7 +3,8 @@ import { zodResponseFormat } from 'openai/helpers/zod.mjs';
 import { z } from 'zod';
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.GITHUB_PAT,
+    baseURL: "https://models.inference.ai.azure.com",
 });
 
 export const ImprovementProposal = z.object({
