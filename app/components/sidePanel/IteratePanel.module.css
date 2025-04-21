@@ -13,13 +13,26 @@
 }
 
 .activityLogContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
+  flex-grow: initial;
   gap: var(--base-size-12);
-  flex: 1;
+  padding-left: var(--base-size-24);
+}
+
+.activityLogContainer::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background-color: var(--borderColor-muted);
 }
 
 .activityItem {
+  position: relative;
   width: 100%;
   padding: var(--base-size-12) var(--base-size-16);
   border-radius: var(--borderRadius-medium);
@@ -44,6 +57,27 @@
   border: none;
   color: var(--fgColor-default);
   background-color: var(--bgColor-muted);
+}
+
+.activityItem::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 16px;
+  width: 9px;
+  height: 9px;
+  background-color: var(--bgColor-neutral-emphasis);
+  border-radius: 50%;
+  transition: background-color 0.15s ease;
+  box-shadow: 0 0 0 2px var(--bgColor-default);
+}
+
+.activityItemActive::before {
+  background-color: var(--fgColor-accent);
+  box-shadow: 0 0 0 2px var(--bgColor-accent-muted);
+  width: 11px;
+  height: 11px;
+  left: -21px;
 }
 
 .refinement {

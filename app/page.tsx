@@ -3,7 +3,7 @@
 import { ThemeProvider, BaseStyles, Box } from "@primer/react";
 import { useState } from "react";
 import { AppHeader } from "./components/header/header";
-import { SidePanel } from "./components/SidePanel/sidePanel";
+import { SidePanel } from "./components/SidePanel/SidePanel";
 import { MainContent } from "./components/MainContent/MainContent";
 import styles from "./page.module.css";
 

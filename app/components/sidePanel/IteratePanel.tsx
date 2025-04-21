@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import styles from "./IteratePanel.module.css";
-import { Box, IconButton } from "@primer/react";
-import { PaperclipIcon, PaperAirplaneIcon, XIcon } from "@primer/octicons-react";
+import { IconButton } from "@primer/react";
+import { PaperclipIcon, PaperAirplaneIcon } from "@primer/octicons-react";
 
 interface Version {
   id: string;
@@ -66,7 +66,7 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
     <div className={styles.container}>
       <div ref={scrollRef} className={styles.contentArea}>
         <div className={styles.activityLogContainer}>
-          {versions.map((version, index) => (
+          {versions.map((version) => (
             <button
               key={version.id}
               className={`${styles.activityItem} ${selectedVersionId === version.id ? styles.activityItemActive : ""}`}
