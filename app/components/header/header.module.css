@@ -1,5 +1,8 @@
 .header {
   background-color: var(--bgColor-inset) !important;
+  display: flex !important;
+  gap: var(--base-size-8);
+  justify-content: space-between;
 }
 
 .headerLink {
@@ -14,6 +17,15 @@
   text-decoration: underline;
 }
 
+.headerActions {
+  display: flex;
+  gap: var(--base-size-8);
+}
+
 .octicon {
   margin-right: 12px;
+}
+
+.iconButton {
+  border: 1px solid var(--borderColor-default) !important;
 }

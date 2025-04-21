@@ -1,6 +1,6 @@
 .container {
   --panel-nav-width: 75px;
-  --panel-expanded-width: 480px;
+  --panel-expanded-width: 520px;
 
   height: 100%;
   border-radius: var(--borderRadius-large);

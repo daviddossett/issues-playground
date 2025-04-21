@@ -28,9 +28,9 @@ export const MainContent: React.FC<ContentProps> = ({
             Home
           </Button>
           <Box className={styles.issueToolbarRight}>
-            <IconButton variant="invisible" icon={SyncIcon} aria-label="More" />
-            <IconButton variant="invisible" icon={DeviceMobileIcon} aria-label="More" />
-            <IconButton variant="invisible" icon={ScreenFullIcon} aria-label="More" />
+            <IconButton variant="invisible" icon={SyncIcon} aria-label="Refresh" />
+            <IconButton variant="invisible" icon={DeviceMobileIcon} aria-label="Toggle device view" />
+            <IconButton variant="invisible" icon={ScreenFullIcon} aria-label="Full screen" />
           </Box>
         </Box>
         <Box className={styles.innerContainer}>
