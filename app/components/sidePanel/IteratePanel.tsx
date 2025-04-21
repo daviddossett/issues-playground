@@ -1,7 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./IteratePanel.module.css";
-import { IconButton } from "@primer/react";
-import { PaperclipIcon, PaperAirplaneIcon } from "@primer/octicons-react";
+import { IconButton, ActionList, Box } from "@primer/react";
+import {
+  PaperclipIcon,
+  PaperAirplaneIcon,
+  ChevronDownIcon,
+  LightBulbIcon,
+  ChevronRightIcon,
+} from "@primer/octicons-react";
 
 interface Version {
   id: string;
@@ -13,8 +19,53 @@ interface IteratePanelProps {
   onVersionSelect: (version: Version) => void;
 }
 
+// Example suggestions
+const SUGGESTIONS = [
+  {
+    id: "1",
+    text: "Add a profile screen with visit stats and badges",
+    icon: LightBulbIcon,
+  },
+  {
+    id: "2",
+    text: "Create a dark mode toggle",
+    icon: LightBulbIcon,
+  },
+  {
+    id: "3",
+    text: "Add keyboard shortcuts",
+    icon: LightBulbIcon,
+  },
+];
+
+const SuggestionSkeleton = () => (
+  <ActionList>
+    {[1, 2, 3].map((i) => (
+      <ActionList.Item disabled key={i}>
+        <div
+          className={styles.skeletonText}
+          style={{ width: `${50 + i * 10}%` }} // Varying widths for skeleton items
+        />
+      </ActionList.Item>
+    ))}
+  </ActionList>
+);
+
 export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
   const [prompt, setPrompt] = useState("");
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(true);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+  const [suggestions, setSuggestions] = useState<typeof SUGGESTIONS>([]);
+
+  // Simulate API call to fetch suggestions
+  useEffect(() => {
+    const loadSuggestions = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 second delay
+      setSuggestions(SUGGESTIONS);
+      setIsLoadingSuggestions(false);
+    };
+    loadSuggestions();
+  }, []);
   const initialVersion: Version = {
     id: "initial",
     prompt:
@@ -81,26 +132,78 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
           ))}
         </div>
       </div>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.inputContainer}>
-          <textarea
-            ref={promptInputRef}
-            className={styles.textarea}
-            rows={1}
-            placeholder="What would you like to change?"
-            value={prompt}
-            onChange={(e) => {
-              setPrompt(e.target.value);
-              resizeTextarea();
-            }}
-            onKeyDown={handleKeyDown}
-          />
-          <div className={styles.inputActions}>
-            <IconButton aria-label="Add attachment" icon={PaperclipIcon} variant="invisible" />
-            <IconButton aria-label="Send now" icon={PaperAirplaneIcon} variant="invisible" type="submit" />
+
+      <div className={styles.inputGroup}>
+        <Box className={styles.suggestionsContainer}>
+          <div className={styles.suggestionsHeader}>
+            <IconButton
+              size="small"
+              icon={isSuggestionsOpen ? ChevronDownIcon : ChevronRightIcon}
+              onClick={() => setIsSuggestionsOpen(!isSuggestionsOpen)}
+              className={styles.suggestionsToggle}
+              aria-label="Toggle suggestions"
+              variant="invisible"
+            />
+            <span className={styles.suggestionsLabel}>Suggestions</span>
           </div>
-        </div>
-      </form>
+          {isSuggestionsOpen && (
+            <>
+              {isLoadingSuggestions ? (
+                <SuggestionSkeleton />
+              ) : (
+                <ActionList className={styles.suggestionsList}>
+                  {suggestions.map((suggestion) => (
+                    <ActionList.Item
+                      key={suggestion.id}
+                      onSelect={async () => {
+                        const newVersion: Version = {
+                          id: Date.now().toString(),
+                          prompt: suggestion.text,
+                          timestamp: new Date(),
+                        };
+                        setVersions([...versions, newVersion]);
+                        setSelectedVersionId(newVersion.id);
+                        onVersionSelect(newVersion);
+
+                        // Show loading state and regenerate suggestions
+                        setIsLoadingSuggestions(true);
+                        await new Promise((resolve) => setTimeout(resolve, 3000));
+                        setSuggestions(SUGGESTIONS);
+                        setIsLoadingSuggestions(false);
+                      }}
+                    >
+                      <ActionList.LeadingVisual>
+                        <LightBulbIcon className={styles.suggestionIcon} />
+                      </ActionList.LeadingVisual>
+                      {suggestion.text}
+                    </ActionList.Item>
+                  ))}
+                </ActionList>
+              )}
+            </>
+          )}
+        </Box>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.inputContainer}>
+            <textarea
+              ref={promptInputRef}
+              className={styles.textarea}
+              rows={1}
+              placeholder="What would you like to change?"
+              value={prompt}
+              onChange={(e) => {
+                setPrompt(e.target.value);
+                resizeTextarea();
+              }}
+              onKeyDown={handleKeyDown}
+            />
+            <div className={styles.inputActions}>
+              <IconButton aria-label="Add attachment" icon={PaperclipIcon} variant="invisible" />
+              <IconButton aria-label="Send now" icon={PaperAirplaneIcon} variant="invisible" type="submit" />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

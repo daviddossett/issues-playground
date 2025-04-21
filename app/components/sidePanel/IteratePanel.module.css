@@ -1,3 +1,9 @@
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -63,7 +69,8 @@
   content: "";
   position: absolute;
   left: -20px;
-  top: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 9px;
   height: 9px;
   background-color: var(--bgColor-neutral-emphasis);
@@ -95,13 +102,15 @@
 .form {
   margin-top: 0;
   outline: 1px solid var(--borderColor-default);
-  border-radius: var(--borderRadius-medium);
+  border-radius: var(--borderRadius-large);
   cursor: initial;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   position: relative;
+  margin-top: -1px;
+  background-color: var(--bgColor-default);
 }
 
 .form:focus-within {
@@ -141,4 +150,62 @@
   padding: var(--base-size-8);
   align-self: flex-end;
   gap: var(--base-size-4);
+}
+
+.suggestionsContainer {
+  outline: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-large) var(--borderRadius-large) 0 0;
+  overflow: hidden;
+  margin-bottom: -8px;
+  padding-bottom: var(--base-size-8);
+  z-index: 0;
+}
+
+.suggestionsHeader {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: var(--base-size-4) var(--base-size-8);
+}
+
+.suggestionsList {
+  padding-top: 0 !important;
+}
+
+.suggestionsLabel {
+  font: var(--text-body-shorthand-small);
+  font-weight: var(--text-title-weight-small);
+  color: var(--fgColor-muted);
+}
+
+.suggestionIcon {
+  color: var(--button-star-iconColor);
+}
+
+.skeletonIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bgColor-neutral-muted);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonText {
+  width: 180px;
+  height: 16px;
+  border-radius: var(--borderRadius-medium);
+  background: var(--bgColor-neutral-muted);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
 }

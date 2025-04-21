@@ -1,7 +1,7 @@
 // filepath: /Users/daviddossett/projects/spark/app/components/AIAppMock/AIAppMock.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./AIAppMock.module.css";
 
 interface Destination {
@@ -177,7 +177,7 @@ export default function AIAppMock() {
   return (
     <div className={styles.appContainer}>
       <div className={styles.header}>
-        <h1>Vacation Planner</h1>
+        <h1>Mock App</h1>
         <p>Let AI find your perfect getaway</p>
       </div>
 
@@ -323,7 +323,7 @@ export default function AIAppMock() {
               <div className={styles.aiIcon}>AI</div>
               <div>
                 <p>
-                  <strong>Travel Tip:</strong> Based on your {preferences.activityLevel} activity preference, I've
+                  <strong>Travel Tip:</strong> Based on your {preferences.activityLevel} activity preference, I&apos;ve
                   balanced active days with relaxation time. Consider booking activities in advance for the best
                   experience.
                 </p>
