@@ -1,40 +1,41 @@
 .container {
-  --panel-nav-width: 75px;
   --panel-expanded-width: 600px;
 
   height: 100%;
   border-radius: var(--borderRadius-large);
   border: 1px solid var(--borderColor-default);
   background: var(--bgColor-default);
-  display: grid;
-  grid-template-columns: var(--panel-nav-width) 1fr;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   width: var(--panel-expanded-width);
 }
 
 .nav {
   display: flex;
-  flex-direction: column;
-  padding: var(--base-size-16) 0 var(--base-size-8) var(--base-size-16);
+  padding: var(--base-size-8);
+  position: relative;
+  border-bottom: 1px solid var(--borderColor-muted);
 }
 
 .navList {
   display: flex;
-  flex-direction: column;
-  gap: var(--stack-gap-condensed);
+  gap: var(--base-size-8);
   flex: 1;
 }
 
 .navButton {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 6px;
   color: var(--fgColor-muted);
   border: none;
   background: transparent;
+  font: var(--text-body-shorthand-medium);
+  position: relative;
+  margin-bottom: -1px;
 }
 
 .navButton:hover {
@@ -43,32 +44,18 @@
 }
 
 .navButtonLabel {
-  font: var(--text-body-shorthand-small);
   line-height: 1;
 }
 
 .navButtonActive {
   color: var(--fgColor-default);
   background: var(--bgColor-muted);
-  font-weight: 600;
-  position: relative;
-}
-
-.navButtonActive::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: var(--fgColor-accent);
-  border-radius: 9999px;
-  left: -8px;
-  height: 24px;
-  width: 4px;
+  font-weight: var(--base-text-weight-semibold);
 }
 
 .panel {
+  flex: 1;
   overflow: hidden;
-  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;

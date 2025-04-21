@@ -15,7 +15,7 @@ export const AppHeader = () => {
     <Header className={styles.header}>
       <Header.Link href="#" fontSize={2} className={styles.headerLink}>
         <Octicon icon={MarkGithubIcon} size={32} className={styles.octicon} />
-        Spark
+        Spark / Travel App
       </Header.Link>
       <div className={styles.headerActions}>
         <SegmentedControl aria-label="View switcher">

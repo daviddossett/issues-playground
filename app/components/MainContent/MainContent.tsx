@@ -1,6 +1,13 @@
 import { Box, Avatar, Text, IconButton, Button } from "@primer/react";
 import { SkeletonText, SkeletonAvatar } from "@primer/react/drafts";
-import { GoalIcon, TriangleDownIcon, SyncIcon, ScreenFullIcon, DeviceMobileIcon } from "@primer/octicons-react";
+import {
+  GoalIcon,
+  TriangleDownIcon,
+  SyncIcon,
+  ScreenFullIcon,
+  DeviceMobileIcon,
+  SidebarCollapseIcon,
+} from "@primer/octicons-react";
 
 import styles from "./MainContent.module.css";
 import AIAppMock from "../AIAppMock/AIAppMock";
@@ -8,21 +15,22 @@ import AIAppMock from "../AIAppMock/AIAppMock";
 interface ContentProps {
   isNavVisible: boolean;
   toggleNavVisibility: () => void;
-  isPanelVisible: boolean;
-  toggleChatVisibility: () => void;
 }
 
-export const MainContent: React.FC<ContentProps> = ({
-  isNavVisible,
-  toggleNavVisibility,
-  isPanelVisible,
-  toggleChatVisibility,
-}) => {
+export const MainContent: React.FC<ContentProps> = ({ isNavVisible, toggleNavVisibility }) => {
   const IssueContent = () => {
     return (
       <>
         <Box className={styles.issueToolbar}>
           <Box className={styles.issueToolbarLeft}>
+            {!isNavVisible && (
+              <IconButton
+                variant="invisible"
+                icon={SidebarCollapseIcon}
+                aria-label="Expand sidebar"
+                onClick={toggleNavVisibility}
+              />
+            )}
             <IconButton variant="invisible" icon={GoalIcon} aria-label="Select an element" />
           </Box>
           <Button trailingAction={TriangleDownIcon} variant="invisible">

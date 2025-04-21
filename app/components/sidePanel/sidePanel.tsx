@@ -48,7 +48,6 @@ export const SidePanel = ({ toggleNavVisibility }: NavigationProps) => {
             );
           })}
         </Box>
-
         <IconButton
           variant="invisible"
           icon={SidebarExpandIcon}

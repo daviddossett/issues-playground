@@ -19,24 +19,39 @@ interface IteratePanelProps {
   onVersionSelect: (version: Version) => void;
 }
 
-// Example suggestions
-const SUGGESTIONS = [
-  {
-    id: "1",
-    text: "Add a profile screen with visit stats and badges",
-    icon: LightBulbIcon,
-  },
-  {
-    id: "2",
-    text: "Create a dark mode toggle",
-    icon: LightBulbIcon,
-  },
-  {
-    id: "3",
-    text: "Add keyboard shortcuts",
-    icon: LightBulbIcon,
-  },
+// Pool of possible suggestions
+const SUGGESTION_POOL = [
+  "Add flight price tracking and alerts for recommended destinations",
+  "Include local food and cuisine recommendations for each day",
+  "Add weather forecast integration for trip dates",
+  "Create a packing list generator based on destination and activities",
+  "Add virtual tours of hotels and landmarks",
+  "Include local transportation options and booking",
+  "Create a trip budget calculator with expense tracking",
+  "Add local events and festivals to itinerary suggestions",
+  "Include restaurant reservations in the itinerary",
+  "Add travel insurance recommendations",
+  "Create a photo gallery for each destination",
+  "Add user reviews and ratings for destinations",
+  "Include local customs and etiquette tips",
+  "Add emergency contact information for destinations",
+  "Create a currency converter with live rates",
+  "Add language translation tools for travelers",
+  "Include visa and passport requirement checks",
+  "Add nearby attraction suggestions for each day",
+  "Create a shareable travel plan for group trips",
+  "Add local guide and tour booking options",
 ];
+
+// Helper function to get random suggestions
+const getRandomSuggestions = (count: number) => {
+  const shuffled = [...SUGGESTION_POOL].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count).map((text, index) => ({
+    id: index.toString(),
+    text,
+    icon: LightBulbIcon,
+  }));
+};
 
 const SuggestionSkeleton = () => (
   <ActionList>
@@ -55,13 +70,13 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
   const [prompt, setPrompt] = useState("");
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(true);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
-  const [suggestions, setSuggestions] = useState<typeof SUGGESTIONS>([]);
+  const [suggestions, setSuggestions] = useState<Array<{ id: string; text: string; icon: typeof LightBulbIcon }>>([]);
 
   // Simulate API call to fetch suggestions
   useEffect(() => {
     const loadSuggestions = async () => {
       await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 second delay
-      setSuggestions(SUGGESTIONS);
+      setSuggestions(getRandomSuggestions(3)); // Get 3 random suggestions
       setIsLoadingSuggestions(false);
     };
     loadSuggestions();
@@ -77,6 +92,12 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
   const [selectedVersionId, setSelectedVersionId] = useState<string>(initialVersion.id);
   const scrollRef = useRef<HTMLDivElement>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [versions]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,6 +133,29 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
       promptInputRef.current.style.height = promptInputRef.current.scrollHeight + "px";
     }
   };
+
+  useEffect(() => {
+    const updateTimelineHeight = () => {
+      const lastItem = document.querySelector(`.${styles.activityItemActive}`) as HTMLElement;
+      const container = document.querySelector(`.${styles.activityLogContainer}`) as HTMLElement;
+
+      if (lastItem && container) {
+        // Calculate the bottom position as 50% of the active item's height
+        const bottomOffset = lastItem.offsetHeight * 0.5 + 16;
+        container.style.setProperty("--timeline-bottom", `${bottomOffset}px`);
+      }
+    };
+
+    updateTimelineHeight();
+
+    // Update on scroll
+    const scrollElement = scrollRef.current;
+    scrollElement?.addEventListener("scroll", updateTimelineHeight);
+
+    return () => {
+      scrollElement?.removeEventListener("scroll", updateTimelineHeight);
+    };
+  }, [selectedVersionId]);
 
   return (
     <div className={styles.container}>
@@ -168,7 +212,7 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
                         // Show loading state and regenerate suggestions
                         setIsLoadingSuggestions(true);
                         await new Promise((resolve) => setTimeout(resolve, 3000));
-                        setSuggestions(SUGGESTIONS);
+                        setSuggestions(getRandomSuggestions(3));
                         setIsLoadingSuggestions(false);
                       }}
                     >
