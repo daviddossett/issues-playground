@@ -11,14 +11,13 @@
 }
 
 .innerContainer {
-  max-width: 800px;
   width: 100%;
-  padding: 0 16px 96px 16px;
+  height: 100%;
 }
 
 .mainContent {
-  padding: 16px 0;
   overflow-y: auto;
+  height: 100%;
 }
 
 .issueToolbar {
@@ -38,38 +37,4 @@
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-.issueHeader {
-  padding: 16px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  margin-bottom: 12px;
-}
-
-.issueTitle {
-  font-size: 32px;
-  line-height: 40px;
-  font-weight: normal;
-  margin-bottom: 0;
-}
-
-.issueMeta {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-.issueUser {
-  font-weight: bold;
-  font-size: var(--text-body-size-medium);
-  margin: 0;
-}
-
-.issueCreatedAt {
-  color: var(--fgColor-muted);
 }

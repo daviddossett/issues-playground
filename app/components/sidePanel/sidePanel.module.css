@@ -1,57 +1,98 @@
 .container {
+  --panel-nav-width: 75px;
+  --panel-expanded-width: 600px;
+
+  height: 100%;
+  border-radius: var(--borderRadius-large);
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+  display: grid;
+  grid-template-columns: var(--panel-nav-width) 1fr;
+  overflow: hidden;
+  width: var(--panel-expanded-width);
+}
+
+.nav {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  border-left: 1px solid var(--borderColor-default);
-  max-width: 450px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 450px;
-  overflow-y: auto;
+  padding: var(--base-size-16) 0 var(--base-size-8) var(--base-size-16);
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap-condensed);
+  flex: 1;
+}
+
+.navButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--fgColor-muted);
+  border: none;
+  background: transparent;
+}
+
+.navButton:hover {
+  background: var(--bgColor-muted);
+  cursor: pointer;
+}
+
+.navButtonLabel {
+  font: var(--text-body-shorthand-small);
+  line-height: 1;
+}
+
+.navButtonActive {
+  color: var(--fgColor-default);
+  background: var(--bgColor-muted);
+  font-weight: 600;
   position: relative;
 }
 
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 8px;
-  background-color: var(--bgColor-muted);
-  border-bottom: 1px solid var(--borderColor-default);
-  position: sticky;
-  top: 0;
-  z-index: 1;
+.navButtonActive::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--fgColor-accent);
+  border-radius: 9999px;
+  left: -8px;
+  height: 24px;
+  width: 4px;
 }
 
-.toolbarButtons {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.content {
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-.dialog {
+.panel {
   overflow: hidden;
-}
-
-.dialogBody {
-  overflow-y: auto;
-  max-height: 600px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
 }
 
-.dialogMarkdown {
-  padding: 0 16px 32px 16px !important;
+.loadMoreButton {
+  padding-top: 8px;
+  padding-left: 16px;
+  padding-bottom: 24px;
+  flex-shrink: 0;
 }
 
-.dialogMarkdown pre {
-  white-space: pre;
-  overflow-x: auto;
-  padding: 12px;
-  background-color: var(--bgColor-muted);
-  border-radius: var(--borderRadius-medium);
+.navItemIssueMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navItemsIssueMetaIcon {
+  color: var(--fgColor-open);
+}
+
+.navItemsIssueMetaLabel {
+  font: var(--text-body-shorthand-small);
+  color: var(--fgColor-muted);
 }

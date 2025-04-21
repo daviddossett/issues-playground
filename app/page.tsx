@@ -3,7 +3,7 @@
 import { ThemeProvider, BaseStyles, Box } from "@primer/react";
 import { useState } from "react";
 import { AppHeader } from "./components/header/header";
-import { Navigation } from "./components/navigation/navigation";
+import { SidePanel } from "./components/SidePanel/sidePanel";
 import { MainContent } from "./components/MainContent/MainContent";
 import styles from "./page.module.css";
 
@@ -22,7 +22,7 @@ export default function Home() {
           <AppHeader />
           <Box className={styles.innerContainer}>
             <Box className={styles.mainContent}>
-              {isNavVisible && <Navigation toggleNavVisibility={toggleNavVisibility} />}
+              {isNavVisible && <SidePanel toggleNavVisibility={toggleNavVisibility} />}
               <MainContent
                 isNavVisible={isNavVisible}
                 toggleNavVisibility={toggleNavVisibility}

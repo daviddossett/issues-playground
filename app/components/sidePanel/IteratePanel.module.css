@@ -1,0 +1,110 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--base-size-8);
+}
+
+.contentArea {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.activityLogContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-size-12);
+  flex: 1;
+}
+
+.activityItem {
+  width: 100%;
+  padding: var(--base-size-12) var(--base-size-16);
+  border-radius: var(--borderRadius-medium);
+  border: none;
+  cursor: pointer;
+  color: var(--fgColor-muted);
+  background-color: transparent;
+  font: var(--text-body-shorthand-medium);
+  text-align: left;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.activityItem:hover {
+  background-color: var(--bgColor-muted);
+  color: var(--fgColor-default);
+}
+
+.activityItemActive {
+  cursor: default;
+  border: none;
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-muted);
+}
+
+.refinement {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.refinementActive {
+  text-overflow: unset;
+  white-space: normal;
+  overflow: visible;
+}
+
+.form {
+  margin-top: 0;
+  outline: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-medium);
+  cursor: initial;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.form:focus-within {
+  outline-color: var(--borderColor-accent-emphasis);
+  outline-width: var(--borderWidth-thick);
+  background-color: var(--bgColor-default);
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.textarea {
+  width: 100%;
+  resize: none;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: var(--base-size-12) var(--base-size-16);
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: var(--text-body-size-medium);
+}
+
+.textarea:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.inputActions {
+  display: flex;
+  padding: var(--base-size-8);
+  align-self: flex-end;
+  gap: var(--base-size-4);
+}

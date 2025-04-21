@@ -3,6 +3,7 @@ import { SkeletonText, SkeletonAvatar } from "@primer/react/drafts";
 import { GoalIcon, TriangleDownIcon, SyncIcon, ScreenFullIcon, DeviceMobileIcon } from "@primer/octicons-react";
 
 import styles from "./MainContent.module.css";
+import AIAppMock from "../AIAppMock/AIAppMock";
 
 interface ContentProps {
   isNavVisible: boolean;
@@ -34,8 +35,9 @@ export const MainContent: React.FC<ContentProps> = ({
           </Box>
         </Box>
         <Box className={styles.innerContainer}>
-          <Box className={styles.issueHeader}></Box>
-          <Box className={styles.mainContent}></Box>
+          <Box className={styles.mainContent}>
+            <AIAppMock />
+          </Box>
         </Box>
       </>
     );

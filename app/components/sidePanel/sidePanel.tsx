@@ -1,124 +1,69 @@
-import { Box, IconButton, SegmentedControl, Dialog } from "@primer/react";
-import { SidebarCollapseIcon, FileIcon } from "@primer/octicons-react";
-import { Chat } from "../chat/chat";
-import { ImprovementsList } from "../improvementsList/improvementsList";
-import styles from "./sidePanel.module.css";
-import { Improvement } from "@/app/hooks/useImproveIssue";
-import { Issue, Repo } from "@/app/page";
+import { Box, IconButton } from "@primer/react";
+import { SidebarExpandIcon, DatabaseIcon, ImageIcon, SparkleFillIcon, AiModelIcon } from "@primer/octicons-react";
 import { useState } from "react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
+import clsx from "clsx";
 
-interface SidePanelProps {
-  issue: Issue;
-  loading: boolean;
-  issueGuidelines: string | null;
-  isPanelVisible: boolean;
-  toggleChatVisibility: () => void;
-  isCreatingIssue: boolean;
-  improvements: Improvement[] | null;
-  improvementsLoading: boolean;
-  focusedImprovementIndex: number | null;
-  handleImprovementClick: (index: number) => void;
-  handleAcceptImprovement: (index: number) => void;
-  handleDiscardImprovement: (index: number) => void;
-  onFetchImprovements: () => void;
-  selectedRepo: Repo;
-  isRefreshingAfterRewrite: boolean;
+import styles from "./SidePanel.module.css";
+import { IteratePanel } from "./IteratePanel";
+
+const PANELS = [
+  { type: "iterate", label: "Iterate", icon: SparkleFillIcon },
+  { type: "ai", label: "AI", icon: AiModelIcon },
+  { type: "data", label: "Data", icon: DatabaseIcon },
+  { type: "assets", label: "Assets", icon: ImageIcon },
+] as const;
+
+type PanelType = (typeof PANELS)[number]["type"];
+
+interface NavigationProps {
+  toggleNavVisibility: () => void;
 }
 
-export const SidePanel: React.FC<SidePanelProps> = ({
-  issue,
-  loading,
-  issueGuidelines,
-  isPanelVisible,
-  toggleChatVisibility,
-  isCreatingIssue,
-  improvements,
-  improvementsLoading,
-  focusedImprovementIndex,
-  handleImprovementClick,
-  handleAcceptImprovement,
-  handleDiscardImprovement,
-  onFetchImprovements,
-  selectedRepo,
-  isRefreshingAfterRewrite,
-}) => {
-  const [selectedTab, setSelectedTab] = useState<"chat" | "improvements">("improvements");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-  const [modalTitle, setModalTitle] = useState("");
+export const SidePanel = ({ toggleNavVisibility }: NavigationProps) => {
+  const [selectedPanel, setSelectedPanel] = useState<PanelType>("iterate");
 
-  const openModal = (content: string, title: string) => {
-    setModalContent(content);
-    setModalTitle(`${title} for ${selectedRepo.owner}/${selectedRepo.name}`);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent("");
-    setModalTitle("");
+  const handleVersionSelect = (version: any) => {
+    // In a real implementation, this would update the main app content
+    console.log("Selected version:", version);
   };
 
   return (
-    <Box className={`${styles.container} ${isPanelVisible ? styles.chatVisible : styles.chatHidden}`}>
-      <Box className={styles.toolbar}>
-        <SegmentedControl aria-label="Side panel mode">
-          <SegmentedControl.Button selected={selectedTab === "chat"} onClick={() => setSelectedTab("chat")}>
-            Chat
-          </SegmentedControl.Button>
-          <SegmentedControl.Button
-            selected={selectedTab === "improvements"}
-            onClick={() => setSelectedTab("improvements")}
-          >
-            Feedback
-          </SegmentedControl.Button>
-        </SegmentedControl>
-        <Box className={styles.toolbarButtons}>
-          <IconButton
-            icon={FileIcon}
-            aria-label="View guidelines"
-            onClick={() => openModal(issueGuidelines || "", "Issue guidelines")}
-          />
-          <IconButton icon={SidebarCollapseIcon} aria-label="Hide panel" onClick={toggleChatVisibility} />
+    <Box className={styles.container}>
+      <Box className={styles.nav}>
+        <Box className={styles.navList}>
+          {PANELS.map((panel) => {
+            const Icon = panel.icon;
+            return (
+              <button
+                type="button"
+                key={panel.type}
+                className={clsx(styles.navButton, {
+                  [styles.navButtonActive]: selectedPanel === panel.type,
+                })}
+                onClick={() => setSelectedPanel(panel.type)}
+              >
+                <Icon />
+                <span className={styles.navButtonLabel}>{panel.label}</span>
+              </button>
+            );
+          })}
         </Box>
+
+        <IconButton
+          variant="invisible"
+          icon={SidebarExpandIcon}
+          size="medium"
+          aria-label="Collapse panel"
+          tooltipDirection="e"
+          onClick={toggleNavVisibility}
+        />
       </Box>
-      <Box className={styles.content}>
-        {selectedTab === "chat" ? (
-          <Chat
-            issue={issue}
-            loading={loading}
-            issueGuidelines={issueGuidelines}
-            toggleChatVisibility={toggleChatVisibility}
-            isCreatingIssue={isCreatingIssue}
-            onOpenGuidelines={openModal}
-          />
-        ) : (
-          <ImprovementsList
-            improvements={improvements}
-            focusedImprovementIndex={focusedImprovementIndex}
-            handleImprovementClick={handleImprovementClick}
-            handleAcceptImprovement={handleAcceptImprovement}
-            handleDiscardImprovement={handleDiscardImprovement}
-            loading={improvementsLoading}
-            onFetchImprovements={onFetchImprovements}
-            onOpenGuidelines={() => openModal(issueGuidelines || "", "Issue guidelines")}
-            isRefreshingAfterRewrite={isRefreshingAfterRewrite}
-          />
-        )}
+      <Box className={styles.panel}>
+        {selectedPanel === "iterate" && <IteratePanel onVersionSelect={handleVersionSelect} />}
+        {selectedPanel === "ai" && <div>AI Panel</div>}
+        {selectedPanel === "data" && <div>Data Panel</div>}
+        {selectedPanel === "assets" && <div>Assets Panel</div>}
       </Box>
-      <Dialog isOpen={isModalOpen} onDismiss={closeModal} aria-labelledby="modal-title" wide className={styles.dialog}>
-        <Dialog.Header id="modal-title">{modalTitle}</Dialog.Header>
-        <Box className={styles.dialogBody}>
-          <Box p={4} className={styles.dialogMarkdown}>
-            <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-              {modalContent}
-            </Markdown>
-          </Box>
-        </Box>
-      </Dialog>
     </Box>
   );
 };
