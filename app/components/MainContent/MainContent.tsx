@@ -1,23 +1,22 @@
-import { Box, Avatar, Text, IconButton, Button } from "@primer/react";
-import { SkeletonText, SkeletonAvatar } from "@primer/react/drafts";
+import styles from "./MainContent.module.css";
+import AIAppMock from "../AIAppMock/AIAppMock";
+import { Box, IconButton, Button } from "@primer/react";
 import {
+  SidebarCollapseIcon,
   GoalIcon,
   TriangleDownIcon,
   SyncIcon,
-  ScreenFullIcon,
   DeviceMobileIcon,
-  SidebarCollapseIcon,
+  ScreenFullIcon,
 } from "@primer/octicons-react";
-
-import styles from "./MainContent.module.css";
-import AIAppMock from "../AIAppMock/AIAppMock";
 
 interface ContentProps {
   isNavVisible: boolean;
   toggleNavVisibility: () => void;
+  isThinking?: boolean;
 }
 
-export const MainContent: React.FC<ContentProps> = ({ isNavVisible, toggleNavVisibility }) => {
+export const MainContent: React.FC<ContentProps> = ({ isNavVisible, toggleNavVisibility, isThinking }) => {
   const IssueContent = () => {
     return (
       <>
@@ -44,7 +43,7 @@ export const MainContent: React.FC<ContentProps> = ({ isNavVisible, toggleNavVis
         </Box>
         <Box className={styles.innerContainer}>
           <Box className={styles.mainContent}>
-            <AIAppMock />
+            <AIAppMock isThinking={isThinking} />
           </Box>
         </Box>
       </>

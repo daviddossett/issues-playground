@@ -136,13 +136,19 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
 
   useEffect(() => {
     const updateTimelineHeight = () => {
-      const lastItem = document.querySelector(`.${styles.activityItemActive}`) as HTMLElement;
+      const items = document.querySelectorAll(`.${styles.activityItem}`);
       const container = document.querySelector(`.${styles.activityLogContainer}`) as HTMLElement;
 
-      if (lastItem && container) {
-        // Calculate the bottom position as 50% of the active item's height
-        const bottomOffset = lastItem.offsetHeight * 0.5 + 16;
-        container.style.setProperty("--timeline-bottom", `${bottomOffset}px`);
+      if (items.length > 0 && container) {
+        const lastItem = items[items.length - 1] as HTMLElement;
+
+        if (lastItem.classList.contains(styles.activityItemActive)) {
+          // Calculate the bottom position as 50% of the active item's height
+          const bottomOffset = lastItem.offsetHeight * 0.5 + 16;
+          container.style.setProperty("--timeline-bottom", `${bottomOffset}px`);
+        } else {
+          container.style.setProperty("--timeline-bottom", `32px`); // Default value
+        }
       }
     };
 

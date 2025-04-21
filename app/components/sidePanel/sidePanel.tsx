@@ -19,10 +19,14 @@ interface NavigationProps {
   toggleNavVisibility: () => void;
 }
 
+type versionType = {
+  id: string;
+};
+
 export const SidePanel = ({ toggleNavVisibility }: NavigationProps) => {
   const [selectedPanel, setSelectedPanel] = useState<PanelType>("iterate");
 
-  const handleVersionSelect = (version: any) => {
+  const handleVersionSelect = (version: versionType) => {
     // In a real implementation, this would update the main app content
     console.log("Selected version:", version);
   };
