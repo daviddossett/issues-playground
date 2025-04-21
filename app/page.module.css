@@ -4,7 +4,7 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background-color: var(--bgColor-default);
+  background-color: var(--bgColor-muted);
   color: var(--fgColor-default);
   overflow: auto;
   max-height: 100vh;
@@ -22,10 +22,9 @@
 
 .mainContent {
   display: flex;
+  gap: 8px;
   width: 100%;
-  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--borderColor-default);
 }
 
 .emptyState {

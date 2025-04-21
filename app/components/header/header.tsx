@@ -9,7 +9,7 @@ export const AppHeader = () => {
       <Header.Item full>
         <Header.Link href="#" fontSize={2} className={styles.headerLink}>
           <Octicon icon={MarkGithubIcon} size={32} className={styles.octicon} />
-          Issues
+          Spark
         </Header.Link>
       </Header.Item>
     </Header>

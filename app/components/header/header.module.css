@@ -1,7 +1,5 @@
 .header {
   background-color: var(--bgColor-inset) !important;
-  border-bottom: 1px solid;
-  border-color: var(--borderColor-default);
 }
 
 .headerLink {

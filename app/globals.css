@@ -26,10 +26,8 @@ h2 {
 }
 
 p,
-span,
 li {
-  font-size: var(--text-body-size-medium);
-  line-height: var(--text-body-lineHeight-large);
+  font: var(--text-body-shorthand-medium);
 }
 
 body {

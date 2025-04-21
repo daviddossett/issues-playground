@@ -1,111 +1,72 @@
-import { NavList, Box, Button, IconButton, Octicon, Text } from "@primer/react";
-import { GitPullRequestIcon, SidebarExpandIcon, SyncIcon } from "@primer/octicons-react";
-import { Blankslate, SkeletonText } from "@primer/react/drafts";
-import { Issue } from "../../page";
+import { Box, IconButton } from "@primer/react";
+import {
+  SidebarExpandIcon,
+  DatabaseIcon,
+  GearIcon,
+  HistoryIcon,
+  ImageIcon,
+  SparkleFillIcon,
+  AiModelIcon,
+} from "@primer/octicons-react";
+import { useState } from "react";
+import clsx from "clsx";
+
 import styles from "./navigation.module.css";
-import { IssueOpenedIcon } from "@primer/octicons-react";
-import { useRef, useEffect } from "react";
+
+const PANELS = [
+  { type: "iterate", label: "Iterate", icon: SparkleFillIcon },
+  { type: "ai", label: "AI", icon: AiModelIcon },
+  { type: "data", label: "Data", icon: DatabaseIcon },
+  { type: "assets", label: "Assets", icon: ImageIcon },
+] as const;
+
+type PanelType = (typeof PANELS)[number]["type"];
 
 interface NavigationProps {
-  currentIssue: number;
-  onSetCurrentIssue: (index: number) => void;
-  repo: string;
-  issues: Issue[];
-  loading: boolean;
-  loadMoreIssues: () => void;
-  hasMore: boolean;
   toggleNavVisibility: () => void;
 }
 
-const EmptyState = () => {
-  return (
-    <Box className={styles.emptyState}>
-      <Blankslate narrow>
-        <Blankslate.Heading>No issues</Blankslate.Heading>
-        <Blankslate.Description>Create an issue to report a problem or share an idea</Blankslate.Description>
-      </Blankslate>
-    </Box>
-  );
-};
-
-export const Navigation = ({
-  currentIssue,
-  onSetCurrentIssue,
-  issues,
-  loading,
-  loadMoreIssues,
-  hasMore,
-  toggleNavVisibility,
-}: NavigationProps) => {
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
-
-  useEffect(() => {
-    const currentIssueRef = itemRefs.current[currentIssue];
-    if (currentIssueRef) {
-      const { top, bottom } = currentIssueRef.getBoundingClientRect();
-      const { innerHeight } = window;
-      if (top < 0 || bottom > innerHeight) {
-        currentIssueRef.scrollIntoView({ block: "center", behavior: "smooth" });
-      }
-    }
-  }, [currentIssue]);
-
-  const LoadingNavItems = () => (
-    <>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <NavList.Item key={index}>
-          <SkeletonText maxWidth={`${Math.random() * (80 - 50) + 50}%`} />
-        </NavList.Item>
-      ))}
-    </>
-  );
-
-  const LoadedNavItems = () => (
-    <>
-      {issues.map((issue, index) => {
-        return (
-          <NavList.Item
-            key={issue.id}
-            aria-current={currentIssue === index}
-            onClick={() => onSetCurrentIssue(index)}
-            className={styles.navItem}
-            ref={(el) => {
-              itemRefs.current[index] = el as HTMLLIElement | null;
-            }}
-          >
-            <Box>
-              <Box className={styles.navItemIssueMeta}>
-                <Octicon
-                  icon={issue.pull_request ? GitPullRequestIcon : IssueOpenedIcon}
-                  size={14}
-                  className={styles.navItemsIssueMetaIcon}
-                />
-                <Text as="span" className={styles.navItemsIssueMetaLabel}>{`#${issue.number}`}</Text>
-              </Box>
-              {issue.title}
-            </Box>
-          </NavList.Item>
-        );
-      })}
-    </>
-  );
-
-  const navItems = loading ? <LoadingNavItems /> : issues.length > 0 ? <LoadedNavItems /> : <EmptyState />;
+export const Navigation = ({ toggleNavVisibility }: NavigationProps) => {
+  const [selectedPanel, setSelectedPanel] = useState<PanelType>("iterate");
 
   return (
     <Box className={styles.container}>
-      <Box className={styles.actionBar}>
-        <IconButton icon={SidebarExpandIcon} aria-label="Hide nav" onClick={toggleNavVisibility} />
-        <IconButton icon={SyncIcon} aria-label="Refresh" />
+      <Box className={styles.nav}>
+        <Box className={styles.navList}>
+          {PANELS.map((panel) => {
+            const Icon = panel.icon;
+            return (
+              <button
+                type="button"
+                key={panel.type}
+                className={clsx(styles.navButton, {
+                  [styles.navButtonActive]: selectedPanel === panel.type,
+                })}
+                onClick={() => setSelectedPanel(panel.type)}
+              >
+                <Icon />
+                <span className={styles.navButtonLabel}>{panel.label}</span>
+              </button>
+            );
+          })}
+        </Box>
+
+        <IconButton
+          variant="invisible"
+          icon={SidebarExpandIcon}
+          size="medium"
+          aria-label="Collapse panel"
+          tooltipDirection="e"
+          onClick={toggleNavVisibility}
+        />
       </Box>
-      <NavList className={styles.list}>
-        {navItems}
-        {!loading && hasMore && (
-          <Box className={styles.loadMoreButton}>
-            <Button onClick={loadMoreIssues}>Load more</Button>
-          </Box>
-        )}
-      </NavList>
+      <Box className={styles.panel}>
+        {/* Panel content will go here */}
+        {selectedPanel === "iterate" && <div>Iterate Panel</div>}
+        {selectedPanel === "ai" && <div>AI Panel</div>}
+        {selectedPanel === "data" && <div>Data Panel</div>}
+        {selectedPanel === "assets" && <div>Assets Panel</div>}
+      </Box>
     </Box>
   );
 };

@@ -5,6 +5,9 @@
   width: 100%;
   align-items: center;
   overflow-y: auto;
+  background-color: var(--bgColor-default);
+  border-radius: var(--borderRadius-large);
+  border: 1px solid var(--borderColor-default);
 }
 
 .innerContainer {
@@ -24,7 +27,6 @@
   padding: 8px;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--bgColor-muted);
   border-bottom: 1px solid var(--borderColor-default);
   position: sticky;
   top: 0;
@@ -43,7 +45,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-bottom: 1px solid var(--borderColor-default);
   width: 100%;
   margin-bottom: 12px;
 }
