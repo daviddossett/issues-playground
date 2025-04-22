@@ -7,12 +7,23 @@ import {
   ChevronDownIcon,
   LightBulbIcon,
   ChevronRightIcon,
+  SquareFillIcon,
+  FileAddedIcon,
+  FileDiffIcon,
+  FileRemovedIcon,
+  SearchIcon,
+  ToolsIcon,
+  BugIcon,
+  SyncIcon,
+  PencilIcon,
 } from "@primer/octicons-react";
+import clsx from "clsx";
 
 interface Version {
   id: string;
   prompt: string;
   timestamp: Date;
+  changes?: string[]; // Messages in present tense
 }
 
 interface IteratePanelProps {
@@ -68,11 +79,115 @@ const SuggestionSkeleton = () => (
   </ActionList>
 );
 
+// Single source of truth for all messages - present tense
+const THINKING_MESSAGES = [
+  "Generating App.tsx",
+  "Adding loading states",
+  "Implementing user preferences",
+  "Optimizing destination cards",
+  "Enhancing itinerary generation",
+  "Fixing TypeScript types",
+  "Adding error handling",
+  "Updating component props",
+  "Cleaning up unused imports",
+  "Fixing linting errors",
+  "Optimizing performance",
+  "Adding accessibility features",
+  "Implementing responsive design",
+  "Adding loading animations",
+  "Updating color schemes",
+  "Enhancing user interactions",
+  "Testing edge cases"
+];
+
+// Helper to convert message to past tense
+const toPastTense = (message: string) => {
+  return message.replace(/ing(\s|$)/, 'ed$1');
+};
+
+interface Version {
+  id: string;
+  prompt: string;
+  timestamp: Date;
+  changes?: string[]; // Messages in present tense
+}
+
+const initialVersion: Version = {
+  id: "initial",
+  prompt:
+    "Create an AI-powered vacation planner app that helps users find their perfect getaway. Include:\n- Preference inputs for climate, budget, activity level, and trip duration\n- AI-generated destination recommendations with images and details\n- Personalized itinerary generation\n- Loading states with step-by-step updates\n- Clean, modern UI with cards and intuitive navigation",
+  timestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
+  changes: [] // Will be populated during iteration
+};
+
 export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: IteratePanelProps) => {
   const [prompt, setPrompt] = useState("");
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(true);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
   const [suggestions, setSuggestions] = useState<Array<{ id: string; text: string; icon: typeof LightBulbIcon }>>([]);
+  const [thinkingMessage, setThinkingMessage] = useState(THINKING_MESSAGES[0]);
+  const [isThinkingMessageExiting, setIsThinkingMessageExiting] = useState(false);
+  const [expandedChangesList, setExpandedChangesList] = useState<string | null>(null);
+  const [collectedChanges, setCollectedChanges] = useState<string[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const promptInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const updateThinkingMessage = (newMessage: string) => {
+    setIsThinkingMessageExiting(true);
+    setTimeout(() => {
+      setThinkingMessage(newMessage);
+      setIsThinkingMessageExiting(false);
+      // Add message to collected changes
+      setCollectedChanges(prev => [...prev, newMessage]);
+    }, 200);
+  };
+
+  const [versions, setVersions] = useState<Version[]>([initialVersion]);
+  const [selectedVersionId, setSelectedVersionId] = useState<string>(initialVersion.id);
+
+  // Reset collected changes when starting iteration
+  useEffect(() => {
+    if (isIterating) {
+      setCollectedChanges([]);
+      // Start with a random message
+      const firstMessage = THINKING_MESSAGES[Math.floor(Math.random() * THINKING_MESSAGES.length)];
+      setThinkingMessage(firstMessage);
+      setCollectedChanges([firstMessage]);
+    }
+  }, [isIterating]);
+
+  // Watch for changes in isIterating to cycle through random messages
+  useEffect(() => {
+    if (isIterating) {
+      const messageInterval = setInterval(() => {
+        const availableMessages = THINKING_MESSAGES.filter(msg => !collectedChanges.includes(msg));
+        if (availableMessages.length > 0) {
+          const randomMessage = availableMessages[Math.floor(Math.random() * availableMessages.length)];
+          updateThinkingMessage(randomMessage);
+        }
+      }, 3500);
+
+      return () => clearInterval(messageInterval);
+    }
+  }, [isIterating, collectedChanges]);
+
+  // Update version changes when iteration stops
+  useEffect(() => {
+    if (!isIterating && collectedChanges.length > 0) {
+      setVersions(prev => prev.map(v => 
+        v.id === selectedVersionId
+          ? { ...v, changes: collectedChanges }
+          : v
+      ));
+    }
+  }, [isIterating]);
+
+  // Watch for changes in suggestions loading state
+  useEffect(() => {
+    if (!isLoadingSuggestions && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [isLoadingSuggestions]);
 
   // Simulate API call to fetch suggestions
   useEffect(() => {
@@ -83,17 +198,6 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
     };
     loadSuggestions();
   }, []);
-  const initialVersion: Version = {
-    id: "initial",
-    prompt:
-      "Create an AI-powered vacation planner app that helps users find their perfect getaway. Include:\n- Preference inputs for climate, budget, activity level, and trip duration\n- AI-generated destination recommendations with images and details\n- Personalized itinerary generation\n- Loading states with step-by-step updates\n- Clean, modern UI with cards and intuitive navigation",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
-  };
-
-  const [versions, setVersions] = useState<Version[]>([initialVersion]);
-  const [selectedVersionId, setSelectedVersionId] = useState<string>(initialVersion.id);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const promptInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -105,27 +209,45 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
     e.preventDefault();
     if (!prompt.trim() || isIterating) return;
 
-    console.log('Submitting new version...');
-    const newVersion: Version = {
-      id: Date.now().toString(),
+    const newVersionId = Date.now().toString();
+    setVersions(prev => [...prev, {
+      id: newVersionId,
       prompt: prompt.trim(),
       timestamp: new Date(),
-    };
-
-    setVersions([...versions, newVersion]);
+      changes: []
+    }]);
     setPrompt("");
-    setSelectedVersionId(newVersion.id);
-    onVersionSelect(newVersion);
+    setSelectedVersionId(newVersionId);
     setIsIterating(true);
-    console.log('Set isIterating to true');
 
-    // Auto-reset after 5-10 seconds
-    const loadingDuration = Math.floor(Math.random() * 5000) + 5000;
-    console.log('Setting timeout for', loadingDuration, 'ms');
+    // Stop iteration after 8 seconds
     setTimeout(() => {
-      console.log('Resetting isIterating to false');
       setIsIterating(false);
-    }, loadingDuration);
+    }, 8000);
+  };
+
+  const handleSuggestionSelect = async (suggestion: { id: string; text: string }) => {
+    const newVersionId = Date.now().toString();
+    const newVersion: Version = {
+      id: newVersionId,
+      prompt: suggestion.text,
+      timestamp: new Date(),
+      changes: []
+    };
+    setVersions([...versions, newVersion]);
+    setSelectedVersionId(newVersionId);
+    setIsIterating(true);
+
+    // Stop iteration after 8 seconds
+    setTimeout(() => {
+      setIsIterating(false);
+    }, 8000);
+
+    // Show loading state and regenerate suggestions
+    setIsLoadingSuggestions(true);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setSuggestions(getRandomSuggestions(3));
+    setIsLoadingSuggestions(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -183,7 +305,10 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
           {versions.map((version) => (
             <button
               key={version.id}
-              className={`${styles.activityItem} ${selectedVersionId === version.id ? styles.activityItemActive : ""}`}
+              className={clsx(styles.activityItem, {
+                [styles.activityItemActive]: selectedVersionId === version.id,
+                [styles.iterating]: selectedVersionId === version.id && isIterating
+              })}
               onClick={() => handleVersionClick(version)}
             >
               <div
@@ -191,7 +316,35 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
               >
                 {version.prompt}
                 {selectedVersionId === version.id && isIterating && (
-                  <div className={styles.thinkingCaption}>Thinking...</div>
+                  <div className={`${styles.thinkingCaption} ${isThinkingMessageExiting ? styles.messageExiting : ''}`}>
+                    {thinkingMessage}
+                  </div>
+                )}
+                {selectedVersionId === version.id && !isIterating && version.changes && (
+                  <>
+                    <div 
+                      className={styles.changesCaption}
+                      onClick={() => setExpandedChangesList(expandedChangesList === version.id ? null : version.id)}
+                    >
+                      Made {version.changes.length} changes
+                      <ChevronRightIcon 
+                        className={clsx(styles.changesCaptionIcon, {
+                          [styles.expanded]: expandedChangesList === version.id
+                        })}
+                        size={12}
+                      />
+                    </div>
+                    <div className={clsx(styles.changesList, {
+                      [styles.expanded]: expandedChangesList === version.id
+                    })}>
+                      {version.changes?.map((change, index) => (
+                        <div key={index} className={styles.changesListItem}>
+                          <SyncIcon size={12} className={styles.changesListIcon} />
+                          <span>{toPastTense(change)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
             </button>
@@ -221,29 +374,7 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
                   {suggestions.map((suggestion) => (
                     <ActionList.Item
                       key={suggestion.id}
-                      onSelect={async () => {
-                        const newVersion: Version = {
-                          id: Date.now().toString(),
-                          prompt: suggestion.text,
-                          timestamp: new Date(),
-                        };
-                        setVersions([...versions, newVersion]);
-                        setSelectedVersionId(newVersion.id);
-                        onVersionSelect(newVersion);
-                        setIsIterating(true);
-
-                        // Auto-reset after 5-10 seconds
-                        const loadingDuration = Math.floor(Math.random() * 5000) + 5000;
-                        setTimeout(() => {
-                          setIsIterating(false);
-                        }, loadingDuration);
-
-                        // Show loading state and regenerate suggestions
-                        setIsLoadingSuggestions(true);
-                        await new Promise((resolve) => setTimeout(resolve, 3000));
-                        setSuggestions(getRandomSuggestions(3));
-                        setIsLoadingSuggestions(false);
-                      }}
+                      onSelect={() => handleSuggestionSelect(suggestion)}
                     >
                       <ActionList.LeadingVisual>
                         <LightBulbIcon className={styles.suggestionIcon} />
@@ -272,7 +403,15 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
             />
             <div className={styles.inputActions}>
               <IconButton aria-label="Add attachment" icon={PaperclipIcon} variant="invisible" />
-              <IconButton aria-label="Send now" icon={PaperAirplaneIcon} variant="invisible" type="submit" />
+              <IconButton
+                icon={isIterating ? SquareFillIcon : PaperAirplaneIcon}
+                aria-label={isIterating ? "Stop iteration" : "Start iteration"}
+                variant="invisible"
+                className={clsx(styles.sendButton, {
+                  [styles.iterating]: isIterating
+                })}
+                onClick={() => setIsIterating(!isIterating)}
+              />
             </div>
           </div>
         </form>

@@ -20,6 +20,8 @@
 
 .navList {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: var(--base-size-8);
   flex: 1;
 }
@@ -36,6 +38,7 @@
   font: var(--text-body-shorthand-medium);
   position: relative;
   margin-bottom: -1px;
+  transition: all 0.2s ease;
 }
 
 .navButton:hover {
@@ -67,19 +70,4 @@
   padding-left: 16px;
   padding-bottom: 24px;
   flex-shrink: 0;
-}
-
-.navItemIssueMeta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.navItemsIssueMetaIcon {
-  color: var(--fgColor-open);
-}
-
-.navItemsIssueMetaLabel {
-  font: var(--text-body-shorthand-small);
-  color: var(--fgColor-muted);
 }

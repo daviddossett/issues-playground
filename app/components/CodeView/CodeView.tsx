@@ -9,6 +9,7 @@ import {
 import { useState, useEffect } from "react";
 import styles from "./CodeView.module.css";
 import { CodeEditor } from "../CodeEditor/CodeEditor";
+import clsx from "clsx";
 
 interface FileItem {
   name: string;
@@ -26,42 +27,14 @@ const files: FileItem[] = [
     type: "directory",
     children: [
       {
-        name: "components",
-        path: "app/components",
-        type: "directory",
-        children: [
-          {
-            name: "AIAppMock",
-            path: "app/components/AIAppMock",
-            type: "directory",
-            children: [
-              {
-                name: "AIAppMock.tsx",
-                path: "app/components/AIAppMock/AIAppMock.tsx",
-                type: "file",
-                language: "typescript",
-                content: `// AIAppMock.tsx
-"use client";
+        name: "app.jsx",
+        path: "app/app.jsx",
+        type: "file",
+        language: "javascript",
+        content: `import { useState, useEffect } from "react";
+import styles from "./app.css";
 
-import { useState, useEffect } from "react";
-import styles from "./AIAppMock.module.css";
-
-interface Destination {
-  id: number;
-  name: string;
-  image: string;
-  description: string;
-  activities: string[];
-  weather: string;
-  budget: string;
-}
-
-interface AIAppMockProps {
-  isIterating: boolean;
-  setIsIterating: (isIterating: boolean) => void;
-}
-
-export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProps) {
+function App() {
   // User preferences state
   const [preferences, setPreferences] = useState({
     climate: "warm",
@@ -73,10 +46,6 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
   // App state
   const [loading, setLoading] = useState(false);
   const [generatingStep, setGeneratingStep] = useState(0);
-  const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
-  const [itinerary, setItinerary] = useState<string[]>([]);
-  const [showItinerary, setShowItinerary] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Analyzing your preferences...");
   const [isExiting, setIsExiting] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -94,7 +63,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
   ];
 
   // Update loading message with animation
-  const updateMessage = (newMessage: string) => {
+  const updateMessage = (newMessage) => {
     setIsMessageExiting(true);
     setTimeout(() => {
       setLoadingMessage(newMessage);
@@ -104,7 +73,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
 
   // Handle iteration state changes
   useEffect(() => {
-    if (isIterating) {
+    if (loading) {
       setIsExiting(false);
       setShouldRender(true);
       setIsMessageExiting(false);
@@ -120,7 +89,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
         setIsExiting(true);
         setTimeout(() => {
           clearInterval(messageInterval);
-          setIsIterating(false);
+          setLoading(false);
           setLoadingMessage(loadingMessages[0]);
           setShouldRender(false);
         }, 200);
@@ -128,7 +97,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
 
       return () => clearInterval(messageInterval);
     }
-  }, [isIterating]);
+  }, [loading]);
 
   return (
     <div className={styles.appContainer}>
@@ -154,13 +123,13 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
     </div>
   );
 }`
-              },
-              {
-                name: "AIAppMock.module.css",
-                path: "app/components/AIAppMock/AIAppMock.module.css",
-                type: "file",
-                language: "css",
-                content: `/* Modern Vacation Planner Styling */
+      },
+      {
+        name: "app.css",
+        path: "app/app.css",
+        type: "file",
+        language: "css",
+        content: `/* Modern App Styling */
 .appContainer {
   position: relative;
   width: 100%;
@@ -260,60 +229,26 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-100%); }
 }`
-              }
-            ]
-          },
-          {
-            name: "header",
-            path: "app/components/header",
-            type: "directory",
-            children: [
-              { name: "header.tsx", path: "app/components/header/header.tsx", type: "file" },
-              { name: "header.module.css", path: "app/components/header/header.module.css", type: "file" },
-            ],
-          },
-          {
-            name: "MainContent",
-            path: "app/components/MainContent",
-            type: "directory",
-            children: [
-              { name: "MainContent.tsx", path: "app/components/MainContent/MainContent.tsx", type: "file" },
-              { name: "MainContent.module.css", path: "app/components/MainContent/MainContent.module.css", type: "file" },
-            ],
-          },
-          {
-            name: "SidePanel",
-            path: "app/components/SidePanel",
-            type: "directory",
-            children: [
-              { name: "SidePanel.tsx", path: "app/components/SidePanel/SidePanel.tsx", type: "file" },
-              { name: "SidePanel.module.css", path: "app/components/SidePanel/SidePanel.module.css", type: "file" },
-              { name: "IteratePanel.tsx", path: "app/components/SidePanel/IteratePanel.tsx", type: "file" },
-              { name: "IteratePanel.module.css", path: "app/components/SidePanel/IteratePanel.module.css", type: "file" },
-            ],
-          },
-        ],
-      },
-      { name: "page.tsx", path: "app/page.tsx", type: "file" },
-      { name: "page.module.css", path: "app/page.module.css", type: "file" },
-      { name: "layout.tsx", path: "app/layout.tsx", type: "file" },
-    ],
-  },
+      }
+    ]
+  }
 ];
 
 interface CodeViewProps {
   isNavVisible: boolean;
   toggleNavVisibility: () => void;
   viewMode: "preview" | "code" | "split";
+  isIterating: boolean;
 }
 
 export const CodeView: React.FC<CodeViewProps> = ({
   isNavVisible,
   toggleNavVisibility,
   viewMode,
+  isIterating,
 }) => {
   const [isFileTreeVisible, setIsFileTreeVisible] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<string>("app/components/AIAppMock/AIAppMock.tsx");
+  const [selectedFile, setSelectedFile] = useState<string>("app/app.jsx");
 
   useEffect(() => {
     setIsFileTreeVisible(viewMode === "code");
@@ -351,6 +286,7 @@ export const CodeView: React.FC<CodeViewProps> = ({
       <TreeView.Item
         key={item.path}
         id={item.path}
+        current={item.path === selectedFile}
         defaultExpanded={item.path === "app" || item.path.includes(selectedFile)}
         onSelect={item.type === "file" ? () => handleFileSelect(item.path) : undefined}
       >
@@ -392,7 +328,6 @@ export const CodeView: React.FC<CodeViewProps> = ({
             aria-label={isFileTreeVisible ? "Hide file tree" : "Show file tree"}
             onClick={toggleFileTree}
           />
-          <div className={styles.divider} />
         </Box>
         <ActionMenu>
           <ActionMenu.Button
@@ -435,10 +370,17 @@ export const CodeView: React.FC<CodeViewProps> = ({
             </div>
           </div>
           <Box className={styles.content}>
-            <CodeEditor 
-              content={findFileContent(selectedFile).content}
-              language={findFileContent(selectedFile).language}
-            />
+            <div 
+              className={clsx(styles.editorWrapper, {
+                [styles.dimmed]: isIterating
+              })} 
+              style={{ height: "100%" }}
+            >
+              <CodeEditor 
+                content={findFileContent(selectedFile).content}
+                language={findFileContent(selectedFile).language}
+              />
+            </div>
           </Box>
         </div>
       </Box>

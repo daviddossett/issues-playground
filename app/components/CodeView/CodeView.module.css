@@ -50,7 +50,6 @@
   width: 0;
   overflow: hidden;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: var(--bgColor-inset);
   border-right: 0px solid var(--borderColor-default);
   flex-shrink: 0;
 }
@@ -114,9 +113,30 @@
   }
 }
 
-.divider {
-  width: 1px;
-  height: 20px;
-  background-color: var(--borderColor-muted);
-  margin: 0 2px;
+.editorWrapper :global(.monaco-editor),
+.editorWrapper :global(.monaco-diff-editor),
+.editorWrapper :global(.monaco-diff-editor .synthetic-focus),
+.editorWrapper :global(.monaco-diff-editor [tabindex="-1"]:focus),
+.editorWrapper :global(.monaco-diff-editor [tabindex="0"]:focus),
+.editorWrapper :global(.monaco-diff-editor button:focus),
+.editorWrapper :global(.monaco-diff-editor input[type=button]:focus),
+.editorWrapper :global(.monaco-diff-editor input[type=checkbox]:focus),
+.editorWrapper :global(.monaco-diff-editor input[type=search]:focus),
+.editorWrapper :global(.monaco-diff-editor input[type=text]:focus),
+.editorWrapper :global(.monaco-diff-editor select:focus),
+.editorWrapper :global(.monaco-diff-editor textarea:focus) {
+  outline: none !important;
+  outline-color: transparent !important;
+  outline-style: none !important;
+  outline-width: 0 !important;
+}
+
+.editorWrapper {
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.editorWrapper.dimmed {
+  opacity: 0.5;
+  pointer-events: none;
 } 

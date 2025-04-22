@@ -45,6 +45,7 @@ export const SidePanel = ({ toggleNavVisibility, isIterating, setIsIterating }: 
                 key={panel.type}
                 className={clsx(styles.navButton, {
                   [styles.navButtonActive]: selectedPanel === panel.type,
+                  [styles.iterating]: selectedPanel === panel.type && isIterating && panel.type === "iterate"
                 })}
                 onClick={() => setSelectedPanel(panel.type)}
               >
@@ -54,14 +55,14 @@ export const SidePanel = ({ toggleNavVisibility, isIterating, setIsIterating }: 
             );
           })}
         </Box>
-        <IconButton
+        {/* <IconButton
           variant="invisible"
           icon={SidebarExpandIcon}
           size="medium"
           aria-label="Collapse panel"
           tooltipDirection="e"
           onClick={toggleNavVisibility}
-        />
+        /> */}
       </Box>
       <Box className={styles.panel}>
         {selectedPanel === "iterate" && (

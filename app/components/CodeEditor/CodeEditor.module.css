@@ -13,10 +13,6 @@
   background-color: transparent !important;
 }
 
-.editorContainer :global(.monaco-editor) {
-  padding: 8px;
-}
-
 .editor {
   width: 100%;
   height: 100%;

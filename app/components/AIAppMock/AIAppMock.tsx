@@ -58,30 +58,27 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
     }, 200);
   };
 
+  // Watch for changes in isIterating prop
   useEffect(() => {
     if (isIterating) {
       setIsExiting(false);
       setShouldRender(true);
       setIsMessageExiting(false);
-      let messageIndex = 1; // Start from second message since first is already shown
+      let messageIndex = 1;
 
       const messageInterval = setInterval(() => {
         updateMessage(loadingMessages[messageIndex]);
         messageIndex = (messageIndex + 1) % loadingMessages.length;
       }, 2000);
 
-      const loadingDuration = Math.floor(Math.random() * 5000) + 10000; // 10-15 seconds
-      setTimeout(() => {
+      return () => {
+        clearInterval(messageInterval);
         setIsExiting(true);
         setTimeout(() => {
-          clearInterval(messageInterval);
-          setIsIterating(false);
-          setLoadingMessage(loadingMessages[0]); // Reset to first message
           setShouldRender(false);
-        }, 200); // Match the animation duration
-      }, loadingDuration);
-
-      return () => clearInterval(messageInterval);
+          setLoadingMessage(loadingMessages[0]);
+        }, 200);
+      };
     }
   }, [isIterating]);
 
@@ -279,7 +276,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
         </div>
       )}
       <div className={styles.header}>
-        <h1>Mock App</h1>
+        <h1>Vacation Planner</h1>
         <p>Let AI find your perfect getaway</p>
       </div>
 

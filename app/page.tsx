@@ -1,7 +1,7 @@
 "use client";
 
 import { ThemeProvider, BaseStyles, Box } from "@primer/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppHeader } from "./components/header/header";
 import { SidePanel } from "./components/SidePanel/SidePanel";
 import { MainContent } from "./components/MainContent/MainContent";
@@ -14,8 +14,16 @@ type ViewMode = "preview" | "code" | "split";
 export default function Home() {
   const [isPanelVisible, setisPanelVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
-  const [isIterating, setIsIterating] = useState<boolean>(false);
+  const [isIterating, setIsIterating] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<ViewMode>("preview");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsIterating(false);
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleNavVisibility = () => {
     setIsNavVisible(!isNavVisible);
@@ -37,6 +45,7 @@ export default function Home() {
             isNavVisible={isNavVisible}
             toggleNavVisibility={toggleNavVisibility}
             viewMode={viewMode}
+            isIterating={isIterating}
           />
         </div>
         <div className={clsx(styles.view, {
