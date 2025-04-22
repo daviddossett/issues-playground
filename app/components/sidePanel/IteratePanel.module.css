@@ -374,9 +374,14 @@
   }
 }
 
-.sendButton.iterating:hover {
+.sendButton.iterating {
   background-color: var(--bgColor-danger-muted) !important;
-  color: var(--fgColor-danger-emphasis) !important;
+  color: var(--fgColor-danger) !important;
+}
+
+.sendButton.iterating:hover {
+  background-color: var(--bgColor-danger-emphasis) !important;
+  color: var(--fgColor-default) !important;
 }
 
 .activityItemActive.iterating {
@@ -416,4 +421,11 @@
   100% {
     background-position: -100% 0;
   }
+}
+
+.restoreButton {
+  width: 100%;
+  margin-top: 8px;
+  font-size: var(--text-caption-size) !important;
+  display: block;
 }

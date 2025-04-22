@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./IteratePanel.module.css";
-import { IconButton, ActionList, Box } from "@primer/react";
+import { IconButton, ActionList, Box, Button } from "@primer/react";
 import {
   PaperclipIcon,
   PaperAirplaneIcon,
@@ -344,6 +344,15 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
                         </div>
                       ))}
                     </div>
+                    {expandedChangesList === version.id && (
+                      <Button 
+                        variant="default" 
+                        size="small"
+                        className={styles.restoreButton}
+                      >
+                        Restore version
+                      </Button>
+                    )}
                   </>
                 )}
               </div>

@@ -1,13 +1,15 @@
 import Editor from '@monaco-editor/react';
 import { useTheme } from '@primer/react';
+import clsx from 'clsx';
 import styles from './CodeEditor.module.css';
 
 interface CodeEditorProps {
   content: string;
   language: string;
+  isIterating?: boolean;
 }
 
-export const CodeEditor: React.FC<CodeEditorProps> = ({ content, language }) => {
+export const CodeEditor = ({ content, language, isIterating }: CodeEditorProps) => {
   const { colorScheme } = useTheme();
   
   const options = {
@@ -72,7 +74,9 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ content, language }) => 
   };
 
   return (
-    <div className={styles.editorContainer}>
+    <div className={clsx(styles.editorContainer, {
+      [styles.iterating]: isIterating
+    })}>
       <Editor
         height="100%"
         defaultLanguage={language}

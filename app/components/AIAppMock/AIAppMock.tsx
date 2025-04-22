@@ -258,7 +258,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
           <path d="M6.69608 8.00002H3.31249M3.31249 8.00002L2.1495 3.34807C2.10343 3.16378 2.28552 3.00484 2.46189 3.07539L14.2396 7.78645C14.4338 7.86416 14.435 8.13875 14.2414 8.21811L2.74372 12.931C2.57276 13.0011 2.3922 12.8537 2.42662 12.6722L3.31249 8.00002Z" strokeWidth="1.5" strokeLinecap="round"/>
         </symbol>
         {/* Sparkle spinner */}
-        <symbol id="sparkle-spinner" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="app-sparkle-spinner" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path fill="#8E47FE" d="M16 8c-5.39 1.54-6.586 2.83-8 8-1.414-5.17-2.61-6.46-8-8 5.39-1.54 6.586-2.83 8-8 1.414 5.17 2.61 6.46 8 8Z"/>
         </symbol>
       </svg>
@@ -266,7 +266,7 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
       {shouldRender && (
         <div className={`${styles.loadingOverlay} ${isExiting ? styles.exiting : ''}`}>
           <svg className={styles.sparkleSpinner}>
-            <use href="#sparkle-spinner" />
+            <use href="#app-sparkle-spinner" />
           </svg>
           <div className={styles.loadingMessageContainer}>
             <p className={`${styles.loadingMessage} ${isMessageExiting ? styles.exiting : ''}`}>

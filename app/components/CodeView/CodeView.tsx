@@ -1,10 +1,12 @@
-import { Box, Button, IconButton, TreeView, ActionMenu, ActionList } from "@primer/react";
+import { Box, Button, IconButton, TreeView, ActionMenu, ActionList, Spinner } from "@primer/react";
 import {
   FileCodeIcon,
   TriangleDownIcon,
   CopyIcon,
   CodeIcon,
   FileDirectoryIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@primer/octicons-react";
 import { useState, useEffect } from "react";
 import styles from "./CodeView.module.css";
@@ -104,7 +106,7 @@ function App() {
       {shouldRender && (
         <div className={\`\${styles.loadingOverlay} \${isExiting ? styles.exiting : ''}\`}>
           <svg className={styles.sparkleSpinner}>
-            <use href="#sparkle-spinner" />
+            <use href="#toolbar-sparkle-spinner" />
           </svg>
           <div className={styles.loadingMessageContainer}>
             <p className={\`\${styles.loadingMessage} \${isMessageExiting ? styles.exiting : ''}\`}>
@@ -320,44 +322,62 @@ export const CodeView: React.FC<CodeViewProps> = ({
 
   return (
     <Box className={styles.container}>
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <symbol id="toolbar-sparkle-spinner" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#8E47FE" d="M16 8c-5.39 1.54-6.586 2.83-8 8-1.414-5.17-2.61-6.46-8-8 5.39-1.54 6.586-2.83 8-8 1.414 5.17 2.61 6.46 8 8Z"/>
+        </symbol>
+      </svg>
       <Box className={styles.toolbar}>
         <Box className={styles.toolbarLeft}>
           <IconButton
-            variant="invisible"
             icon={FileDirectoryIcon}
             aria-label={isFileTreeVisible ? "Hide file tree" : "Show file tree"}
             onClick={toggleFileTree}
+            variant="invisible"
           />
         </Box>
-        <ActionMenu>
-          <ActionMenu.Button
-            variant="invisible"
-            trailingAction={TriangleDownIcon}
-          >
-            {currentFile?.name || "Select a file"}
-          </ActionMenu.Button>
-          <ActionMenu.Overlay>
-            <ActionList selectionVariant="single">
-              {allFiles.map((file) => (
-                <ActionList.Item
-                  key={file.path}
-                  selected={file.path === selectedFile}
-                  onSelect={() => handleFileSelect(file.path)}
-                >
-                  <ActionList.LeadingVisual>
-                    <CodeIcon />
-                  </ActionList.LeadingVisual>
-                  {file.name}
-                </ActionList.Item>
-              ))}
-            </ActionList>
-          </ActionMenu.Overlay>
-        </ActionMenu>
+        <Box className={styles.toolbarCenter}>
+          <ActionMenu>
+            <ActionMenu.Button
+              variant="invisible"
+              trailingAction={TriangleDownIcon}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {isIterating ? (
+                  <svg className={styles.sparkleSpinner}>
+                    <use href="#toolbar-sparkle-spinner" />
+                  </svg>
+                ) : (
+                  <CodeIcon />
+                )}
+                {currentFile?.name || "Select a file"}
+              </Box>
+            </ActionMenu.Button>
+            <ActionMenu.Overlay>
+              <ActionList selectionVariant="single">
+                {allFiles.map((file) => (
+                  <ActionList.Item
+                    key={file.path}
+                    selected={file.path === selectedFile}
+                    onSelect={() => handleFileSelect(file.path)}
+                  >
+                    <ActionList.LeadingVisual>
+                      <CodeIcon />
+                    </ActionList.LeadingVisual>
+                    {file.name}
+                  </ActionList.Item>
+                ))}
+              </ActionList>
+            </ActionMenu.Overlay>
+          </ActionMenu>
+        </Box>
         <Box className={styles.toolbarRight}>
           <IconButton variant="invisible" icon={CopyIcon} aria-label="Copy code" />
-          {/* <Button trailingAction={TriangleDownIcon} variant="invisible">
-            Open in
-          </Button> */}
         </Box>
       </Box>
       <Box className={styles.innerContainer}>
@@ -376,9 +396,10 @@ export const CodeView: React.FC<CodeViewProps> = ({
               })} 
               style={{ height: "100%" }}
             >
-              <CodeEditor 
+              <CodeEditor
                 content={findFileContent(selectedFile).content}
                 language={findFileContent(selectedFile).language}
+                isIterating={isIterating}
               />
             </div>
           </Box>
