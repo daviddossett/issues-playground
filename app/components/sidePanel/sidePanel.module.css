@@ -21,9 +21,9 @@
 .navList {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--base-size-8);
   flex: 1;
+  padding-left: var(--base-size-8);
 }
 
 .navButton {
