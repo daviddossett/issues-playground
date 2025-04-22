@@ -30,6 +30,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  background-color: var(--bgColor-default);
 }
 
 .issueToolbarLeft,
@@ -37,4 +38,37 @@
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+/* View transitions and layouts */
+.viewTransition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+}
+
+.splitView {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  height: 100%;
+}
+
+.codeView,
+.previewView {
+  height: 100%;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+@media (max-width: 768px) {
+  .splitView {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
 }

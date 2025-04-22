@@ -6,7 +6,6 @@
   overflow: hidden;
   background-color: var(--bgColor-inset);
   color: var(--fgColor-default);
-  overflow: auto;
   max-height: 100vh;
 }
 
@@ -17,7 +16,6 @@
   flex-grow: 1;
   overflow: hidden;
   padding: 0 16px 16px 16px;
-  gap: 16px;
 }
 
 .mainContent {
@@ -25,6 +23,88 @@
   gap: 8px;
   width: 100%;
   overflow: hidden;
+}
+
+/* Side panel should have fixed width */
+.mainContent > :first-child {
+  width: 420px;
+  flex-shrink: 0;
+}
+
+/* Views container should take remaining space */
+.viewContainer {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.view {
+  opacity: 0;
+  pointer-events: none;
+  flex: 0;
+  min-width: 0;
+  overflow: hidden;
+  transition: 
+    opacity 0.2s ease-in-out,
+    flex-grow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.viewVisible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Preview only mode */
+.previewOnly .view:last-child {
+  flex: 1;
+}
+
+/* Code only mode */
+.codeOnly .view:first-child {
+  flex: 1;
+}
+
+/* Split view mode */
+.splitView .view {
+  opacity: 1;
+  pointer-events: all;
+  flex: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .viewContainer {
+    flex-direction: column;
+  }
+  
+  .view {
+    width: 100%;
+    height: 0;
+    transition: 
+      opacity 0.2s ease-in-out,
+      height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .splitView .view {
+    height: 50%;
+  }
+  
+  .previewOnly .view:last-child,
+  .codeOnly .view:first-child {
+    height: 100%;
+  }
+  
+  /* Adjust side panel for mobile */
+  .mainContent > :first-child {
+    width: 200px;
+  }
+}
+
+.hidden {
+  display: none;
 }
 
 .emptyState {

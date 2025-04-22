@@ -230,6 +230,13 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
                         setVersions([...versions, newVersion]);
                         setSelectedVersionId(newVersion.id);
                         onVersionSelect(newVersion);
+                        setIsIterating(true);
+
+                        // Auto-reset after 5-10 seconds
+                        const loadingDuration = Math.floor(Math.random() * 5000) + 5000;
+                        setTimeout(() => {
+                          setIsIterating(false);
+                        }, loadingDuration);
 
                         // Show loading state and regenerate suggestions
                         setIsLoadingSuggestions(true);

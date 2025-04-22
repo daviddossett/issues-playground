@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 import styles from "./AIAppMock.module.css";
-import { Spinner } from "@primer/react";
 
 interface Destination {
   id: number;
@@ -36,10 +35,13 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [itinerary, setItinerary] = useState<string[]>([]);
   const [showItinerary, setShowItinerary] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState("Analyzing your preferences...");
+  const [isExiting, setIsExiting] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isMessageExiting, setIsMessageExiting] = useState(false);
 
   const loadingMessages = [
-    "Rethinking the user experience...",
+    "Analyzing your preferences...",
     "Adding some AI magic...",
     "Optimizing the interface...",
     "Generating fresh ideas...",
@@ -48,19 +50,35 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
     "Almost there...",
   ];
 
+  const updateMessage = (newMessage: string) => {
+    setIsMessageExiting(true);
+    setTimeout(() => {
+      setLoadingMessage(newMessage);
+      setIsMessageExiting(false);
+    }, 200);
+  };
+
   useEffect(() => {
     if (isIterating) {
-      let messageIndex = 0;
+      setIsExiting(false);
+      setShouldRender(true);
+      setIsMessageExiting(false);
+      let messageIndex = 1; // Start from second message since first is already shown
+
       const messageInterval = setInterval(() => {
-        setLoadingMessage(loadingMessages[messageIndex]);
+        updateMessage(loadingMessages[messageIndex]);
         messageIndex = (messageIndex + 1) % loadingMessages.length;
       }, 2000);
 
-      const loadingDuration = Math.floor(Math.random() * 5000) + 5000; // 5-10 seconds
+      const loadingDuration = Math.floor(Math.random() * 5000) + 10000; // 10-15 seconds
       setTimeout(() => {
-        clearInterval(messageInterval);
-        setIsIterating(false);
-        setLoadingMessage("");
+        setIsExiting(true);
+        setTimeout(() => {
+          clearInterval(messageInterval);
+          setIsIterating(false);
+          setLoadingMessage(loadingMessages[0]); // Reset to first message
+          setShouldRender(false);
+        }, 200); // Match the animation duration
       }, loadingDuration);
 
       return () => clearInterval(messageInterval);
@@ -212,10 +230,52 @@ export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProp
 
   return (
     <div className={styles.appContainer}>
-      {isIterating && (
-        <div className={styles.loadingOverlay}>
-          <Spinner size="large" />
-          <p className={styles.loadingMessage}>{loadingMessage}</p>
+      <svg width="0" height="0" className="hidden">
+        {/* Radius */}
+        <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" id="radius_full">
+          <path d="M2 16C2 8.26801 8.26801 2 16 2V2V16H2V16Z" fill="#0969DA" fillOpacity="0.2"></path>
+          <path d="M16 2V2C8.26801 2 2 8.26801 2 16V16" stroke="#0969DA"></path>
+        </symbol>
+        <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" id="radius_large">
+          <path d="M2 10C2 5.58172 5.58172 2 10 2H16V16H2V10Z" fill="#0969DA" fillOpacity="0.2"></path>
+          <path d="M16 2H10C5.58172 2 2 5.58172 2 10V16" stroke="#0969DA"></path>
+        </symbol>
+        <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" id="radius_medium">
+          <path d="M2 8C2 4.68629 4.68629 2 8 2H16V16H2V8Z" fill="#0969DA" fillOpacity="0.2"></path>
+          <path d="M16 2H8C4.68629 2 2 4.68629 2 8V16" stroke="#0969DA"></path>
+        </symbol>
+        <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" id="radius_none">
+          <rect x="2" y="2" width="14" height="14" fill="#0969DA" fillOpacity="0.2"></rect>
+          <path d="M16 2H2V16" stroke="#0969DA"></path>
+        </symbol>
+        <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" id="radius_small">
+          <path d="M2 5C2 3.34315 3.34315 2 5 2H16V16H2V5Z" fill="#0969DA" fillOpacity="0.2"></path>
+          <path d="M16 2H5C3.34315 2 2 3.34315 2 5V16" stroke="#0969DA"></path>
+        </symbol>
+        {/* Static versions of variants/single icons*/}
+        <symbol id="variants" viewBox="0 0 16 16" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.36451 6.1766L2.5867 6.84284M2.5867 6.84284L0.744528 3.35721C0.668472 3.2133 0.787177 3.04371 0.948427 3.06589L11.4948 4.5172C11.6743 4.5419 11.7309 4.77358 11.583 4.87825L3.07169 10.9021C2.94257 10.9935 2.76351 10.9057 2.75664 10.7477L2.5867 6.84284Z" strokeWidth="1.39869" strokeLinecap="round"/>
+          <path d="M9.58118 11.3189H7.19763C7.10197 11.3189 7.01973 11.3867 7.00148 11.4806L6.37542 14.7028C6.34525 14.8581 6.49891 14.9852 6.64578 14.9264L15.1984 11.5054C15.3661 11.4382 15.3657 11.2006 15.1977 11.1341L10.0491 9.095" strokeWidth="1.34874" strokeLinecap="round"/>
+        </symbol>
+        <symbol id="single" viewBox="0 0 16 16" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.69608 8.00002H3.31249M3.31249 8.00002L2.1495 3.34807C2.10343 3.16378 2.28552 3.00484 2.46189 3.07539L14.2396 7.78645C14.4338 7.86416 14.435 8.13875 14.2414 8.21811L2.74372 12.931C2.57276 13.0011 2.3922 12.8537 2.42662 12.6722L3.31249 8.00002Z" strokeWidth="1.5" strokeLinecap="round"/>
+        </symbol>
+        {/* Sparkle spinner */}
+        <symbol id="sparkle-spinner" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#8E47FE" d="M16 8c-5.39 1.54-6.586 2.83-8 8-1.414-5.17-2.61-6.46-8-8 5.39-1.54 6.586-2.83 8-8 1.414 5.17 2.61 6.46 8 8Z"/>
+        </symbol>
+      </svg>
+
+      {shouldRender && (
+        <div className={`${styles.loadingOverlay} ${isExiting ? styles.exiting : ''}`}>
+          <svg className={styles.sparkleSpinner}>
+            <use href="#sparkle-spinner" />
+          </svg>
+          <div className={styles.loadingMessageContainer}>
+            <p className={`${styles.loadingMessage} ${isMessageExiting ? styles.exiting : ''}`}>
+              {loadingMessage}
+            </p>
+          </div>
         </div>
       )}
       <div className={styles.header}>
