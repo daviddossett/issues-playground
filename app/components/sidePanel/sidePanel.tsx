@@ -17,13 +17,15 @@ type PanelType = (typeof PANELS)[number]["type"];
 
 interface NavigationProps {
   toggleNavVisibility: () => void;
+  isIterating: boolean;
+  setIsIterating: (isIterating: boolean) => void;
 }
 
 type versionType = {
   id: string;
 };
 
-export const SidePanel = ({ toggleNavVisibility }: NavigationProps) => {
+export const SidePanel = ({ toggleNavVisibility, isIterating, setIsIterating }: NavigationProps) => {
   const [selectedPanel, setSelectedPanel] = useState<PanelType>("iterate");
 
   const handleVersionSelect = (version: versionType) => {
@@ -62,7 +64,13 @@ export const SidePanel = ({ toggleNavVisibility }: NavigationProps) => {
         />
       </Box>
       <Box className={styles.panel}>
-        {selectedPanel === "iterate" && <IteratePanel onVersionSelect={handleVersionSelect} />}
+        {selectedPanel === "iterate" && (
+          <IteratePanel 
+            onVersionSelect={handleVersionSelect} 
+            isIterating={isIterating}
+            setIsIterating={setIsIterating}
+          />
+        )}
         {selectedPanel === "ai" && <div>AI Panel</div>}
         {selectedPanel === "data" && <div>Data Panel</div>}
         {selectedPanel === "assets" && <div>Assets Panel</div>}

@@ -10,6 +10,7 @@ import styles from "./page.module.css";
 export default function Home() {
   const [isPanelVisible, setisPanelVisible] = useState<boolean>(true);
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
+  const [isIterating, setIsIterating] = useState<boolean>(false);
 
   const toggleNavVisibility = () => {
     setIsNavVisible(!isNavVisible);
@@ -22,12 +23,18 @@ export default function Home() {
           <AppHeader />
           <Box className={styles.innerContainer}>
             <Box className={styles.mainContent}>
-              {isNavVisible && <SidePanel toggleNavVisibility={toggleNavVisibility} />}
+              {isNavVisible && (
+                <SidePanel 
+                  toggleNavVisibility={toggleNavVisibility}
+                  isIterating={isIterating}
+                  setIsIterating={setIsIterating}
+                />
+              )}
               <MainContent
                 isNavVisible={isNavVisible}
                 toggleNavVisibility={toggleNavVisibility}
-                isPanelVisible={isPanelVisible}
-                toggleChatVisibility={() => setisPanelVisible(!isPanelVisible)}
+                isIterating={isIterating}
+                setIsIterating={setIsIterating}
               />
             </Box>
           </Box>

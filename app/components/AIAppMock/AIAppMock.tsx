@@ -1,8 +1,9 @@
 // filepath: /Users/daviddossett/projects/spark/app/components/AIAppMock/AIAppMock.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./AIAppMock.module.css";
+import { Spinner } from "@primer/react";
 
 interface Destination {
   id: number;
@@ -14,7 +15,12 @@ interface Destination {
   budget: string;
 }
 
-export default function AIAppMock() {
+interface AIAppMockProps {
+  isIterating: boolean;
+  setIsIterating: (isIterating: boolean) => void;
+}
+
+export default function AIAppMock({ isIterating, setIsIterating }: AIAppMockProps) {
   // User preferences state
   const [preferences, setPreferences] = useState({
     climate: "warm",
@@ -30,6 +36,36 @@ export default function AIAppMock() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [itinerary, setItinerary] = useState<string[]>([]);
   const [showItinerary, setShowItinerary] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+
+  const loadingMessages = [
+    "Rethinking the user experience...",
+    "Adding some AI magic...",
+    "Optimizing the interface...",
+    "Generating fresh ideas...",
+    "Making it more delightful...",
+    "Adding that special touch...",
+    "Almost there...",
+  ];
+
+  useEffect(() => {
+    if (isIterating) {
+      let messageIndex = 0;
+      const messageInterval = setInterval(() => {
+        setLoadingMessage(loadingMessages[messageIndex]);
+        messageIndex = (messageIndex + 1) % loadingMessages.length;
+      }, 2000);
+
+      const loadingDuration = Math.floor(Math.random() * 5000) + 5000; // 5-10 seconds
+      setTimeout(() => {
+        clearInterval(messageInterval);
+        setIsIterating(false);
+        setLoadingMessage("");
+      }, loadingDuration);
+
+      return () => clearInterval(messageInterval);
+    }
+  }, [isIterating]);
 
   // Mock data for destinations
   const mockDestinations: Record<string, Destination[]> = {
@@ -176,6 +212,12 @@ export default function AIAppMock() {
 
   return (
     <div className={styles.appContainer}>
+      {isIterating && (
+        <div className={styles.loadingOverlay}>
+          <Spinner size="large" />
+          <p className={styles.loadingMessage}>{loadingMessage}</p>
+        </div>
+      )}
       <div className={styles.header}>
         <h1>Mock App</h1>
         <p>Let AI find your perfect getaway</p>

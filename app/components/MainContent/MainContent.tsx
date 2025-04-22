@@ -13,10 +13,16 @@ import {
 interface ContentProps {
   isNavVisible: boolean;
   toggleNavVisibility: () => void;
-  isThinking?: boolean;
+  isIterating: boolean;
+  setIsIterating: (isIterating: boolean) => void;
 }
 
-export const MainContent: React.FC<ContentProps> = ({ isNavVisible, toggleNavVisibility, isThinking }) => {
+export const MainContent: React.FC<ContentProps> = ({ 
+  isNavVisible, 
+  toggleNavVisibility, 
+  isIterating,
+  setIsIterating 
+}) => {
   const IssueContent = () => {
     return (
       <>
@@ -43,7 +49,7 @@ export const MainContent: React.FC<ContentProps> = ({ isNavVisible, toggleNavVis
         </Box>
         <Box className={styles.innerContainer}>
           <Box className={styles.mainContent}>
-            <AIAppMock isThinking={isThinking} />
+            <AIAppMock isIterating={isIterating} setIsIterating={setIsIterating} />
           </Box>
         </Box>
       </>

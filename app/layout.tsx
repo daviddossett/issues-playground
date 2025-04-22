@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "Issues",
-  description: "Sample app to list GitHub Issues",
+  title: "Spark - Vacation Planner",
+  description: "Spark Mocks",
 };
 
 export default function RootLayout({

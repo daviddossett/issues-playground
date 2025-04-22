@@ -17,6 +17,8 @@ interface Version {
 
 interface IteratePanelProps {
   onVersionSelect: (version: Version) => void;
+  isIterating: boolean;
+  setIsIterating: (isIterating: boolean) => void;
 }
 
 // Pool of possible suggestions
@@ -66,7 +68,7 @@ const SuggestionSkeleton = () => (
   </ActionList>
 );
 
-export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
+export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: IteratePanelProps) => {
   const [prompt, setPrompt] = useState("");
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(true);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
@@ -101,8 +103,9 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
+    if (!prompt.trim() || isIterating) return;
 
+    console.log('Submitting new version...');
     const newVersion: Version = {
       id: Date.now().toString(),
       prompt: prompt.trim(),
@@ -113,6 +116,16 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
     setPrompt("");
     setSelectedVersionId(newVersion.id);
     onVersionSelect(newVersion);
+    setIsIterating(true);
+    console.log('Set isIterating to true');
+
+    // Auto-reset after 5-10 seconds
+    const loadingDuration = Math.floor(Math.random() * 5000) + 5000;
+    console.log('Setting timeout for', loadingDuration, 'ms');
+    setTimeout(() => {
+      console.log('Resetting isIterating to false');
+      setIsIterating(false);
+    }, loadingDuration);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -177,6 +190,9 @@ export const IteratePanel = ({ onVersionSelect }: IteratePanelProps) => {
                 className={`${styles.refinement} ${selectedVersionId === version.id ? styles.refinementActive : ""}`}
               >
                 {version.prompt}
+                {selectedVersionId === version.id && isIterating && (
+                  <div className={styles.thinkingCaption}>Thinking...</div>
+                )}
               </div>
             </button>
           ))}
