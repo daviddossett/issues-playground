@@ -43,24 +43,21 @@
 }
 
 .activityItem {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap-condensed);
   width: 100%;
-  padding: var(--base-size-12) var(--base-size-16);
-  border-radius: var(--borderRadius-medium);
+  padding: var(--stack-padding-condensed);
   border: none;
-  cursor: pointer;
-  color: var(--fgColor-muted);
-  background-color: transparent;
-  font: var(--text-body-shorthand-medium);
+  background: none;
   text-align: left;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+  cursor: pointer;
+  position: relative;
 }
 
 .activityItem:hover {
   background-color: var(--bgColor-muted);
-  color: var(--fgColor-default);
+  border-radius: var(--borderRadius-medium);
 }
 
 .activityItemActive {
@@ -94,11 +91,9 @@
 }
 
 .refinement {
-  width: 100%;
-  white-space: pre-wrap;
-  word-break: break-word;
-  line-height: 1.4;
-  text-align: left;
+  font: var(--text-body-shorthand-medium);
+  color: var(--fgColor-muted);
+  padding: var(--stack-padding-condensed);
 }
 
 .changesCaption {
@@ -157,7 +152,6 @@
 
 .refinementActive {
   color: var(--fgColor-default);
-  position: relative;
 }
 
 .refinementActive::after {
@@ -421,11 +415,4 @@
   100% {
     background-position: -100% 0;
   }
-}
-
-.restoreButton {
-  width: 100%;
-  margin-top: 8px;
-  font-size: var(--text-caption-size) !important;
-  display: block;
 }

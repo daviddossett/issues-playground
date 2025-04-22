@@ -303,7 +303,7 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
       <div ref={scrollRef} className={styles.contentArea}>
         <div className={styles.activityLogContainer}>
           {versions.map((version) => (
-            <button
+            <div
               key={version.id}
               className={clsx(styles.activityItem, {
                 [styles.activityItemActive]: selectedVersionId === version.id,
@@ -344,19 +344,19 @@ export const IteratePanel = ({ onVersionSelect, isIterating, setIsIterating }: I
                         </div>
                       ))}
                     </div>
-                    {expandedChangesList === version.id && (
-                      <Button 
-                        variant="default" 
-                        size="small"
-                        className={styles.restoreButton}
-                      >
-                        Restore version
-                      </Button>
-                    )}
                   </>
                 )}
               </div>
-            </button>
+              {selectedVersionId === version.id && !isIterating && version.changes && version.id !== versions[versions.length - 1].id && (
+                <Button 
+                  variant="default" 
+                  size="small"
+                  className={styles.restoreButton}
+                >
+                  Restore version
+                </Button>
+              )}
+            </div>
           ))}
         </div>
       </div>
