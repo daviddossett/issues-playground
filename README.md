@@ -1,4 +1,4 @@
-Playground to generate issue summaries and new issue feedback via gpt-4o completions + structured outputs.
+A playground to generate issue summaries and new issue feedback via gpt-4o completions + structured outputs.
 
 ## Getting started
 
